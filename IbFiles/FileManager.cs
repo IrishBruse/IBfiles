@@ -6,27 +6,26 @@ using ImGuiNET;
 
 public class FileManager
 {
-    public void Submit()
+    public static void Submit()
     {
-        Vector2 windowSize = ImGui.GetIO().DisplaySize;
-        ImGui.SetNextWindowSize(windowSize);
+
+        ImGuiIOPtr io = ImGui.GetIO();
+        Vector2 windowSize = io.DisplaySize;
+        ImGui.SetNextWindowSize(size: windowSize);
         ImGui.SetNextWindowPos(Vector2.Zero);
 
-        _ = ImGui.Begin("Viewport", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoBackground);
-        _ = ImGui.BeginTable("FileList", 3);
-        for (int i = 0; i < 10; i++)
+        ImGui.Begin("Viewport", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoInputs);
         {
-            ImGui.TableNextColumn();
-            ImGui.Text("A " + i);
-            ImGui.TableNextColumn();
-            ImGui.Text("B " + i);
-            ImGui.TableNextColumn();
-            ImGui.Text("C " + i);
-            ImGui.TableNextRow();
+            ImGui.PushStyleColor(ImGuiCol.ChildBg, new Vector4(1, 0, 1, 1));
+            ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0);
+            ImGui.BeginChild("Navbar", new(io.DisplaySize.X, 40));
+            {
+                ImGui.Text("test");
+            }
+            ImGui.EndChild();
+            ImGui.PopStyleColor();
         }
-        ImGui.EndTable();
         ImGui.End();
 
-        ImGui.ShowDemoWindow();
     }
 }

@@ -6,12 +6,9 @@ using System.Runtime.CompilerServices;
 
 using ImGuiNET;
 
-using Silk.NET.Input;
-
 using Veldrid;
 
 using Key = Silk.NET.Input.Key;
-using MouseButton = Silk.NET.Input.MouseButton;
 
 /// <summary>
 /// A modified version of Veldrid.ImGui's ImGuiRenderer.
@@ -47,10 +44,8 @@ public class ImGuiController : IDisposable
     private Vector2 _scaleFactor = Vector2.One;
 
     // Image trackers
-    private readonly Dictionary<TextureView, ResourceSetInfo> _setsByView
-        = new();
-    private readonly Dictionary<Texture, TextureView> _autoViewsByTexture
-        = new();
+    private readonly Dictionary<TextureView, ResourceSetInfo> _setsByView = new();
+    private readonly Dictionary<Texture, TextureView> _autoViewsByTexture = new();
     private readonly Dictionary<IntPtr, ResourceSetInfo> _viewsById = new();
     private readonly List<IDisposable> _ownedResources = new();
     private int _lastAssignedID = 100;
@@ -208,7 +203,7 @@ public class ImGuiController : IDisposable
         _lastAssignedID = 100;
     }
 
-    private byte[] LoadEmbeddedShaderCode(ResourceFactory factory, string name, ShaderStages stage)
+    private static byte[] LoadEmbeddedShaderCode(ResourceFactory factory, string name, ShaderStages stage)
     {
         switch (factory.BackendType)
         {

@@ -9,7 +9,7 @@ public class Program
 {
     public static void Main()
     {
-        var preferedBackend = GraphicsBackend.Vulkan;
+        GraphicsBackend preferedBackend = GraphicsBackend.Vulkan;
 
         WindowOptions options = WindowOptions.Default;
         options.API = preferedBackend.ToGraphicsAPI();
