@@ -18,10 +18,13 @@ public class Application : IDisposable
 
     private GraphicsDevice GraphicsDevice { get; set; }
     private CommandList CommandList { get; set; }
+
     private ImGuiController controller;
     private ImFontPtr font;
     private IInputContext input;
     private GraphicsBackend preferredBackend;
+    public static ImFontPtr Icons26Font { get; set; }
+    public static ImFontPtr Cascadia13Font { get; set; }
 
     public Application(GraphicsBackend preferredBackend)
     {
@@ -37,7 +40,8 @@ public class Application : IDisposable
         GraphicsDevice = Window.CreateGraphicsDevice(graphicsOptions, preferredBackend);
 
         CommandList = GraphicsDevice.ResourceFactory.CreateCommandList();
-        controller = new ImGuiController(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription, Window.Size.X, Window.Size.Y);
+
+        controller = new(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription, Window.Size.X, Window.Size.Y);
 
         input = Window.CreateInput();
 
@@ -48,8 +52,31 @@ public class Application : IDisposable
 
         ImGuiIOPtr io = ImGui.GetIO();
         io.Fonts.Clear();
-        font = io.Fonts.AddFontFromFileTTF(@"A:\IBfiles\IBfiles\CascadiaCode.ttf", 13f);
+
+        _ = io.Fonts.AddFontFromFileTTF("./CascadiaCode.ttf", 13f);
+
+        unsafe
+        {
+            ushort[] range = new ushort[] { 60000, 60429, 0 };
+
+            fixed (ushort* arrayptr = range)
+            {
+                Icons26Font = io.Fonts.AddFontFromFileTTF("./Codicon.ttf", 26f, null, (IntPtr)arrayptr);
+            }
+        }
+
         controller.CreateDeviceResources(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription);
+
+        unsafe
+        {
+            string imguiIni = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IrishBruse", "Files", "Imgui.ini");
+            Directory.CreateDirectory(Path.GetDirectoryName(imguiIni));
+            byte[] test = System.Text.Encoding.Default.GetBytes(imguiIni);
+            fixed (byte* stringptr = test)
+            {
+                ImGuiNative.igGetIO()->IniFilename = stringptr;
+            }
+        }
 
         GlobalStyle.Style();
     }
@@ -58,24 +85,12 @@ public class Application : IDisposable
     {
         MouseInput();
         controller.Update((float)delta); // Feed the input events to our ImGui controller, which passes them through to ImGui.
-    }
 
-    private void MouseInput()
-    {
-        ImGuiIOPtr io = ImGui.GetIO();
-
-        IMouse mouse = input.Mice[0];
-
-        io.MouseDown[0] = mouse.IsButtonPressed(MouseButton.Left);
-        io.MouseDown[1] = mouse.IsButtonPressed(MouseButton.Right);
-        io.MouseDown[2] = mouse.IsButtonPressed(MouseButton.Middle);
-        io.MousePos = mouse.Position;
-        io.MouseWheel = mouse.ScrollWheels[0].Y;
     }
 
     public void Render(double delta)
     {
-        // ImGui.PushFont(font);
+        _ = delta;
 
         FileManager.Submit();
 
@@ -150,6 +165,34 @@ public class Application : IDisposable
     {
         ImGuiIOPtr io = ImGui.GetIO();
         io.AddInputCharacter(input);
+    }
+
+    private void MouseInput()
+    {
+        ImGuiIOPtr io = ImGui.GetIO();
+
+        IMouse mouse = input.Mice[0];
+
+        io.MouseDown[0] = mouse.IsButtonPressed(MouseButton.Left);
+        io.MouseDown[1] = mouse.IsButtonPressed(MouseButton.Right);
+        io.MouseDown[2] = mouse.IsButtonPressed(MouseButton.Middle);
+        io.MousePos = mouse.Position;
+        io.MouseWheel = mouse.ScrollWheels[0].Y;
+
+        mouse.Cursor.StandardCursor = ImGui.GetMouseCursor() switch
+        {
+            ImGuiMouseCursor.None => StandardCursor.Default,
+            ImGuiMouseCursor.Arrow => StandardCursor.Arrow,
+            ImGuiMouseCursor.TextInput => StandardCursor.IBeam,
+            ImGuiMouseCursor.ResizeAll => StandardCursor.HResize,
+            ImGuiMouseCursor.ResizeNS => StandardCursor.VResize,
+            ImGuiMouseCursor.ResizeEW => StandardCursor.HResize,
+            ImGuiMouseCursor.ResizeNESW => StandardCursor.VResize,
+            ImGuiMouseCursor.ResizeNWSE => StandardCursor.HResize,
+            ImGuiMouseCursor.Hand => StandardCursor.Hand,
+            ImGuiMouseCursor.NotAllowed => StandardCursor.Default,
+            _ => StandardCursor.Default
+        };
     }
 
 }
