@@ -1,4 +1,4 @@
-namespace IBfiles;
+namespace IBfiles.ImguiRenderer;
 
 using ImGuiNET;
 
@@ -10,6 +10,7 @@ public static class GlobalStyle
 
         style.WindowPadding = new(0, 0);
         style.WindowBorderSize = 0f;
+        style.ItemSpacing = new(0, 0);
 
         style.FrameRounding = 6f;
 

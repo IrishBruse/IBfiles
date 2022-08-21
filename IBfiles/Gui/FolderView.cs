@@ -1,5 +1,7 @@
 namespace IBfiles.Gui;
 
+using IBfiles.ImguiRenderer;
+
 using ImGuiNET;
 
 public static class FolderView
@@ -9,7 +11,7 @@ public static class FolderView
         ImGuiIOPtr io = ImGui.GetIO();
 
         ImGui.PushStyleColor(ImGuiCol.ChildBg, Colors.BackgroundDark);
-        _ = ImGui.BeginChild("FolderView", new(io.DisplaySize.X, 45));
+        _ = ImGui.BeginChild("FolderView", new(io.DisplaySize.X, ImGui.GetWindowHeight() - 45));
         {
             ImGui.Text("test");
         }

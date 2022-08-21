@@ -1,4 +1,4 @@
-namespace IBfiles;
+namespace IBfiles.ImguiRenderer;
 
 using System.Numerics;
 

@@ -2,8 +2,6 @@ namespace IBfiles.Logic;
 
 public static class FileManager
 {
-
-
     public static void HistoryBack()
     {
 

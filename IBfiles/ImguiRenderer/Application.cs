@@ -1,8 +1,7 @@
-namespace IBfiles;
-
-using IBfiles.Logic;
+namespace IBfiles.ImguiRenderer;
 
 using ImGuiNET;
+
 
 using Silk.NET.Input;
 using Silk.NET.Maths;
@@ -72,7 +71,7 @@ public class Application : IDisposable
         unsafe
         {
             string imguiIni = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IrishBruse", "Files", "Imgui.ini");
-            Directory.CreateDirectory(Path.GetDirectoryName(imguiIni));
+            _ = Directory.CreateDirectory(Path.GetDirectoryName(imguiIni));
             byte[] test = System.Text.Encoding.Default.GetBytes(imguiIni);
             fixed (byte* stringptr = test)
             {
@@ -110,8 +109,8 @@ public class Application : IDisposable
         GraphicsDevice.MainSwapchain.Resize((uint)size.X, (uint)size.Y);
         controller.WindowResized(size.X, size.Y);
 
-        Window.DoRender();
         Window.DoUpdate();
+        Window.DoRender();
     }
 
     public void Closing()
