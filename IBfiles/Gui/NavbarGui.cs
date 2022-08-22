@@ -1,11 +1,13 @@
 namespace IBfiles.Gui;
 
-using IBfiles.ImguiRenderer;
+using System.Numerics;
+
+using IBfiles.ApplicationBackend;
 using IBfiles.Logic;
 
 using ImGuiNET;
 
-public static class Navbar
+public static class NavbarGui
 {
     private const int ButtonSize = 40;
     private const int ButtonPadding = 20;
@@ -16,13 +18,17 @@ public static class Navbar
     {
         ImGuiIOPtr io = ImGui.GetIO();
 
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(3f));
         ImGui.PushStyleColor(ImGuiCol.ChildBg, Colors.BackgroundNormal);
-        _ = ImGui.BeginChild("Navbar", new(io.DisplaySize.X, 45));
         {
-            Content();
+            _ = ImGui.BeginChild("Navbar", new(io.DisplaySize.X, 46));
+            {
+                Content();
+            }
+            ImGui.EndChild();
         }
-        ImGui.EndChild();
         ImGui.PopStyleColor();
+        ImGui.PopStyleVar();
     }
 
     private static void Content()
@@ -65,22 +71,17 @@ public static class Navbar
         }
         ImGui.PopFont();
 
-        Settings.Gui();
+        SettingsGui.Gui();
     }
 
     private static void NavbarButton(CodiconUnicode icon, Action callback)
     {
-        // ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(2.5f));
+        ImGui.SameLine();
+        if (ImGui.Button($"{(char)icon}", new(ButtonSize)))
         {
-            ImGui.SameLine();
-            ImGui.SetCursorPosX(ImGui.GetCursorPosX() + 5);
-            if (ImGui.Button($"{(char)icon}", new(ButtonSize)))
-            {
-                callback.Invoke();
-            }
-            ImGuiExt.CursorPointer();
+            callback.Invoke();
         }
-        // ImGui.PopStyleVar();
+        ImGuiExt.CursorPointer();
     }
 
     private static void EditingNavbar()
@@ -133,38 +134,38 @@ public static class Navbar
 
         ImGui.PushStyleColor(ImGuiCol.ButtonActive, Colors.BackgroundInput);
         ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 4);
-        // ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, new Vector2(2));
-        // ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0));
-        for (int i = 0; i < paths.Length; i++)
         {
-            string p = paths[i];
-
-            if (string.IsNullOrEmpty(p))
+            for (int i = 0; i < paths.Length; i++)
             {
-                continue;
-            }
+                string p = paths[i];
 
-            ImGui.PushID(p + i);
-            {
-                if (ImGui.Button(p))
+                if (string.IsNullOrEmpty(p))
                 {
-                    string fsPath = "";
-                    for (int j = 0; j <= i; j++)
-                    {
-                        fsPath += paths[j] + '/';
-                    }
-                    Console.WriteLine(fsPath);
+                    continue;
                 }
+
+                ImGui.PushID(p + i);
+                {
+                    if (ImGui.Button(p))
+                    {
+                        string fsPath = "";
+                        for (int j = 0; j <= i; j++)
+                        {
+                            fsPath += paths[j] + '/';
+                        }
+                        Environment.CurrentDirectory = fsPath;
+                    }
+                }
+                ImGui.PopID();
+
+                ImGuiExt.CursorPointer();
+
+                ImGui.SameLine();
+
+                ImGui.Text(" / ");
+
+                ImGui.SameLine();
             }
-            ImGui.PopID();
-
-            ImGuiExt.CursorPointer();
-
-            ImGui.SameLine();
-
-            ImGui.Text(" / ");
-
-            ImGui.SameLine();
         }
         ImGui.PopStyleVar();
         ImGui.PopStyleColor();

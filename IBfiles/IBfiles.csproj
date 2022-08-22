@@ -9,10 +9,10 @@
         <ApplicationIcon>Icon.ico</ApplicationIcon>
 
         <!-- Single File -->
-        <PublishSingleFile>true</PublishSingleFile>
+        <!-- <PublishSingleFile>true</PublishSingleFile>
         <SelfContained>false</SelfContained>
         <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-        <PublishReadyToRun>true</PublishReadyToRun>
+        <PublishReadyToRun>true</PublishReadyToRun> -->
     </PropertyGroup>
 
     <ItemGroup>
@@ -26,11 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="Assets/Shaders/imgui-vertex.glsl" LogicalName="imgui-vertex.glsl" />
-        <EmbeddedResource Include="Assets/Shaders/imgui-frag.glsl" LogicalName="imgui-frag.glsl" />
-        <EmbeddedResource Include="Assets/Shaders/imgui-vertex.spv" LogicalName="imgui-vertex.spv" />
-        <EmbeddedResource Include="Assets/Shaders/imgui-frag.spv" LogicalName="imgui-frag.spv" />
-
+        <EmbeddedResource Include="Assets/Shaders/*" />
         <EmbeddedResource Include="Assets/Fonts/*.ttf" />
     </ItemGroup>
 

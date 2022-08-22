@@ -1,4 +1,4 @@
-namespace IBfiles.ImguiRenderer;
+namespace IBfiles.ApplicationBackend;
 
 using ImGuiNET;
 
@@ -17,5 +17,9 @@ public static class GlobalStyle
         style.Colors[(int)ImGuiCol.Button] = new(0, 0, 0, 0);
         style.Colors[(int)ImGuiCol.ButtonHovered] = Colors.BackgroundLight;
         style.Colors[(int)ImGuiCol.ButtonActive] = Colors.BackgroundInput;
+
+        style.Colors[(int)ImGuiCol.FrameBg] = Colors.BackgroundLight;
+        style.Colors[(int)ImGuiCol.FrameBgHovered] = Colors.BackgroundInput;
+        style.Colors[(int)ImGuiCol.FrameBgActive] = Colors.AccentDark;
     }
 }

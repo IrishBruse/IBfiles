@@ -15,7 +15,7 @@ public class GuiManager
 
         _ = ImGui.Begin("Viewport", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoInputs);
         {
-            Navbar.Gui();
+            NavbarGui.Gui();
             FolderView.Gui();
         }
         ImGui.End();

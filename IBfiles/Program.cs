@@ -3,7 +3,7 @@ namespace IBfiles;
 using System.Diagnostics;
 using System.Text;
 
-using IBfiles.ImguiRenderer;
+using IBfiles.ApplicationBackend;
 
 using Silk.NET.Core;
 using Silk.NET.Windowing;
@@ -26,7 +26,7 @@ public class Program
         options.Size = new(800, 600);
         options.API = preferedBackend.ToGraphicsAPI();
         options.ShouldSwapAutomatically = false;
-        options.Title = "IBfiles";
+        options.Title = Path.GetFileNameWithoutExtension(Environment.CurrentDirectory);
         options.VSync = false;
 
         IWindow window = Window.Create(options);
@@ -34,6 +34,8 @@ public class Program
 
         window.Load += () =>
         {
+            window.Center();
+
             RawImage icon = new(32, 32, Icon.Data);
             window.SetWindowIcon(ref icon);
         };

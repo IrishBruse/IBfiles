@@ -1,4 +1,6 @@
-namespace IBfiles.ImguiRenderer;
+namespace IBfiles.ApplicationBackend;
+
+using IBfiles.Utilities;
 
 using ImGuiNET;
 
@@ -44,6 +46,16 @@ public class Application : IDisposable
 
         controller = new(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription, Window.Size.X, Window.Size.Y);
 
+        unsafe
+        {
+            _ = Directory.CreateDirectory(Path.GetDirectoryName(Paths.ImGuiIni));
+            byte[] test = System.Text.Encoding.Default.GetBytes(Paths.ImGuiIni + '\0');
+            fixed (byte* stringptr = test)
+            {
+                ImGuiNative.igGetIO()->IniFilename = stringptr;
+            }
+        }
+
         input = Window.CreateInput();
 
         IKeyboard keyboard = input.Keyboards[0];
@@ -54,30 +66,30 @@ public class Application : IDisposable
         ImGuiIOPtr io = ImGui.GetIO();
         io.Fonts.Clear();
 
-        _ = io.Fonts.AddFontFromFileTTF("./CascadiaCode.ttf", 13f);
+        byte[] cascadiaCodeData = ResourceLoader.GetEmbeddedResourceBytes("Assets/Fonts/CascadiaCode.ttf");
+        byte[] codiconData = ResourceLoader.GetEmbeddedResourceBytes("Assets/Fonts/Codicon.ttf");
 
         unsafe
         {
+            fixed (byte* cascadiaCodeDataPtr = cascadiaCodeData)
+            {
+                Cascadia13Font = io.Fonts.AddFontFromMemoryTTF((IntPtr)cascadiaCodeDataPtr, cascadiaCodeData.Length, 13f);
+            }
+
             ushort[] range = new ushort[] { 60000, 60429, 0 };
 
             fixed (ushort* arrayptr = range)
             {
-                Icons26Font = io.Fonts.AddFontFromFileTTF("./Codicon.ttf", 26f, null, (IntPtr)arrayptr);
+                fixed (byte* codiconDataPtr = codiconData)
+                {
+                    Icons26Font = io.Fonts.AddFontFromMemoryTTF((IntPtr)codiconDataPtr, codiconData.Length, 26f, null, (IntPtr)arrayptr);
+                }
             }
         }
 
         controller.CreateDeviceResources(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription);
 
-        unsafe
-        {
-            string imguiIni = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IrishBruse", "Files", "Imgui.ini");
-            _ = Directory.CreateDirectory(Path.GetDirectoryName(imguiIni));
-            byte[] test = System.Text.Encoding.Default.GetBytes(imguiIni);
-            fixed (byte* stringptr = test)
-            {
-                ImGuiNative.igGetIO()->IniFilename = stringptr;
-            }
-        }
+
 
         GlobalStyle.Style();
     }

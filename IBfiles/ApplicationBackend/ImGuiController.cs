@@ -1,8 +1,10 @@
-namespace IBfiles.ImguiRenderer;
+namespace IBfiles.ApplicationBackend;
 
 using System.Numerics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+
+using IBfiles.Utilities;
 
 using ImGuiNET;
 
@@ -95,8 +97,8 @@ public class ImGuiController : IDisposable
         projMatrixBuffer = factory.CreateBuffer(new BufferDescription(64, BufferUsage.UniformBuffer | BufferUsage.Dynamic));
         projMatrixBuffer.Name = "ImGui.NET Projection Buffer";
 
-        byte[] vertexShaderBytes = LoadEmbeddedShaderCode(gd.ResourceFactory, "imgui-vertex");
-        byte[] fragmentShaderBytes = LoadEmbeddedShaderCode(gd.ResourceFactory, "imgui-frag");
+        byte[] vertexShaderBytes = LoadEmbeddedShaderCode(gd.ResourceFactory, "Assets/Shaders/imgui-vertex");
+        byte[] fragmentShaderBytes = LoadEmbeddedShaderCode(gd.ResourceFactory, "Assets/Shaders/imgui-frag");
         vertexShader = factory.CreateShader(new ShaderDescription(ShaderStages.Vertex, vertexShaderBytes, gd.BackendType == GraphicsBackend.Metal ? "VS" : "main"));
         fragmentShader = factory.CreateShader(new ShaderDescription(ShaderStages.Fragment, fragmentShaderBytes, gd.BackendType == GraphicsBackend.Metal ? "FS" : "main"));
 
@@ -207,35 +209,26 @@ public class ImGuiController : IDisposable
             case GraphicsBackend.Direct3D11:
             {
                 string resourceName = name + ".hlsl.bytes";
-                return GetEmbeddedResourceBytes(resourceName);
+                return ResourceLoader.GetEmbeddedResourceBytes(resourceName);
             }
             case GraphicsBackend.OpenGL:
             {
                 string resourceName = name + ".glsl";
-                return GetEmbeddedResourceBytes(resourceName);
+                return ResourceLoader.GetEmbeddedResourceBytes(resourceName);
             }
             case GraphicsBackend.Vulkan:
             {
                 string resourceName = name + ".spv";
-                return GetEmbeddedResourceBytes(resourceName);
+                return ResourceLoader.GetEmbeddedResourceBytes(resourceName);
             }
             case GraphicsBackend.Metal:
             {
                 string resourceName = name + ".metallib";
-                return GetEmbeddedResourceBytes(resourceName);
+                return ResourceLoader.GetEmbeddedResourceBytes(resourceName);
             }
             default:
             throw new NotImplementedException();
         }
-    }
-
-    private static byte[] GetEmbeddedResourceBytes(string resourceName)
-    {
-        Assembly assembly = typeof(ImGuiController).Assembly;
-        using Stream s = assembly.GetManifestResourceStream(resourceName);
-        byte[] ret = new byte[s.Length];
-        _ = s.Read(ret, 0, (int)s.Length);
-        return ret;
     }
 
     /// <summary>
