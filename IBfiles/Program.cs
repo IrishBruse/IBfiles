@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Text;
 
 using IBfiles.ApplicationBackend;
+using IBfiles.Logic;
 
 using Silk.NET.Core;
 using Silk.NET.Windowing;
@@ -26,11 +27,12 @@ public class Program
         options.Size = new(800, 600);
         options.API = preferedBackend.ToGraphicsAPI();
         options.ShouldSwapAutomatically = false;
-        options.Title = Path.GetFileNameWithoutExtension(Environment.CurrentDirectory);
+        options.Title = Path.GetFileNameWithoutExtension(FileManager.CWD);
         options.VSync = false;
 
         IWindow window = Window.Create(options);
-        Application application = new(preferedBackend) { Window = window };
+        Application.Window = window;
+        Application application = new(preferedBackend);
 
         window.Load += () =>
         {

@@ -40,24 +40,24 @@ public static class NavbarGui
             NavbarButton(CodiconUnicode.ChevronUp, FileManager.UpDirectoryLevel);
 
             ImGui.SameLine();
-            float width = ImGui.GetWindowWidth() - (ImGui.GetCursorPosX() * 2f);
+            float width = ImGui.GetWindowWidth() - (ImGui.GetCursorPosX() * 2f) - 6;
 
             ImGui.PushItemWidth(width);
 
             ImGui.PushFont(Application.Cascadia13Font);
             {
                 ImGui.SameLine();
+                _ = ImGui.BeginChild("test", new(width, ButtonSize));
+                ImGui.SetCursorPosX((width - navbarWidth) / 2f);
                 if (editingNavbarLocation)
                 {
                     EditingNavbar();
                 }
                 else
                 {
-                    _ = ImGui.BeginChild("test", new(width, ButtonSize));
-                    ImGui.Dummy(new((width - navbarWidth) / 2f, ImGui.GetTextLineHeight()));
                     DisplayNavbar();
-                    ImGui.EndChild();
                 }
+                ImGui.EndChild();
 
                 ImGui.SetCursorPosY(2.5f);
             }
@@ -77,6 +77,8 @@ public static class NavbarGui
     private static void NavbarButton(CodiconUnicode icon, Action callback)
     {
         ImGui.SameLine();
+        ImGui.SetCursorPosY(3);
+        ImGui.SetCursorPosX(ImGui.GetCursorPosX() + 3);
         if (ImGui.Button($"{(char)icon}", new(ButtonSize)))
         {
             callback.Invoke();
@@ -87,12 +89,12 @@ public static class NavbarGui
     private static void EditingNavbar()
     {
         ImGui.SetKeyboardFocusHere();
-        string newPath = Environment.CurrentDirectory;
+        string newPath = FileManager.CWD;
         if (ImGui.InputText("", ref newPath, 256, ImGuiInputTextFlags.EnterReturnsTrue))
         {
             if (Directory.Exists(newPath))
             {
-                Environment.CurrentDirectory = newPath;
+                FileManager.CWD = newPath;
             }
             else
             {
@@ -104,9 +106,8 @@ public static class NavbarGui
 
     private static void DisplayNavbar()
     {
-        ImGui.SameLine();
 
-        string path = Environment.CurrentDirectory;
+        string path = FileManager.CWD;
 
         float startX = ImGui.GetCursorPosX();
 
@@ -151,9 +152,9 @@ public static class NavbarGui
                         string fsPath = "";
                         for (int j = 0; j <= i; j++)
                         {
-                            fsPath += paths[j] + '/';
+                            fsPath += paths[j] + (Settings.I.UseBackslashSeperator ? '\\' : '/');
                         }
-                        Environment.CurrentDirectory = fsPath;
+                        FileManager.CWD = fsPath;
                     }
                 }
                 ImGui.PopID();
@@ -162,7 +163,7 @@ public static class NavbarGui
 
                 ImGui.SameLine();
 
-                ImGui.Text(" / ");
+                ImGui.Text(Settings.I.UseBackslashSeperator ? " \\ " : " / ");
 
                 ImGui.SameLine();
             }

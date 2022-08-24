@@ -19,7 +19,5 @@ public class GuiManager
             FolderView.Gui();
         }
         ImGui.End();
-
-        ImGui.ShowDemoWindow();
     }
 }

@@ -1,16 +1,32 @@
 namespace IBfiles.Logic;
 
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
+using IBfiles.Utilities;
+
 #pragma warning disable CA1051
+
 public class Settings
 {
-    public static Settings I { get; set; }
-
     public bool TitleUsesFullPath;
+    public bool UseBackslashSeperator;
 
     static Settings()
     {
-        I = new();
+        string json = File.ReadAllText(Paths.JsonConfig);
+        JsonSerializerOptions options = new() { IncludeFields = true };
+        I = JsonSerializer.Deserialize<Settings>(json, options);
     }
+
+    public static void Save()
+    {
+        JsonSerializerOptions options = new() { IncludeFields = true };
+        string text = JsonSerializer.Serialize(I, options);
+        File.WriteAllText(Paths.JsonConfig, text);
+    }
+
+    [JsonIgnore] public static Settings I { get; set; }
 }
 #pragma warning restore CA1051
 

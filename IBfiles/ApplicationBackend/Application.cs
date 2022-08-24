@@ -1,5 +1,6 @@
 namespace IBfiles.ApplicationBackend;
 
+using IBfiles.Logic;
 using IBfiles.Utilities;
 
 using ImGuiNET;
@@ -17,7 +18,7 @@ using MouseButton = Silk.NET.Input.MouseButton;
 
 public class Application : IDisposable
 {
-    public IWindow Window { get; init; }
+    public static IWindow Window { get; set; }
 
     private GraphicsDevice GraphicsDevice { get; set; }
     private CommandList CommandList { get; set; }
@@ -49,7 +50,7 @@ public class Application : IDisposable
         unsafe
         {
             _ = Directory.CreateDirectory(Path.GetDirectoryName(Paths.ImGuiIni));
-            byte[] test = System.Text.Encoding.Default.GetBytes(Paths.ImGuiIni + '\0');
+            byte[] test = System.Text.Encoding.Default.GetBytes(Paths.ImGuiIni);
             fixed (byte* stringptr = test)
             {
                 ImGuiNative.igGetIO()->IniFilename = stringptr;
@@ -89,16 +90,23 @@ public class Application : IDisposable
 
         controller.CreateDeviceResources(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription);
 
-
-
         GlobalStyle.Style();
+
+        FileManager.Load();
     }
+
+    private int ticks;
 
     public void Update(double delta)
     {
         MouseInput();
         controller.Update((float)delta); // Feed the input events to our ImGui controller, which passes them through to ImGui.
 
+        ticks++;
+        if (ticks % 15 == 0)
+        {
+
+        }
     }
 
     public void Render(double delta)
