@@ -112,7 +112,7 @@ public static class FolderView
         }
         else
         {
-            ImGui.Text(lastWritten.ToString("MM/dd/yy 'at' h:mm tt", CultureInfo.InvariantCulture));
+            ImGui.Text(lastWritten.ToString("dd/MM/yy 'at' h:mm tt", CultureInfo.InvariantCulture));
         }
     }
 
