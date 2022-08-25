@@ -11,6 +11,7 @@ public class Settings
 {
     public bool TitleUsesFullPath;
     public bool UseBackslashSeperator;
+    public int BorderWidth = 10;
 
     static Settings()
     {

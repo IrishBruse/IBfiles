@@ -1,5 +1,6 @@
 namespace IBfiles.Gui;
 
+using System.Diagnostics;
 using System.Numerics;
 
 using IBfiles.ApplicationBackend;
@@ -33,18 +34,18 @@ public static class NavbarGui
 
     private static void Content()
     {
-        ImGui.PushFont(Application.Icons26Font);
+        ImGui.PushFont(Application.IconsFont);
         {
-            NavbarButton(CodiconUnicode.ChevronLeft, FileManager.HistoryBack);
-            NavbarButton(CodiconUnicode.ChevronRight, FileManager.HistoryForward);
-            NavbarButton(CodiconUnicode.ChevronUp, FileManager.UpDirectoryLevel);
+            NavbarButton(CodiconUnicode.ChevronLeft, FileManager.HistoryBack, FileManager.History.Count > 0 && FileManager.History[^1] != null);
+            NavbarButton(CodiconUnicode.ChevronRight, FileManager.HistoryForward, FileManager.History.Count > 0 && FileManager.History[^1] != null);
+            NavbarButton(CodiconUnicode.ChevronUp, FileManager.UpDirectoryLevel, true);
 
             ImGui.SameLine();
             float width = ImGui.GetWindowWidth() - (ImGui.GetCursorPosX() * 2f) - 6;
 
             ImGui.PushItemWidth(width);
 
-            ImGui.PushFont(Application.Cascadia13Font);
+            ImGui.PushFont(Application.CascadiaFont);
             {
                 ImGui.SameLine();
                 _ = ImGui.BeginChild("test", new(width, ButtonSize));
@@ -65,24 +66,36 @@ public static class NavbarGui
 
             ImGui.PopItemWidth();
 
-            NavbarButton(CodiconUnicode.Refresh, () => Console.WriteLine("Reloaded"));
-            NavbarButton(CodiconUnicode.Search, () => Console.WriteLine("Search"));
-            NavbarButton(CodiconUnicode.Menu, () => ImGui.OpenPopup("Settings"));
+            NavbarButton(CodiconUnicode.Refresh, FileManager.Refresh, true);
+            NavbarButton(CodiconUnicode.Search, () => Console.WriteLine("Search"), true);
+            NavbarButton(CodiconUnicode.Menu, () => ImGui.OpenPopup("Settings"), true);
         }
         ImGui.PopFont();
 
         SettingsGui.Gui();
     }
 
-    private static void NavbarButton(CodiconUnicode icon, Action callback)
+    private static void NavbarButton(CodiconUnicode icon, Action callback, bool enabled)
     {
         ImGui.SameLine();
         ImGui.SetCursorPosY(3);
         ImGui.SetCursorPosX(ImGui.GetCursorPosX() + 3);
-        if (ImGui.Button($"{(char)icon}", new(ButtonSize)))
+
+        if (enabled == false)
+        {
+            ImGui.PushStyleColor(ImGuiCol.Text, Colors.Text);
+        }
+
+        if (ImGui.Button($"{(char)icon}", new(ButtonSize)) && enabled)
         {
             callback.Invoke();
         }
+
+        if (enabled == false)
+        {
+            ImGui.PopStyleColor();
+        }
+
         ImGuiExt.CursorPointer();
     }
 
@@ -106,7 +119,6 @@ public static class NavbarGui
 
     private static void DisplayNavbar()
     {
-
         string path = FileManager.CWD;
 
         float startX = ImGui.GetCursorPosX();
@@ -115,11 +127,12 @@ public static class NavbarGui
         {
             editingNavbarLocation = true;
         }
-        ImGui.SetCursorPosY(8f + (13f / 2));
+        ImGui.SetCursorPosY(5f + (13f / 2));
         _ = ImGui.GetFontSize();
 
-        string[] paths;
+        Debug.Assert(path != null);
 
+        string[] paths;
         if (string.IsNullOrEmpty(path))
         {
             paths = Array.Empty<string>();
@@ -149,12 +162,11 @@ public static class NavbarGui
                 {
                     if (ImGui.Button(p))
                     {
-                        string fsPath = "";
-                        for (int j = 0; j <= i; j++)
+                        int ups = paths.Length - 1 - i;
+                        for (int j = 0; j < ups; j++)
                         {
-                            fsPath += paths[j] + (Settings.I.UseBackslashSeperator ? '\\' : '/');
+                            FileManager.UpDirectoryLevel();
                         }
-                        FileManager.CWD = fsPath;
                     }
                 }
                 ImGui.PopID();

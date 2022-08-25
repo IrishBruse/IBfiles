@@ -27,8 +27,8 @@ public class Application : IDisposable
     private ImFontPtr font;
     private IInputContext input;
     private GraphicsBackend preferredBackend;
-    public static ImFontPtr Icons26Font { get; set; }
-    public static ImFontPtr Cascadia13Font { get; set; }
+    public static ImFontPtr IconsFont { get; set; }
+    public static ImFontPtr CascadiaFont { get; set; }
 
     public Application(GraphicsBackend preferredBackend)
     {
@@ -47,16 +47,6 @@ public class Application : IDisposable
 
         controller = new(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription, Window.Size.X, Window.Size.Y);
 
-        unsafe
-        {
-            _ = Directory.CreateDirectory(Path.GetDirectoryName(Paths.ImGuiIni));
-            byte[] test = System.Text.Encoding.Default.GetBytes(Paths.ImGuiIni);
-            fixed (byte* stringptr = test)
-            {
-                ImGuiNative.igGetIO()->IniFilename = stringptr;
-            }
-        }
-
         input = Window.CreateInput();
 
         IKeyboard keyboard = input.Keyboards[0];
@@ -74,7 +64,7 @@ public class Application : IDisposable
         {
             fixed (byte* cascadiaCodeDataPtr = cascadiaCodeData)
             {
-                Cascadia13Font = io.Fonts.AddFontFromMemoryTTF((IntPtr)cascadiaCodeDataPtr, cascadiaCodeData.Length, 13f);
+                CascadiaFont = io.Fonts.AddFontFromMemoryTTF((IntPtr)cascadiaCodeDataPtr, cascadiaCodeData.Length, 15f);
             }
 
             ushort[] range = new ushort[] { 60000, 60429, 0 };
@@ -83,7 +73,7 @@ public class Application : IDisposable
             {
                 fixed (byte* codiconDataPtr = codiconData)
                 {
-                    Icons26Font = io.Fonts.AddFontFromMemoryTTF((IntPtr)codiconDataPtr, codiconData.Length, 26f, null, (IntPtr)arrayptr);
+                    IconsFont = io.Fonts.AddFontFromMemoryTTF((IntPtr)codiconDataPtr, codiconData.Length, 26f, null, (IntPtr)arrayptr);
                 }
             }
         }
@@ -102,10 +92,10 @@ public class Application : IDisposable
         MouseInput();
         controller.Update((float)delta); // Feed the input events to our ImGui controller, which passes them through to ImGui.
 
-        ticks++;
-        if (ticks % 15 == 0)
+        ImGuiIOPtr io = ImGui.GetIO();
+        if (io.WantSaveIniSettings)
         {
-
+            ImGui.SaveIniSettingsToDisk(Paths.ImGuiIni);
         }
     }
 

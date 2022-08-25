@@ -4,11 +4,26 @@ using System.Numerics;
 
 public static class Colors
 {
-    public static readonly Vector4 BackgroundDark = new(0.09803922f, 0.11372549f, 0.12156863f, 1f);
-    public static readonly Vector4 BackgroundNormal = new(0.11764706f, 0.13333334f, 0.14117648f, 1f);
-    public static readonly Vector4 BackgroundLight = new(0.13725491f, 0.15294118f, 0.16470589f, 1f);
-    public static readonly Vector4 BackgroundInput = new(0.19607843f, 0.21960784f, 0.23921569f, 1f);
-    public static readonly Vector4 AccentLight = new(0.5254902f, 0.7647059f, 0.19607843f, 1f);
-    public static readonly Vector4 AccentDark = new(0.33333334f, 0.49019608f, 0.10980392f, 1f);
-    public static readonly Vector4 Text = new(0.73333335f, 0.73333335f, 0.73333335f, 1f);
+    public static readonly Vector4 BackgroundDark = Color(25, 29, 31);
+    public static readonly Vector4 BackgroundNormal = Color(30, 34, 36);
+    public static readonly Vector4 BackgroundLight = Color(35, 39, 42);
+    public static readonly Vector4 BackgroundInput = Color(50, 56, 61);
+    public static readonly Vector4 AccentLight = Color(134, 195, 50);
+    public static readonly Vector4 AccentDark = Color(85, 125, 28);
+    public static readonly Vector4 Text = Color(187, 187, 187);
+    public static readonly Vector4 TextDisabled = Color(187, 187, 187, .8f);
+    public static readonly Vector4 Error = Color(255, 0, 255);
+    public static readonly Vector4 Scrollbar = Color(66, 68, 70);
+    public static readonly Vector4 ScrollbarHover = Color(0x4f, 0x50, 0x51);
+    public static readonly Vector4 BackgroundDim = Color(25, 29, 31, 0.75f);
+
+    private static Vector4 Color(int r, int g, int b)
+    {
+        return Color(r, g, b, 1f);
+    }
+
+    private static Vector4 Color(int r, int g, int b, float a)
+    {
+        return new Vector4(r / 255f, g / 255f, b / 255f, a);
+    }
 }

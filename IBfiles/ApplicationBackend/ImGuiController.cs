@@ -60,9 +60,15 @@ public class ImGuiController : IDisposable
 
         IntPtr context = ImGui.CreateContext();
         ImGui.SetCurrentContext(context);
-        _ = ImGui.GetIO().Fonts;
-        _ = ImGui.GetIO().Fonts.AddFontDefault();
-        ImGui.GetIO().BackendFlags |= ImGuiBackendFlags.RendererHasVtxOffset;
+
+        ImGuiIOPtr io = ImGui.GetIO();
+        _ = io.Fonts.AddFontDefault();
+        io.BackendFlags |= ImGuiBackendFlags.RendererHasVtxOffset;
+
+        unsafe
+        {
+            ImGuiNative.igGetIO()->IniFilename = null;
+        }
 
         CreateDeviceResources(gd, outputDescription);
         SetKeyMappings();
@@ -203,31 +209,14 @@ public class ImGuiController : IDisposable
 
     private static byte[] LoadEmbeddedShaderCode(ResourceFactory factory, string name)
     {
-        switch (factory.BackendType)
+        return factory.BackendType switch
         {
-            case GraphicsBackend.Direct3D11:
-            {
-                string resourceName = name + ".hlsl.bytes";
-                return ResourceLoader.GetEmbeddedResourceBytes(resourceName);
-            }
-            case GraphicsBackend.OpenGL:
-            {
-                string resourceName = name + ".glsl";
-                return ResourceLoader.GetEmbeddedResourceBytes(resourceName);
-            }
-            case GraphicsBackend.Vulkan:
-            {
-                string resourceName = name + ".spv";
-                return ResourceLoader.GetEmbeddedResourceBytes(resourceName);
-            }
-            case GraphicsBackend.Metal:
-            {
-                string resourceName = name + ".metallib";
-                return ResourceLoader.GetEmbeddedResourceBytes(resourceName);
-            }
-            default:
-            throw new NotImplementedException();
-        }
+            GraphicsBackend.Direct3D11 => ResourceLoader.GetEmbeddedResourceBytes(name + ".hlsl.bytes"),
+            GraphicsBackend.OpenGL => ResourceLoader.GetEmbeddedResourceBytes(name + ".glsl"),
+            GraphicsBackend.Vulkan => ResourceLoader.GetEmbeddedResourceBytes(name + ".spv"),
+            GraphicsBackend.Metal => ResourceLoader.GetEmbeddedResourceBytes(name + ".metallib"),
+            _ => throw new NotImplementedException(),
+        };
     }
 
     /// <summary>

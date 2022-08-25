@@ -27,7 +27,7 @@ public class Program
         options.Size = new(800, 600);
         options.API = preferedBackend.ToGraphicsAPI();
         options.ShouldSwapAutomatically = false;
-        options.Title = Path.GetFileNameWithoutExtension(FileManager.CWD);
+        options.Title = "";
         options.VSync = false;
 
         IWindow window = Window.Create(options);

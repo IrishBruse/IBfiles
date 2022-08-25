@@ -1,5 +1,9 @@
 namespace IBfiles.Logic;
 
+using ImGuiNET;
+
+using ImGuiNET;
+
 using Silk.NET.Windowing;
 
 public static class FileManager
@@ -8,18 +12,17 @@ public static class FileManager
     public static string CWD
     {
         get => cwd;
-        set
-        {
-            cwd = value;
-
-            UpdateTitle();
-            UpdateDirectoryContents();
-
-            Environment.CurrentDirectory = cwd;
-        }
+        set { cwd = value; Environment.CurrentDirectory = value; ReloadFolder(); }
     }
 
+    public static List<string> History { get; set; } = new();
+
     public static List<DirectoryEntry> DirectoryContents { get; private set; } = new();
+
+    public static void Load()
+    {
+        ReloadFolder();
+    }
 
     public static void UpdateDirectoryContents()
     {
@@ -27,14 +30,72 @@ public static class FileManager
 
         foreach (string path in Directory.EnumerateFiles(cwd))
         {
-            bool isHidden = (File.GetAttributes(path) & FileAttributes.Hidden) != 0;
-            DirectoryContents.Add(new(path, true, isHidden));
+            AddEntry(path);
         }
 
-        foreach (string path in Directory.EnumerateDirectories(cwd))
+        foreach (string path in Directory.EnumerateDirectories(cwd, "*", new EnumerationOptions() { ReturnSpecialDirectories = false }))
         {
-            bool isHidden = (File.GetAttributes(path) & FileAttributes.Hidden) != 0;
-            DirectoryContents.Add(new(path, false, isHidden));
+            AddEntry(path);
+        }
+    }
+
+    private static void AddEntry(string path)
+    {
+        FileInfo fInfo = new(path);
+        bool isFile = !fInfo.Attributes.HasFlag(FileAttributes.Directory);
+
+        long size;
+        if (isFile)
+        {
+            size = fInfo.Length;
+        }
+        else
+        {
+            size = Directory.EnumerateFileSystemEntries(path, "*", new EnumerationOptions() { ReturnSpecialDirectories = false }).Count();
+        }
+
+        bool isHidden = fInfo.Attributes.HasFlag(FileAttributes.Hidden);
+        DirectoryContents.Add(new(path, isFile, isHidden, fInfo.LastWriteTime, size));
+    }
+
+    public static int SortDirectory(DirectoryEntry a, DirectoryEntry b, ImGuiTableSortSpecsPtr specs)
+    {
+        specs.SpecsDirty = false;
+
+        int invertSort = specs.Specs.SortDirection == ImGuiSortDirection.Descending ? -1 : 1;
+
+        return specs.Specs.ColumnIndex switch
+        {
+            0 => a.Path.CompareTo(b.Path) * invertSort,
+            1 => a.LastWriteTime.CompareTo(b.LastWriteTime) * invertSort,
+            2 => SortFileFolderSize(a, b, invertSort),
+            _ => 0,
+        };
+    }
+
+    private static int SortFileFolderSize(DirectoryEntry a, DirectoryEntry b, int invertSort)
+    {
+        if (a.IsFile)
+        {
+            if (b.IsFile)
+            {
+                return a.Size.CompareTo(b.Size) * invertSort;
+            }
+            else
+            {
+                return 1 * invertSort;
+            }
+        }
+        else
+        {
+            if (b.IsFile)
+            {
+                return -1 * invertSort;
+            }
+            else
+            {
+                return a.Size.CompareTo(b.Size) * invertSort;
+            }
         }
     }
 
@@ -77,11 +138,12 @@ public static class FileManager
 
     public static void Refresh()
     {
-
+        ReloadFolder();
     }
 
-    public static void Load()
+    private static void ReloadFolder()
     {
         UpdateTitle();
+        UpdateDirectoryContents();
     }
 }
