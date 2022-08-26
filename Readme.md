@@ -1,5 +1,8 @@
 # File manager
 
+Simple cross platform Gui file manager/browser  
+inspired by windows explorer and linux's dolphin  
+
 ## Planned Features
 - Similar to windows file manager
 - Simalar to dolphin linux file manager
