@@ -19,13 +19,21 @@ public static class FolderView
         float width = io.DisplaySize.X;
         _ = ImGui.BeginChild("FolderView", new(width, height));
         {
-            const ImGuiTableFlags flags = ImGuiTableFlags.Resizable | ImGuiTableFlags.PadOuterX | ImGuiTableFlags.NoBordersInBodyUntilResize | ImGuiTableFlags.Sortable | ImGuiTableFlags.Reorderable | ImGuiTableFlags.BordersInnerV;
+            ImGuiTableFlags flags = ImGuiTableFlags.Resizable;
+            flags |= ImGuiTableFlags.PadOuterX;
+            flags |= ImGuiTableFlags.NoBordersInBodyUntilResize;
+            flags |= ImGuiTableFlags.Sortable;
+            flags |= ImGuiTableFlags.Reorderable;
+            flags |= ImGuiTableFlags.BordersInnerV;
+            // flags |= ImGuiTableFlags.RowBg;
+
             ImGui.PushStyleVar(ImGuiStyleVar.CellPadding, new Vector2(Settings.I.BorderWidth, 0));
             {
                 if (ImGui.BeginTable("Details", 3, flags, new(width, height)))
                 {
                     ImGuiTableSortSpecsPtr specs = ImGui.TableGetSortSpecs();
-                    if (specs.SpecsDirty && FileManager.DirectoryContents.Count > 1)
+
+                    if ((specs.SpecsDirty || FileManager.SortDirty) && FileManager.DirectoryContents.Count > 1)
                     {
                         FileManager.DirectoryContents.Sort((a, b) => FileManager.SortDirectory(a, b, specs));
                     }
@@ -46,10 +54,10 @@ public static class FolderView
             ImGui.TableSetupColumn("Name");
             ImGui.TableSetupColumn("Modified");
             ImGui.TableSetupColumn("Size");
+
+            ImGui.TableHeadersRow();
         }
         ImGui.PopStyleVar();
-
-        ImGui.TableHeadersRow();
 
         foreach (DirectoryEntry entry in FileManager.DirectoryContents)
         {

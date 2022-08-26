@@ -1,1 +1,6 @@
-{"TitleUsesFullPath":true,"UseBackslashSeperator":true,"BorderWidth":10}
+{
+  "TitleUsesFullPath": false,
+  "UseBackslashSeperator": true,
+  "BorderWidth": 16,
+  "FoldersFirst": true
+}

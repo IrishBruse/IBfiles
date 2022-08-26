@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Text;
 
 using IBfiles.ApplicationBackend;
-using IBfiles.Logic;
 
 using Silk.NET.Core;
 using Silk.NET.Windowing;

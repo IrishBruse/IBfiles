@@ -3,6 +3,7 @@ namespace IBfiles.Gui;
 using System;
 using System.Numerics;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 using IBfiles.ApplicationBackend;
 using IBfiles.Logic;
@@ -52,7 +53,7 @@ public static class SettingsGui
             ImGui.PushID(field.Name);
             {
                 bool val = (bool)field.GetValue(Settings.I);
-                ImGui.TableNextColumn(); ImGui.Checkbox("", ref val);
+                _ = ImGui.TableNextColumn(); _ = ImGui.Checkbox("", ref val);
                 field.SetValue(Settings.I, val);
             }
             ImGui.PopID();
@@ -66,9 +67,9 @@ public static class SettingsGui
             ImGui.PushID(field.Name);
             {
                 int val = (int)field.GetValue(Settings.I);
-                ImGui.TableNextColumn();
+                _ = ImGui.TableNextColumn();
                 ImGui.PushItemWidth(90);
-                ImGui.InputInt("", ref val);
+                _ = ImGui.InputInt("", ref val);
                 ImGui.PopItemWidth();
                 field.SetValue(Settings.I, val);
             }
@@ -84,7 +85,8 @@ public static class SettingsGui
     {
         _ = ImGui.TableNextColumn();
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 4);
-        ImGui.Text(name + " ");
+        string res = Regex.Replace(name, "([A-Z])", " $1").Trim();
+        ImGui.Text(res);
     }
 
     private static unsafe void CloseSettings()

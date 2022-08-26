@@ -13,13 +13,18 @@ public class GuiManager
         ImGui.SetNextWindowSize(windowSize);
         ImGui.SetNextWindowPos(Vector2.Zero);
 
-        _ = ImGui.Begin("Viewport", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoInputs);
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0);
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0));
         {
-            NavbarGui.Gui();
-            FolderView.Gui();
+            _ = ImGui.Begin("Viewport", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoInputs);
+            {
+                NavbarGui.Gui();
+                FolderView.Gui();
+            }
+            ImGui.End();
         }
-        ImGui.End();
+        ImGui.PopStyleVar(2);
 
-        ImGui.ShowDemoWindow();
+        ImGui.ShowMetricsWindow();
     }
 }

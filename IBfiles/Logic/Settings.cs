@@ -12,6 +12,7 @@ public class Settings
     public bool TitleUsesFullPath;
     public bool UseBackslashSeperator;
     public int BorderWidth = 10;
+    public bool FoldersFirst = true;
 
     static Settings()
     {
@@ -22,7 +23,7 @@ public class Settings
 
     public static void Save()
     {
-        JsonSerializerOptions options = new() { IncludeFields = true };
+        JsonSerializerOptions options = new() { IncludeFields = true, WriteIndented = true };
         string text = JsonSerializer.Serialize(I, options);
         File.WriteAllText(Paths.JsonConfig, text);
     }

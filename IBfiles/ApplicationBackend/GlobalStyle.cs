@@ -8,25 +8,25 @@ public static class GlobalStyle
     {
         ImGuiStylePtr style = ImGui.GetStyle();
 
-        style.WindowPadding = new(0, 0);
-        style.WindowBorderSize = 0f;
+        style.WindowPadding = new(4, 4);
+        style.WindowBorderSize = 1f;
         style.ItemSpacing = new(0, 0);
 
-        style.ScrollbarSize = 20;
+        style.ScrollbarSize = 12;
         style.ScrollbarRounding = 0;
         style.FramePadding = new(4f, 4f);
 
-        style.PopupBorderSize = 0f;
-        style.PopupRounding = 6f;
+        style.PopupBorderSize = 1f;
+        style.PopupRounding = 0f;
 
         style.FrameRounding = 6f;
         System.Numerics.Vector4 error = Colors.Error;
 
         style.Colors[(int)ImGuiCol.Text] = Colors.Text;
         style.Colors[(int)ImGuiCol.TextDisabled] = Colors.TextDisabled;
-        style.Colors[(int)ImGuiCol.WindowBg] = Colors.BackgroundNormal;
-        style.Colors[(int)ImGuiCol.ChildBg] = Colors.BackgroundNormal;
-        style.Colors[(int)ImGuiCol.PopupBg] = Colors.BackgroundLight;
+        style.Colors[(int)ImGuiCol.WindowBg] = Colors.BackgroundDark;
+        style.Colors[(int)ImGuiCol.ChildBg] = Colors.BackgroundDark;
+        style.Colors[(int)ImGuiCol.PopupBg] = Colors.BackgroundNormal;
         style.Colors[(int)ImGuiCol.Border] = Colors.BackgroundInput;
         style.Colors[(int)ImGuiCol.BorderShadow] = Colors.BackgroundDark;
         style.Colors[(int)ImGuiCol.FrameBg] = Colors.BackgroundNormal;
@@ -70,7 +70,7 @@ public static class GlobalStyle
         style.Colors[(int)ImGuiCol.TableBorderStrong] = Colors.BackgroundInput;
         style.Colors[(int)ImGuiCol.TableBorderLight] = Colors.AccentDark;
         style.Colors[(int)ImGuiCol.TableRowBg] = Colors.BackgroundDark;
-        style.Colors[(int)ImGuiCol.TableRowBgAlt] = Colors.BackgroundDark;
+        style.Colors[(int)ImGuiCol.TableRowBgAlt] = Colors.BackgroundNormal;
         style.Colors[(int)ImGuiCol.TextSelectedBg] = Colors.AccentDark;
         style.Colors[(int)ImGuiCol.DragDropTarget] = Colors.AccentDark;
         style.Colors[(int)ImGuiCol.NavHighlight] = error;

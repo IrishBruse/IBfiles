@@ -2,8 +2,6 @@ namespace IBfiles.Logic;
 
 using ImGuiNET;
 
-using ImGuiNET;
-
 using Silk.NET.Windowing;
 
 public static class FileManager
@@ -18,6 +16,7 @@ public static class FileManager
     public static List<string> History { get; set; } = new();
 
     public static List<DirectoryEntry> DirectoryContents { get; private set; } = new();
+    public static bool SortDirty { get; internal set; }
 
     public static void Load()
     {
@@ -37,6 +36,8 @@ public static class FileManager
         {
             AddEntry(path);
         }
+
+        SortDirty = true;
     }
 
     private static void AddEntry(string path)
@@ -66,36 +67,35 @@ public static class FileManager
 
         return specs.Specs.ColumnIndex switch
         {
-            0 => a.Path.CompareTo(b.Path) * invertSort,
+            0 => SortFileNames(a, b, invertSort),
             1 => a.LastWriteTime.CompareTo(b.LastWriteTime) * invertSort,
             2 => SortFileFolderSize(a, b, invertSort),
             _ => 0,
         };
     }
 
-    private static int SortFileFolderSize(DirectoryEntry a, DirectoryEntry b, int invertSort)
-    {
-        if (a.IsFile)
+    private static int SortFileNames(DirectoryEntry a, DirectoryEntry b, int invertSort)
+    {       // If both same
+        if (a.IsFile == b.IsFile)
         {
-            if (b.IsFile)
-            {
-                return a.Size.CompareTo(b.Size) * invertSort;
-            }
-            else
-            {
-                return 1 * invertSort;
-            }
+            return a.Size.CompareTo(b.Size) * invertSort;
         }
         else
         {
-            if (b.IsFile)
-            {
-                return -1 * invertSort;
-            }
-            else
-            {
-                return a.Size.CompareTo(b.Size) * invertSort;
-            }
+            return (a.IsFile ? 1 : -1) * (Settings.I.FoldersFirst ? 1 : -1);
+        }
+    }
+
+    private static int SortFileFolderSize(DirectoryEntry a, DirectoryEntry b, int invertSort)
+    {
+        // If both same
+        if (a.IsFile == b.IsFile)
+        {
+            return a.Size.CompareTo(b.Size) * invertSort;
+        }
+        else
+        {
+            return a.IsFile ? invertSort : -invertSort;
         }
     }
 
