@@ -25,6 +25,6 @@ public class GuiManager
         }
         ImGui.PopStyleVar(2);
 
-        ImGui.ShowMetricsWindow();
+        ImGui.ShowDemoWindow();
     }
 }

@@ -18,21 +18,30 @@ public static class FileManager
     public static List<DirectoryEntry> DirectoryContents { get; private set; } = new();
     public static bool SortDirty { get; internal set; }
 
+    public static List<string> Selections { get; private set; } = new();
+
     public static void Load()
     {
+        if (!string.IsNullOrEmpty(Settings.I.StartDirectory))
+        {
+            cwd = Settings.I.StartDirectory;
+        }
+
         ReloadFolder();
     }
 
+    private static EnumerationOptions enumerationOptions = new() { AttributesToSkip = FileAttributes.System, ReturnSpecialDirectories = false };
     public static void UpdateDirectoryContents()
     {
         DirectoryContents.Clear();
 
-        foreach (string path in Directory.EnumerateFiles(cwd))
+
+        foreach (string path in Directory.EnumerateFiles(cwd, "*", enumerationOptions))
         {
             AddEntry(path);
         }
 
-        foreach (string path in Directory.EnumerateDirectories(cwd, "*", new EnumerationOptions() { ReturnSpecialDirectories = false }))
+        foreach (string path in Directory.EnumerateDirectories(cwd, "*", enumerationOptions))
         {
             AddEntry(path);
         }
@@ -52,7 +61,7 @@ public static class FileManager
         }
         else
         {
-            size = Directory.EnumerateFileSystemEntries(path, "*", new EnumerationOptions() { ReturnSpecialDirectories = false }).Count();
+            size = Directory.EnumerateFileSystemEntries(path, "*", enumerationOptions).Count();
         }
 
         bool isHidden = fInfo.Attributes.HasFlag(FileAttributes.Hidden);
@@ -68,10 +77,22 @@ public static class FileManager
         return specs.Specs.ColumnIndex switch
         {
             0 => SortFileNames(a, b, invertSort),
-            1 => a.LastWriteTime.CompareTo(b.LastWriteTime) * invertSort,
+            1 => SortCreationDate(a, b, invertSort),
             2 => SortFileFolderSize(a, b, invertSort),
             _ => 0,
         };
+    }
+
+    private static int SortCreationDate(DirectoryEntry a, DirectoryEntry b, int invertSort)
+    {
+        if (a.LastWriteTime.Equals(b.LastWriteTime))
+        {
+            return SortFileNames(a, b, invertSort);
+        }
+        else
+        {
+            return a.LastWriteTime.CompareTo(b.LastWriteTime) * invertSort;
+        }
     }
 
     private static int SortFileNames(DirectoryEntry a, DirectoryEntry b, int invertSort)

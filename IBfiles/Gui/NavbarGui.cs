@@ -21,6 +21,7 @@ public static class NavbarGui
 
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(3f));
         ImGui.PushStyleColor(ImGuiCol.ChildBg, Colors.BackgroundNormal);
+        ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0));
         {
             _ = ImGui.BeginChild("Navbar", new(io.DisplaySize.X, 46));
             {
@@ -29,7 +30,7 @@ public static class NavbarGui
             ImGui.EndChild();
         }
         ImGui.PopStyleColor();
-        ImGui.PopStyleVar();
+        ImGui.PopStyleVar(2);
     }
 
     private static void Content()

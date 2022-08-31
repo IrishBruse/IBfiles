@@ -47,6 +47,8 @@ public class Application : IDisposable
 
         controller = new(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription, Window.Size.X, Window.Size.Y);
 
+        ImGui.LoadIniSettingsFromDisk(Paths.ImGuiIni);
+
         input = Window.CreateInput();
 
         IKeyboard keyboard = input.Keyboards[0];
@@ -57,32 +59,39 @@ public class Application : IDisposable
         ImGuiIOPtr io = ImGui.GetIO();
         io.Fonts.Clear();
 
-        byte[] cascadiaCodeData = ResourceLoader.GetEmbeddedResourceBytes("Assets/Fonts/CascadiaCode.ttf");
-        byte[] codiconData = ResourceLoader.GetEmbeddedResourceBytes("Assets/Fonts/Codicon.ttf");
-
-        unsafe
-        {
-            fixed (byte* cascadiaCodeDataPtr = cascadiaCodeData)
-            {
-                CascadiaFont = io.Fonts.AddFontFromMemoryTTF((IntPtr)cascadiaCodeDataPtr, cascadiaCodeData.Length, 15f);
-            }
-
-            ushort[] range = new ushort[] { 60000, 60429, 0 };
-
-            fixed (ushort* arrayptr = range)
-            {
-                fixed (byte* codiconDataPtr = codiconData)
-                {
-                    IconsFont = io.Fonts.AddFontFromMemoryTTF((IntPtr)codiconDataPtr, codiconData.Length, 26f, null, (IntPtr)arrayptr);
-                }
-            }
-        }
+        CascadiaFont = NewFont("Assets/Fonts/CascadiaCode.ttf", 15);
+        IconsFont = NewFontWithRange("Assets/Fonts/Codicon.ttf", 26, new ushort[] { 60000, 60429, 0 });
 
         controller.CreateDeviceResources(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription);
 
         GlobalStyle.Style();
 
         FileManager.Load();
+    }
+
+    private static unsafe ImFontPtr NewFont(string fontFile, float pixelSize)
+    {
+        ImGuiIOPtr io = ImGui.GetIO();
+
+        byte[] data = ResourceLoader.GetEmbeddedResourceBytes(fontFile);
+        fixed (byte* fontPtr = data)
+        {
+            return io.Fonts.AddFontFromMemoryTTF((IntPtr)fontPtr, data.Length, pixelSize);
+        }
+    }
+
+    private static unsafe ImFontPtr NewFontWithRange(string fontFile, float pixelSize, ushort[] range)
+    {
+        ImGuiIOPtr io = ImGui.GetIO();
+
+        byte[] data = ResourceLoader.GetEmbeddedResourceBytes(fontFile);
+        fixed (ushort* rangePtr = range)
+        {
+            fixed (byte* dataPtr = data)
+            {
+                return io.Fonts.AddFontFromMemoryTTF((IntPtr)dataPtr, data.Length, pixelSize, null, (IntPtr)rangePtr);
+            }
+        }
     }
 
     private int ticks;

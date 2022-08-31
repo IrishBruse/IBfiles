@@ -11,24 +11,38 @@ public class Settings
 {
     public bool TitleUsesFullPath;
     public bool UseBackslashSeperator;
-    public int BorderWidth = 10;
+    public int EdgeBorderWidth = 10;
+    public int HeaderGap = 8;
     public bool FoldersFirst = true;
+    public bool ConfigFilesLast = true;
+    public bool AlternateRowColors;
+    public FsPath StartDirectory;
 
     static Settings()
     {
         string json = File.ReadAllText(Paths.JsonConfig);
-        JsonSerializerOptions options = new() { IncludeFields = true };
-        I = JsonSerializer.Deserialize<Settings>(json, options);
+        I = JsonSerializer.Deserialize<Settings>(json, SerializeOptions);
     }
 
     public static void Save()
     {
-        JsonSerializerOptions options = new() { IncludeFields = true, WriteIndented = true };
-        string text = JsonSerializer.Serialize(I, options);
+        string text = JsonSerializer.Serialize(I, SerializeOptions);
         File.WriteAllText(Paths.JsonConfig, text);
     }
 
     [JsonIgnore] public static Settings I { get; set; }
+
+    private static readonly JsonSerializerOptions SerializeOptions = new()
+    {
+        Converters =
+        {
+            new JsonStringEnumConverter(),
+            new FsPathConverter(),
+        },
+        IncludeFields = true,
+        WriteIndented = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
 }
 #pragma warning restore CA1051
 

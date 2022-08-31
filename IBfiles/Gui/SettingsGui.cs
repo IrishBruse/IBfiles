@@ -7,8 +7,11 @@ using System.Text.RegularExpressions;
 
 using IBfiles.ApplicationBackend;
 using IBfiles.Logic;
+using IBfiles.Utilities;
 
 using ImGuiNET;
+
+using NativeFileDialogSharp;
 
 public static class SettingsGui
 {
@@ -70,6 +73,42 @@ public static class SettingsGui
                 _ = ImGui.TableNextColumn();
                 ImGui.PushItemWidth(90);
                 _ = ImGui.InputInt("", ref val);
+                ImGui.PopItemWidth();
+                field.SetValue(Settings.I, val);
+            }
+            ImGui.PopID();
+            ImGuiExt.CursorPointer();
+            break;
+
+            case nameof(String):
+            AddSettingLabel(field.Name);
+            ImGui.PushID(field.Name);
+            {
+                string val = (string)field.GetValue(Settings.I) ?? "";
+                _ = ImGui.TableNextColumn();
+                ImGui.PushItemWidth(90);
+                _ = ImGui.InputText("", ref val, 256);// https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=registry
+                ImGui.PopItemWidth();
+                field.SetValue(Settings.I, val);
+            }
+            ImGui.PopID();
+            ImGuiExt.CursorPointer();
+            break;
+
+            case nameof(FsPath):
+            AddSettingLabel(field.Name);
+            ImGui.PushID(field.Name);
+            {
+                FsPath val = (FsPath)field.GetValue(Settings.I);
+                _ = ImGui.TableNextColumn();
+                if (ImGui.Button(val))
+                {
+                    DialogResult result = Dialog.FolderPicker(val);
+                    if (result.IsOk)
+                    {
+                        val.Path = result.Path;
+                    }
+                }
                 ImGui.PopItemWidth();
                 field.SetValue(Settings.I, val);
             }

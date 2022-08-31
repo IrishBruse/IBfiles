@@ -10,6 +10,7 @@ public static class Colors
     public static readonly Vector4 BackgroundInput = Color(50, 56, 61);
     public static readonly Vector4 AccentLight = Color(134, 195, 50);
     public static readonly Vector4 AccentDark = Color(85, 125, 28);
+    public static readonly Vector4 AccentDarker = Color(85, 125, 28, 0.75f);
     public static readonly Vector4 Text = Color(187, 187, 187);
     public static readonly Vector4 TextDisabled = Color(187, 187, 187, .8f);
     public static readonly Vector4 Error = Color(255, 0, 255);

@@ -1,6 +1,10 @@
 {
   "TitleUsesFullPath": false,
-  "UseBackslashSeperator": true,
-  "BorderWidth": 16,
-  "FoldersFirst": true
+  "UseBackslashSeperator": false,
+  "EdgeBorderWidth": 14,
+  "HeaderGap": 8,
+  "FoldersFirst": false,
+  "ConfigFilesLast": true,
+  "AlternateRowColors": false,
+  "StartDirectory": "A:\\ldtk"
 }
