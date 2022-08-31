@@ -19,7 +19,7 @@ public static class GlobalStyle
         style.PopupBorderSize = 1f;
         style.PopupRounding = 0f;
 
-        style.CellPadding = new(0);
+        style.CellPadding = new(2, 2);
 
         style.FrameRounding = 6f;
         System.Numerics.Vector4 error = Colors.Error;

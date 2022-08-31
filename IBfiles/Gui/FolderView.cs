@@ -61,6 +61,7 @@ public static class FolderView
 
     private static void Content()
     {
+        ImGui.PushStyleVar(ImGuiStyleVar.CellPadding, Vector2.Zero);
         DisplayHeader();
 
         // Table Header Seperator
@@ -71,6 +72,7 @@ public static class FolderView
             ImGui.TableNextRow(ImGuiTableRowFlags.None);
             DisplayRow(entry);
         }
+        ImGui.PopStyleVar();
     }
 
     private static void DisplayHeader()
