@@ -12,6 +12,7 @@ using Silk.NET.Windowing;
 using Silk.NET.Windowing.Extensions.Veldrid;
 
 using Veldrid;
+using Veldrid.ImageSharp;
 
 using Key = Silk.NET.Input.Key;
 using MouseButton = Silk.NET.Input.MouseButton;
@@ -20,15 +21,15 @@ public class Application : IDisposable
 {
     public static IWindow Window { get; set; }
 
+    public static ImFontPtr IconsFont { get; set; }
+    public static ImFontPtr CascadiaFont { get; set; }
+
     private GraphicsDevice GraphicsDevice { get; set; }
     private CommandList CommandList { get; set; }
 
     private ImGuiController controller;
-    private ImFontPtr font;
     private IInputContext input;
     private GraphicsBackend preferredBackend;
-    public static ImFontPtr IconsFont { get; set; }
-    public static ImFontPtr CascadiaFont { get; set; }
 
     public Application(GraphicsBackend preferredBackend)
     {
@@ -49,6 +50,8 @@ public class Application : IDisposable
 
         ImGui.LoadIniSettingsFromDisk(Paths.ImGuiIni);
 
+        GlobalStyle.Style();
+
         input = Window.CreateInput();
 
         IKeyboard keyboard = input.Keyboards[0];
@@ -64,8 +67,7 @@ public class Application : IDisposable
 
         controller.CreateDeviceResources(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription);
 
-        GlobalStyle.Style();
-
+        IconManager.Load(GraphicsDevice, controller);
         FileManager.Load();
     }
 
@@ -94,7 +96,6 @@ public class Application : IDisposable
         }
     }
 
-    private int ticks;
 
     public void Update(double delta)
     {
@@ -106,6 +107,8 @@ public class Application : IDisposable
         {
             ImGui.SaveIniSettingsToDisk(Paths.ImGuiIni);
         }
+
+        FileManager.Update();
     }
 
     public void Render(double delta)

@@ -100,7 +100,7 @@ public static class SettingsGui
             ImGui.PushID(field.Name);
             {
                 FsPath val = (FsPath)field.GetValue(Settings.I);
-                _ = ImGui.TableNextColumn();
+                ImGui.TableNextRow();
                 if (ImGui.Button(val))
                 {
                     DialogResult result = Dialog.FolderPicker(val);

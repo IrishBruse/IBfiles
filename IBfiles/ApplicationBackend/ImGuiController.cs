@@ -35,10 +35,6 @@ public class ImGuiController : IDisposable
     private ResourceSet fontTextureResourceSet;
 
     private IntPtr fontAtlasID = (IntPtr)1;
-    private bool controlDown;
-    private bool shiftDown;
-    private bool altDown;
-    private bool winKeyDown;
 
     private int windowWidth;
     private int windowHeight;

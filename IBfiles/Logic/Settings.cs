@@ -14,7 +14,6 @@ public class Settings
     public int EdgeBorderWidth = 10;
     public int HeaderGap = 8;
     public bool FoldersFirst = true;
-    public bool ConfigFilesLast = true;
     public bool AlternateRowColors;
     public FsPath StartDirectory;
 

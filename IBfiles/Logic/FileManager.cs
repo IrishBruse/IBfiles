@@ -10,8 +10,10 @@ public static class FileManager
     public static string CWD
     {
         get => cwd;
-        set { cwd = value; Environment.CurrentDirectory = value; ReloadFolder(); }
+        set { cwd = value; Environment.CurrentDirectory = value; queueReloadFolder = true; }
     }
+
+    private static bool queueReloadFolder;
 
     public static List<string> History { get; set; } = new();
 
@@ -24,7 +26,10 @@ public static class FileManager
     {
         if (!string.IsNullOrEmpty(Settings.I.StartDirectory))
         {
-            cwd = Settings.I.StartDirectory;
+            if (Directory.Exists(Settings.I.StartDirectory))
+            {
+                cwd = Settings.I.StartDirectory;
+            }
         }
 
         ReloadFolder();
@@ -34,7 +39,6 @@ public static class FileManager
     public static void UpdateDirectoryContents()
     {
         DirectoryContents.Clear();
-
 
         foreach (string path in Directory.EnumerateFiles(cwd, "*", enumerationOptions))
         {
@@ -96,10 +100,11 @@ public static class FileManager
     }
 
     private static int SortFileNames(DirectoryEntry a, DirectoryEntry b, int invertSort)
-    {       // If both same
+    {
+        // If both same
         if (a.IsFile == b.IsFile)
         {
-            return a.Size.CompareTo(b.Size) * invertSort;
+            return a.Name.CompareTo(b.Name) * invertSort;
         }
         else
         {
@@ -117,6 +122,15 @@ public static class FileManager
         else
         {
             return a.IsFile ? invertSort : -invertSort;
+        }
+    }
+
+    public static void Update()
+    {
+        if (queueReloadFolder)
+        {
+            queueReloadFolder = false;
+            ReloadFolder();
         }
     }
 

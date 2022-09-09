@@ -20,7 +20,7 @@ public static class FolderView
         float height = ImGui.GetWindowHeight() - 46;
         float width = io.DisplaySize.X;
 
-        _ = ImGui.BeginChild("FolderView", new(width, height));
+        _ = ImGui.BeginChild(nameof(FolderView), new(width, height));
         {
             ImGuiTableFlags flags = ImGuiTableFlags.Resizable;
             flags |= ImGuiTableFlags.Hideable;
@@ -94,6 +94,7 @@ public static class FolderView
                 ImGui.Text(columnName);
                 ImGui.SameLine();
                 ImGui.TableHeader("");
+                ImGuiExt.CursorPointer();
             }
             ImGui.PopID();
         }
@@ -101,7 +102,6 @@ public static class FolderView
 
     private static void DisplayRow(DirectoryEntry entry)
     {
-
         bool pop = false;
         _ = ImGui.TableNextColumn();
         {
@@ -116,6 +116,22 @@ public static class FolderView
                 }
 
                 ImGui.Indent(Settings.I.EdgeBorderWidth);
+
+                if (entry.IsFile)
+                {
+                    ImGui.Image(IconManager.GetFileIcon(entry.Path), new Vector2(16));
+                }
+                else
+                {
+                    ImGui.Image(IconManager.GetFolderIcon(entry.Path), new Vector2(16));
+                }
+                ImGui.SameLine();
+
+                if (entry.IsHidden)
+                {
+                    ImGui.PushStyleColor(ImGuiCol.Text, Colors.TextDisabled);
+                }
+
                 if (ImGui.Selectable(entry.Name, FileManager.Selections.Contains(entry.Path), ImGuiSelectableFlags.SpanAllColumns | ImGuiSelectableFlags.AllowDoubleClick))
                 {
                     if (ImGui.GetIO().KeyCtrl)
@@ -134,7 +150,20 @@ public static class FolderView
                         FileManager.Selections.Clear();
                         FileManager.Selections.Add(entry.Path);
                     }
+
+                    if (ImGui.IsItemHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
+                    {
+                        EntryHandler.Open(entry);
+                    }
                 }
+
+                if (entry.IsHidden)
+                {
+                    ImGui.PopStyleColor();
+                }
+
+                ImGuiExt.CursorPointer();
+
                 ImGui.Unindent(Settings.I.EdgeBorderWidth);
 
                 if (pop)
