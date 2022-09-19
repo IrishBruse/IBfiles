@@ -16,6 +16,7 @@ public class Settings
     public bool FoldersFirst = true;
     public bool AlternateRowColors;
     public FsPath StartDirectory;
+    public bool HideOpticalDrives;
 
     static Settings()
     {

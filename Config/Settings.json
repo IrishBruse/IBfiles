@@ -1,9 +1,10 @@
 {
-  "TitleUsesFullPath": false,
+  "TitleUsesFullPath": true,
   "UseBackslashSeperator": false,
   "EdgeBorderWidth": 14,
   "HeaderGap": 8,
   "FoldersFirst": true,
   "AlternateRowColors": false,
-  "StartDirectory": "A:\\Monoboy"
+  "StartDirectory": "A:\\CSharp-Utilities",
+  "HideOpticalDrives": true
 }

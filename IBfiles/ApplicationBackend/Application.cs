@@ -12,7 +12,6 @@ using Silk.NET.Windowing;
 using Silk.NET.Windowing.Extensions.Veldrid;
 
 using Veldrid;
-using Veldrid.ImageSharp;
 
 using Key = Silk.NET.Input.Key;
 using MouseButton = Silk.NET.Input.MouseButton;
@@ -21,6 +20,7 @@ public class Application : IDisposable
 {
     public static IWindow Window { get; set; }
 
+    public static ImFontPtr IconsFontBig { get; set; }
     public static ImFontPtr IconsFont { get; set; }
     public static ImFontPtr CascadiaFont { get; set; }
 
@@ -62,8 +62,11 @@ public class Application : IDisposable
         ImGuiIOPtr io = ImGui.GetIO();
         io.Fonts.Clear();
 
+        ushort[] codiconRange = new ushort[] { 60000, 60429, 0 };
+
         CascadiaFont = NewFont("Assets/Fonts/CascadiaCode.ttf", 15);
-        IconsFont = NewFontWithRange("Assets/Fonts/Codicon.ttf", 26, new ushort[] { 60000, 60429, 0 });
+        IconsFontBig = NewFontWithRange("Assets/Fonts/Codicon.ttf", 26, codiconRange);
+        IconsFont = NewFontWithRange("Assets/Fonts/Codicon.ttf", 15, codiconRange);
 
         controller.CreateDeviceResources(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription);
 

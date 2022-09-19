@@ -1,17 +1,14 @@
 namespace IBfiles.Logic;
 
+using IBfiles.ApplicationBackend;
+
 using ImGuiNET;
 
 using Silk.NET.Windowing;
 
 public static class FileManager
 {
-    private static string cwd = Environment.CurrentDirectory;
-    public static string CWD
-    {
-        get => cwd;
-        set { cwd = value; Environment.CurrentDirectory = value; queueReloadFolder = true; }
-    }
+    public static string CurrentDirectory { get; private set; } = Environment.CurrentDirectory;
 
     private static bool queueReloadFolder;
 
@@ -21,6 +18,7 @@ public static class FileManager
     public static bool SortDirty { get; internal set; }
 
     public static List<string> Selections { get; private set; } = new();
+    private static EnumerationOptions enumerationOptions = new() { AttributesToSkip = FileAttributes.System, ReturnSpecialDirectories = false };
 
     public static void Load()
     {
@@ -28,24 +26,23 @@ public static class FileManager
         {
             if (Directory.Exists(Settings.I.StartDirectory))
             {
-                cwd = Settings.I.StartDirectory;
+                CurrentDirectory = Settings.I.StartDirectory;
             }
         }
 
         ReloadFolder();
     }
 
-    private static EnumerationOptions enumerationOptions = new() { AttributesToSkip = FileAttributes.System, ReturnSpecialDirectories = false };
     public static void UpdateDirectoryContents()
     {
         DirectoryContents.Clear();
 
-        foreach (string path in Directory.EnumerateFiles(cwd, "*", enumerationOptions))
+        foreach (string path in Directory.EnumerateFiles(CurrentDirectory, "*", enumerationOptions))
         {
             AddEntry(path);
         }
 
-        foreach (string path in Directory.EnumerateDirectories(cwd, "*", enumerationOptions))
+        foreach (string path in Directory.EnumerateDirectories(CurrentDirectory, "*", enumerationOptions))
         {
             AddEntry(path);
         }
@@ -136,14 +133,14 @@ public static class FileManager
 
     public static void UpdateTitle()
     {
-        IWindow window = ApplicationBackend.Application.Window;
+        IWindow window = Application.Window;
         if (Settings.I.TitleUsesFullPath)
         {
-            window.Title = cwd;
+            window.Title = CurrentDirectory;
         }
         else
         {
-            window.Title = new DirectoryInfo(cwd).Name;
+            window.Title = new DirectoryInfo(CurrentDirectory).Name;
         }
 
         if (Settings.I.UseBackslashSeperator)
@@ -154,6 +151,17 @@ public static class FileManager
         {
             window.Title = window.Title.Replace('\\', '/');
         }
+    }
+
+    public static void Open(string path, bool isPage = false)
+    {
+        if (!isPage)
+        {
+            Environment.CurrentDirectory = path;
+            queueReloadFolder = true;
+        }
+
+        CurrentDirectory = path;
     }
 
     public static void HistoryBack()
@@ -168,7 +176,8 @@ public static class FileManager
 
     public static void UpDirectoryLevel()
     {
-        CWD = Path.GetFullPath(Path.Join(CWD, ".."));
+        CurrentDirectory = Path.GetFullPath(Path.Join(CurrentDirectory, ".."));
+        queueReloadFolder = true;
     }
 
     public static void Refresh()

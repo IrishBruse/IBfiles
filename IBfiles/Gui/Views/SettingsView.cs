@@ -1,11 +1,9 @@
-namespace IBfiles.Gui;
+namespace IBfiles.Gui.Views;
 
 using System;
-using System.Numerics;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-using IBfiles.ApplicationBackend;
 using IBfiles.Logic;
 using IBfiles.Utilities;
 
@@ -13,38 +11,27 @@ using ImGuiNET;
 
 using NativeFileDialogSharp;
 
-public static class SettingsGui
+public class SettingsView
 {
-    public static void Gui()
+    public void Gui()
     {
-        Vector2 center = ImGui.GetMainViewport().GetCenter();
-        ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new(0.5f, 0.5f));
+        FileManager.UpdateTitle();// For live settings changes
 
-        ImGui.PushStyleColor(ImGuiCol.PopupBg, Colors.BackgroundLight);
-        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(6));
-        ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 6);
+        ImGui.SetCursorPosX(ImGui.GetWindowWidth() * .25f);
+        ImGui.SetCursorPosY(ImGui.GetWindowHeight() * .1f);
+
+        _ = ImGui.BeginTable("SettingsTable", 2, ImGuiTableFlags.None, new(ImGui.GetContentRegionAvail().X * .7f, 0));
         {
-            if (ImGuiExt.BeginPopupModal("Settings", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoMove))
+            FieldInfo[] fields = Settings.I.GetType().GetFields();
+
+            foreach (FieldInfo field in fields)
             {
-                FileManager.UpdateTitle();// For live settings changes
-
-                _ = ImGui.BeginTable("SettingsTable", 2);
-                {
-                    FieldInfo[] fields = Settings.I.GetType().GetFields();
-
-                    foreach (FieldInfo field in fields)
-                    {
-                        DisplaySetting(field);
-                    }
-                }
-                ImGui.EndTable();
-
-                CloseSettings();
-                ImGui.EndPopup();
+                DisplaySetting(field);
             }
         }
-        ImGui.PopStyleVar(2);
-        ImGui.PopStyleColor();
+        ImGui.EndTable();
+
+        CloseSettings();
     }
 
     private static void DisplaySetting(FieldInfo field)
@@ -87,7 +74,8 @@ public static class SettingsGui
                 string val = (string)field.GetValue(Settings.I) ?? "";
                 _ = ImGui.TableNextColumn();
                 ImGui.PushItemWidth(90);
-                _ = ImGui.InputText("", ref val, 256);// https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=registry
+                // https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=registry
+                _ = ImGui.InputText("", ref val, 256);
                 ImGui.PopItemWidth();
                 field.SetValue(Settings.I, val);
             }
@@ -100,7 +88,7 @@ public static class SettingsGui
             ImGui.PushID(field.Name);
             {
                 FsPath val = (FsPath)field.GetValue(Settings.I);
-                ImGui.TableNextRow();
+                _ = ImGui.TableNextColumn();
                 if (ImGui.Button(val))
                 {
                     DialogResult result = Dialog.FolderPicker(val);
@@ -130,10 +118,10 @@ public static class SettingsGui
 
     private static unsafe void CloseSettings()
     {
-        if (ImGui.Button("Close", new(ImGui.GetContentRegionAvail().X, 0)))
+        ImGui.SetCursorPosX(ImGui.GetContentRegionAvail().X * .25f);
+        if (ImGui.Button("Save and Close", new(ImGui.GetWindowWidth() * .5f, 0)))
         {
             Settings.Save();
-            ImGui.CloseCurrentPopup();
         }
         ImGuiExt.CursorPointer();
     }

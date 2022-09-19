@@ -12,11 +12,13 @@ public static class Colors
     public static readonly Vector4 AccentDark = Color(85, 125, 28);
     public static readonly Vector4 AccentDarker = Color(85, 125, 28, 0.75f);
     public static readonly Vector4 Text = Color(187, 187, 187);
-    public static readonly Vector4 TextDisabled = Color(187, 187, 187, .8f);
+    public static readonly Vector4 TextDisabled = Color(187, 187, 187, .6f);
     public static readonly Vector4 Error = Color(255, 0, 255);
     public static readonly Vector4 Scrollbar = Color(66, 68, 70);
     public static readonly Vector4 ScrollbarHover = Color(0x4f, 0x50, 0x51);
     public static readonly Vector4 BackgroundDim = Color(25, 29, 31, 0.75f);
+
+    public static readonly Vector4 White = Color(255, 255, 255);
 
     private static Vector4 Color(int r, int g, int b)
     {

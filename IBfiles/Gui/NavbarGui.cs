@@ -5,41 +5,24 @@ using System.Numerics;
 
 using IBfiles.ApplicationBackend;
 using IBfiles.Logic;
+using IBfiles.Utilities;
 
 using ImGuiNET;
 
-public static class NavbarGui
+public class NavbarGui
 {
     private const int ButtonSize = 40;
     private const int ButtonPadding = 20;
     private static bool editingNavbarLocation;
     private static float navbarWidth;
 
-    public static void Gui()
-    {
-        ImGuiIOPtr io = ImGui.GetIO();
-
-        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(3f));
-        ImGui.PushStyleColor(ImGuiCol.ChildBg, Colors.BackgroundNormal);
-        ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0));
-        {
-            _ = ImGui.BeginChild("Navbar", new(io.DisplaySize.X, 46));
-            {
-                Content();
-            }
-            ImGui.EndChild();
-        }
-        ImGui.PopStyleColor();
-        ImGui.PopStyleVar(2);
-    }
-
     private static void Content()
     {
-        ImGui.PushFont(Application.IconsFont);
+        ImGui.PushFont(Application.IconsFontBig);
         {
             NavbarButton(CodiconUnicode.ChevronLeft, FileManager.HistoryBack, FileManager.History.Count > 0 && FileManager.History[^1] != null);
             NavbarButton(CodiconUnicode.ChevronRight, FileManager.HistoryForward, FileManager.History.Count > 0 && FileManager.History[^1] != null);
-            NavbarButton(CodiconUnicode.ChevronUp, FileManager.UpDirectoryLevel, true);
+            NavbarButton(CodiconUnicode.ChevronUp, FileManager.UpDirectoryLevel, Path.IsPathFullyQualified(FileManager.CurrentDirectory));
 
             ImGui.SameLine();
             float width = ImGui.GetWindowWidth() - (ImGui.GetCursorPosX() * 2f) - 6;
@@ -69,11 +52,9 @@ public static class NavbarGui
 
             NavbarButton(CodiconUnicode.Refresh, FileManager.Refresh, true);
             NavbarButton(CodiconUnicode.Search, () => Console.WriteLine("Search"), true);
-            NavbarButton(CodiconUnicode.Menu, () => ImGui.OpenPopup("Settings"), true);
+            NavbarButton(CodiconUnicode.Menu, () => FileManager.Open("Settings", true), true);
         }
         ImGui.PopFont();
-
-        SettingsGui.Gui();
     }
 
     private static void NavbarButton(CodiconUnicode icon, Action callback, bool enabled)
@@ -84,7 +65,7 @@ public static class NavbarGui
 
         if (enabled == false)
         {
-            ImGui.PushStyleColor(ImGuiCol.Text, Colors.Text);
+            ImGui.BeginDisabled();
         }
 
         if (ImGui.Button($"{(char)icon}", new(ButtonSize)) && enabled)
@@ -94,7 +75,7 @@ public static class NavbarGui
 
         if (enabled == false)
         {
-            ImGui.PopStyleColor();
+            ImGui.EndDisabled();
         }
 
         ImGuiExt.CursorPointer();
@@ -103,12 +84,12 @@ public static class NavbarGui
     private static void EditingNavbar()
     {
         ImGui.SetKeyboardFocusHere();
-        string newPath = FileManager.CWD;
+        string newPath = FileManager.CurrentDirectory;
         if (ImGui.InputText("", ref newPath, 256, ImGuiInputTextFlags.EnterReturnsTrue))
         {
             if (Directory.Exists(newPath))
             {
-                FileManager.CWD = newPath;
+                FileManager.Open(newPath);
             }
             else
             {
@@ -120,7 +101,7 @@ public static class NavbarGui
 
     private static void DisplayNavbar()
     {
-        string path = FileManager.CWD;
+        string path = FileManager.CurrentDirectory;
 
         float startX = ImGui.GetCursorPosX();
 
@@ -134,6 +115,7 @@ public static class NavbarGui
         Debug.Assert(path != null);
 
         string[] paths;
+
         if (string.IsNullOrEmpty(path))
         {
             paths = Array.Empty<string>();
@@ -150,6 +132,20 @@ public static class NavbarGui
         ImGui.PushStyleColor(ImGuiCol.ButtonActive, Colors.BackgroundInput);
         ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 4);
         {
+            ImGui.PushFont(Application.IconsFont);
+            {
+                if (ImGui.Button($"{(char)CodiconUnicode.Home}"))
+                {
+                    FileManager.Open("Home", true);
+                }
+                ImGuiExt.CursorPointer();
+            }
+            ImGui.PopFont();
+
+            ImGui.SameLine();
+            ImGui.Text(Settings.I.UseBackslashSeperator ? " \\ " : " / ");
+            ImGui.SameLine();
+
             for (int i = 0; i < paths.Length; i++)
             {
                 string p = paths[i];
@@ -169,10 +165,10 @@ public static class NavbarGui
                             FileManager.UpDirectoryLevel();
                         }
                     }
+                    ImGuiExt.CursorPointer();
                 }
                 ImGui.PopID();
 
-                ImGuiExt.CursorPointer();
 
                 ImGui.SameLine();
 
@@ -185,5 +181,23 @@ public static class NavbarGui
         ImGui.PopStyleColor();
 
         navbarWidth = ImGui.GetCursorPosX() - startX;
+    }
+
+    public void Gui()
+    {
+        ImGuiIOPtr io = ImGui.GetIO();
+
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(3f));
+        ImGui.PushStyleColor(ImGuiCol.ChildBg, Colors.BackgroundNormal);
+        ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0));
+        {
+            _ = ImGui.BeginChild("Navbar", new(io.DisplaySize.X, 46));
+            {
+                Content();
+            }
+            ImGui.EndChild();
+        }
+        ImGui.PopStyleColor();
+        ImGui.PopStyleVar(2);
     }
 }

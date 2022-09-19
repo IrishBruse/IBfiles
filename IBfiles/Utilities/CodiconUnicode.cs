@@ -1,4 +1,4 @@
-namespace IBfiles;
+namespace IBfiles.Utilities;
 
 #pragma warning disable CA1069,CA1711
 public enum CodiconUnicode : int

@@ -68,7 +68,7 @@ public static class GlobalStyle
         style.Colors[(int)ImGuiCol.PlotLinesHovered] = error;
         style.Colors[(int)ImGuiCol.PlotHistogram] = error;
         style.Colors[(int)ImGuiCol.PlotHistogramHovered] = error;
-        style.Colors[(int)ImGuiCol.TableHeaderBg] = Colors.BackgroundNormal;
+        style.Colors[(int)ImGuiCol.TableHeaderBg] = Colors.BackgroundDark;
         style.Colors[(int)ImGuiCol.TableBorderStrong] = Colors.BackgroundInput;
         style.Colors[(int)ImGuiCol.TableBorderLight] = Colors.AccentDark;
         style.Colors[(int)ImGuiCol.TableRowBg] = Colors.BackgroundDark;

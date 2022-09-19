@@ -16,7 +16,7 @@ public class EntryHandler
 
     private static void OpenFolder(DirectoryEntry folder)
     {
-        FileManager.CWD = folder.Path;
+        FileManager.Open(folder.Path);
     }
 
     private static void OpenFile(DirectoryEntry file)

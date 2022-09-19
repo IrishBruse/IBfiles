@@ -1,62 +1,52 @@
-namespace IBfiles.Gui;
+namespace IBfiles.Gui.Views;
 
 using System.Globalization;
 using System.Numerics;
 
 using IBfiles.ApplicationBackend;
 using IBfiles.Logic;
+using IBfiles.Utilities;
 
 using ImGuiNET;
 
-public static class FolderView
+public class FolderView
 {
     private const int ColumnsCount = 3;
 
-    public static void Gui()
+    public void Gui()
     {
-        ImGuiIOPtr io = ImGui.GetIO();
+        ImGuiTableFlags flags = ImGuiTableFlags.Resizable;
+        flags |= ImGuiTableFlags.Hideable;
+        flags |= ImGuiTableFlags.Sortable;
+        flags |= ImGuiTableFlags.Reorderable;
 
-        ImGui.PushStyleColor(ImGuiCol.ChildBg, Colors.BackgroundDark);
-        float height = ImGui.GetWindowHeight() - 46;
-        float width = io.DisplaySize.X;
+        flags |= ImGuiTableFlags.PadOuterX;
+        flags |= ImGuiTableFlags.NoPadInnerX;
 
-        _ = ImGui.BeginChild(nameof(FolderView), new(width, height));
+        flags |= ImGuiTableFlags.NoBordersInBodyUntilResize;
+        flags |= ImGuiTableFlags.BordersInnerV;
+
+        if (Settings.I.AlternateRowColors)
         {
-            ImGuiTableFlags flags = ImGuiTableFlags.Resizable;
-            flags |= ImGuiTableFlags.Hideable;
-            flags |= ImGuiTableFlags.Sortable;
-            flags |= ImGuiTableFlags.Reorderable;
-
-            flags |= ImGuiTableFlags.PadOuterX;
-            flags |= ImGuiTableFlags.NoPadInnerX;
-
-            flags |= ImGuiTableFlags.NoBordersInBodyUntilResize;
-            flags |= ImGuiTableFlags.BordersInnerV;
-
-            if (Settings.I.AlternateRowColors)
-            {
-                flags |= ImGuiTableFlags.RowBg;
-            }
-
-            if (ImGui.BeginTable("Details", ColumnsCount, flags, new(width, height)))
-            {
-                ImGui.TableSetupColumn("Name");
-                ImGui.TableSetupColumn("Modified");
-                ImGui.TableSetupColumn("Size");
-
-                ImGuiTableSortSpecsPtr specs = ImGui.TableGetSortSpecs();
-
-                if ((specs.SpecsDirty || FileManager.SortDirty) && FileManager.DirectoryContents.Count > 1)
-                {
-                    FileManager.DirectoryContents.Sort((a, b) => FileManager.SortDirectory(a, b, specs));
-                }
-
-                Content();
-                ImGui.EndTable();
-            }
+            flags |= ImGuiTableFlags.RowBg;
         }
-        ImGui.EndChild();
-        ImGui.PopStyleColor();
+
+        if (ImGui.BeginTable("Details", ColumnsCount, flags))
+        {
+            ImGui.TableSetupColumn("Name");
+            ImGui.TableSetupColumn("Modified");
+            ImGui.TableSetupColumn("Size");
+
+            ImGuiTableSortSpecsPtr specs = ImGui.TableGetSortSpecs();
+
+            if ((specs.SpecsDirty || FileManager.SortDirty) && FileManager.DirectoryContents.Count > 1)
+            {
+                FileManager.DirectoryContents.Sort((a, b) => FileManager.SortDirectory(a, b, specs));
+            }
+
+            Content();
+            ImGui.EndTable();
+        }
     }
 
     private static void Content()
@@ -82,7 +72,7 @@ public static class FolderView
 
         for (int column = 0; column < ColumnsCount; column++)
         {
-            ImGui.TableSetColumnIndex(column);
+            _ = ImGui.TableSetColumnIndex(column);
             string columnName = ImGui.TableGetColumnName(column); // Retrieve name passed to TableSetupColumn()
             Vector2 size = ImGui.CalcTextSize(columnName);
             float width = ImGui.GetColumnWidth();
@@ -117,15 +107,22 @@ public static class FolderView
 
                 ImGui.Indent(Settings.I.EdgeBorderWidth);
 
+                IntPtr iconPtr;
                 if (entry.IsFile)
                 {
-                    ImGui.Image(IconManager.GetFileIcon(entry.Path), new Vector2(16));
+                    iconPtr = IconManager.GetFileIcon(entry.Path);
                 }
                 else
                 {
-                    ImGui.Image(IconManager.GetFolderIcon(entry.Path), new Vector2(16));
+                    iconPtr = IconManager.GetFolderIcon(entry.Path);
                 }
+
+                Vector4 tint_col = new(1, 1, 1, entry.IsHidden ? 0.6f : 1f);
+
+                ImGui.Image(iconPtr, new Vector2(16), Vector2.Zero, Vector2.One, tint_col);
                 ImGui.SameLine();
+
+                ImGui.SetCursorPosX(ImGui.GetCursorPosX() + 4);
 
                 if (entry.IsHidden)
                 {
@@ -138,7 +135,7 @@ public static class FolderView
                     {
                         if (FileManager.Selections.Contains(entry.Path))
                         {
-                            FileManager.Selections.Remove(entry.Path);
+                            _ = FileManager.Selections.Remove(entry.Path);
                         }
                         else
                         {
@@ -181,15 +178,7 @@ public static class FolderView
         {
             if (entry.IsFile)
             {
-                long bytes = entry.Size;
-                string[] suffixes = { "B", "KB", "MB", "GB", "TB" };
-                int i;
-                double decimalBytes = bytes;
-                for (i = 0; i < suffixes.Length && bytes >= 1024; i++, bytes /= 1024)
-                {
-                    decimalBytes = bytes / 1024.0;
-                }
-                ImGui.Text($"{decimalBytes:0.##} {suffixes[i]}");
+                ImGui.Text(Formatter.GetDataSize(entry.Size));
             }
             else
             {

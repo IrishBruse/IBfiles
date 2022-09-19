@@ -5,7 +5,7 @@ using IBfiles.Logic;
 public static class Paths
 {
 #if DEBUG
-    public static readonly string SettingsFolder = Path.GetFullPath(Path.Join(FileManager.CWD, "..", "Config"));
+    public static readonly string SettingsFolder = Path.GetFullPath(Path.Join(FileManager.CurrentDirectory, "..", "Config"));
 #else
     public static readonly string SettingsFolder = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "IrishBruse", "Files");
 #endif
