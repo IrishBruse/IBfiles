@@ -25,8 +25,8 @@ public class IconManager
         GraphicsDevice = graphicsDevice;
         Controller = controller;
 
-        FileImage = GetIconPtrDirectly("file");
-        FolderImage = GetIconPtrDirectly("folder");
+        FileImage = GetIconExtensionPtrDirectly("file");
+        FolderImage = GetIconExtensionPtrDirectly("folder");
 
         extensionToIcon = JsonSerializer.Deserialize<Dictionary<string, string>>(ResourceLoader.GetEmbeddedResourceText("Assets/ExtensionAssociation.json"));
         folderToIcon = JsonSerializer.Deserialize<Dictionary<string, string>>(ResourceLoader.GetEmbeddedResourceText("Assets/FolderAssociation.json"));
@@ -40,11 +40,11 @@ public class IconManager
 
         if (extensionToIcon.TryGetValue(ext, out string icon))
         {
-            return GetIconPtrDirectly(icon);
+            return GetIconExtensionPtrDirectly(icon);
         }
         else if (fileToIcon.TryGetValue(Path.GetFileName(filename), out string fileIcon))
         {
-            return GetIconPtrDirectly(fileIcon);
+            return GetIconExtensionPtrDirectly(fileIcon);
         }
         else
         {
@@ -59,7 +59,7 @@ public class IconManager
 
         if (folderToIcon.TryGetValue(folder, out string icon))
         {
-            return GetIconPtrDirectly("Folder/" + icon);
+            return GetIconExtensionPtrDirectly("Folder/" + icon);
         }
         else
         {
@@ -67,7 +67,7 @@ public class IconManager
         }
     }
 
-    public static IntPtr GetIconPtrDirectly(string icon)
+    public static IntPtr GetIconExtensionPtrDirectly(string icon)
     {
         string path = "Assets/Icons/" + icon + ".png";
         if (ptrCache.TryGetValue(path, out IntPtr value))

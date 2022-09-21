@@ -18,8 +18,12 @@ public class Settings
     public FsPath StartDirectory;
     public bool HideOpticalDrives;
 
-    static Settings()
+    public static void Load()
     {
+        if (!File.Exists(Paths.JsonConfig))
+        {
+            File.WriteAllText(Paths.JsonConfig, "{}");
+        }
         string json = File.ReadAllText(Paths.JsonConfig);
         I = JsonSerializer.Deserialize<Settings>(json, SerializeOptions);
     }

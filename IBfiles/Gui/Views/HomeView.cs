@@ -13,7 +13,7 @@ public class HomeView
 
     public void Gui()
     {
-        ImGuiTableFlags flags = ImGuiTableFlags.None;
+        ImGuiTableFlags flags = ImGuiTableFlags.PreciseWidths;
 
         flags |= ImGuiTableFlags.PadOuterX;
         flags |= ImGuiTableFlags.NoPadInnerX;
@@ -26,9 +26,13 @@ public class HomeView
             flags |= ImGuiTableFlags.RowBg;
         }
 
-        if (ImGui.BeginTable("Home", 1, flags))
+        if (ImGui.BeginTable("Home", 3, flags))
         {
-            ImGui.TableSetupColumn("Name");
+            ImGui.TableSetupColumn("Icon", ImGuiTableColumnFlags.WidthFixed, 32 + (Settings.I.EdgeBorderWidth * 2));
+            ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthFixed, ImGui.GetWindowWidth() - (32 + Settings.I.EdgeBorderWidth) - 96);
+            ImGui.TableSetupColumn("Details", ImGuiTableColumnFlags.WidthFixed, 96);
+
+            ImGui.TableNextRow(ImGuiTableRowFlags.None, Settings.I.HeaderGap);
 
             foreach (DriveInfo drive in DriveInfo.GetDrives())
             {
@@ -37,45 +41,82 @@ public class HomeView
                     continue;
                 }
 
+                ImGui.TableNextRow();
+
                 bool pop = false;
 
-                if (selection == drive.Name)
+                _ = ImGui.TableNextColumn();
                 {
-                    pop = true;
-                    ImGui.PushStyleColor(ImGuiCol.Text, Colors.AccentLight);
-                    ImGui.PushStyleColor(ImGuiCol.HeaderHovered, Colors.AccentDarker);
-                    ImGui.PushStyleColor(ImGuiCol.HeaderActive, Colors.AccentDarker);
+                    ImGui.Indent(Settings.I.EdgeBorderWidth);
+                    if (selection == drive.Name)
+                    {
+                        pop = true;
+                        ImGui.PushStyleColor(ImGuiCol.Text, Colors.AccentLight);
+                        ImGui.PushStyleColor(ImGuiCol.HeaderHovered, Colors.AccentDarker);
+                        ImGui.PushStyleColor(ImGuiCol.HeaderActive, Colors.AccentDarker);
+                    }
+
+                    IntPtr iconPtr;
+
+                    if (drive.DriveType == DriveType.CDRom)
+                    {
+                        iconPtr = IconManager.GetIconExtensionPtrDirectly("disc");
+                    }
+                    else
+                    {
+                        iconPtr = IconManager.GetIconExtensionPtrDirectly("drive");
+                    }
+                    ImGui.Image(iconPtr, new Vector2(32), Vector2.Zero, Vector2.One, Colors.White);
+                    ImGui.Unindent(Settings.I.EdgeBorderWidth);
                 }
 
                 _ = ImGui.TableNextColumn();
 
-                IntPtr iconPtr;
+                string name;
 
                 if (drive.DriveType == DriveType.CDRom)
                 {
-                    iconPtr = IconManager.GetIconPtrDirectly("disc");
+                    name = "Disk Drive ";
                 }
                 else
                 {
-                    iconPtr = IconManager.GetIconPtrDirectly("drive");
+                    name = drive.VolumeLabel + " ";
                 }
-                ImGui.Image(iconPtr, new Vector2(32), Vector2.Zero, Vector2.One, Colors.White);
 
-                ImGui.SameLine();
+                if (drive.Name.StartsWith("C"))
+                {
+                    name = "Local Disk ";
+                }
 
-                if (ImGui.Selectable(drive.Name, selection == drive.Name, ImGuiSelectableFlags.SpanAllColumns | ImGuiSelectableFlags.AllowDoubleClick, new Vector2(ImGui.GetWindowWidth(), 32)))
+                if (ImGui.Selectable(name + "(" + drive.Name[..^1] + ")", selection == drive.Name, ImGuiSelectableFlags.SpanAllColumns | ImGuiSelectableFlags.AllowDoubleClick, new Vector2(ImGui.GetWindowWidth(), 32)))
                 {
                     selection = drive.Name;
                 }
 
                 ImGuiExt.CursorPointer();
 
-                ImGui.TableNextRow();
+                if (drive.IsReady && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left) && ImGui.IsItemActive())
+                {
+                    FileManager.Open(drive.RootDirectory.FullName);
+                }
+
+                ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 20);
+
+                ImGui.PushStyleColor(ImGuiCol.Text, Colors.AccentDarker);
+                {
+                    ImGui.ProgressBar(1f, new(0, 14), "50/100");
+                }
+                ImGui.PopStyleColor(1);
+
+                _ = ImGui.TableNextColumn();
+                ImGui.Text("test");
+
 
                 if (pop)
                 {
                     ImGui.PopStyleColor(3);
                 }
+
             }
 
             ImGui.EndTable();

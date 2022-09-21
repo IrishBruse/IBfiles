@@ -22,6 +22,8 @@ public static class FileManager
 
     public static void Load()
     {
+        Settings.Load();
+
         if (!string.IsNullOrEmpty(Settings.I.StartDirectory))
         {
             if (Directory.Exists(Settings.I.StartDirectory))
@@ -176,8 +178,15 @@ public static class FileManager
 
     public static void UpDirectoryLevel()
     {
-        CurrentDirectory = Path.GetFullPath(Path.Join(CurrentDirectory, ".."));
-        queueReloadFolder = true;
+        if (CurrentDirectory.Length == 3 && CurrentDirectory[1] == ':' && CurrentDirectory[2] == '\\')
+        {
+            Open("Home", true);
+        }
+        else
+        {
+            CurrentDirectory = Path.GetFullPath(Path.Join(CurrentDirectory, ".."));
+            queueReloadFolder = true;
+        }
     }
 
     public static void Refresh()

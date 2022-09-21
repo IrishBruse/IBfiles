@@ -6,5 +6,5 @@
   "FoldersFirst": true,
   "AlternateRowColors": false,
   "StartDirectory": "A:\\CSharp-Utilities",
-  "HideOpticalDrives": true
+  "HideOpticalDrives": false
 }
