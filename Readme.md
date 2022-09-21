@@ -5,6 +5,7 @@ inspired by windows explorer and linux's dolphin
 
 ## Screenshots
 
+![](Screenshots/IBfiles.png)
 
 
 ## Planned Features
