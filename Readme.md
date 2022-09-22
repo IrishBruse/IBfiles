@@ -1,3 +1,7 @@
+<h1 align="center">
+<img src="IBfiles/Icon.png" />
+</h1>
+
 # File manager
 
 Simple cross platform Gui file manager/browser
@@ -6,9 +10,8 @@ inspired by windows explorer and linux's dolphin
 ![IBfiles](Screenshots/IBfiles.png)
 
 ## Screenshots
-|                                      |                                     |
-| ------------------------------------ | ----------------------------------- |
 | ![IBfiles](Screenshots/Settings.png) | ![IBfiles](Screenshots/IBfiles.png) |
+| ------------------------------------ | ----------------------------------- |
 
 
 

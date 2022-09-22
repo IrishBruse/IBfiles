@@ -46,17 +46,12 @@ public class GuiManager
 
         _ = ImGui.BeginChild("View", new(width, height));
         {
-            if (FileManager.CurrentDirectory == "Settings")
+            switch (FileManager.CurrentPageType)
             {
-                settingsView.Gui();
-            }
-            else if (FileManager.CurrentDirectory == "Home")
-            {
-                homeView.Gui();
-            }
-            else
-            {
-                folderView.Gui();
+                case Page.Directory: folderView.Gui(); break;
+
+                case Page.Home: homeView.Gui(); break;
+                case Page.Settings: settingsView.Gui(); break;
             }
         }
         ImGui.EndChild();

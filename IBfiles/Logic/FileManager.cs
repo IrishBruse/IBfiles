@@ -8,7 +8,9 @@ using Silk.NET.Windowing;
 
 public static class FileManager
 {
-    public static string CurrentDirectory { get; private set; } = Environment.CurrentDirectory;
+    private static string currentDirectory = Environment.CurrentDirectory;
+    public static string CurrentDirectory { get => currentDirectory; private set { currentDirectory = value; History.Add(value); } }
+    public static Page CurrentPageType { get; private set; } = Page.Directory;
 
     private static bool queueReloadFolder;
 
@@ -155,15 +157,25 @@ public static class FileManager
         }
     }
 
-    public static void Open(string path, bool isPage = false)
+    public static void Open(string path)
     {
-        if (!isPage)
-        {
-            Environment.CurrentDirectory = path;
-            queueReloadFolder = true;
-        }
+        Environment.CurrentDirectory = path;
+        queueReloadFolder = true;
 
+        CurrentPageType = Page.Directory;
         CurrentDirectory = path;
+    }
+
+    public static void Open(Page page)
+    {
+        CurrentPageType = page;
+
+        CurrentDirectory = page switch
+        {
+            Page.Home => "Home",
+            Page.Settings => "Settings",
+            _ => throw new NotImplementedException(),
+        };
     }
 
     public static void HistoryBack()
@@ -180,7 +192,7 @@ public static class FileManager
     {
         if (CurrentDirectory.Length == 3 && CurrentDirectory[1] == ':' && CurrentDirectory[2] == '\\')
         {
-            Open("Home", true);
+            Open(Page.Home);
         }
         else
         {
@@ -199,4 +211,11 @@ public static class FileManager
         UpdateTitle();
         UpdateDirectoryContents();
     }
+}
+
+public enum Page
+{
+    Directory,
+    Home,
+    Settings,
 }

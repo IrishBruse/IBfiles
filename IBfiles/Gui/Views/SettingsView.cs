@@ -122,6 +122,7 @@ public class SettingsView
         if (ImGui.Button("Save and Close", new(ImGui.GetWindowWidth() * .5f, 0)))
         {
             Settings.Save();
+            FileManager.HistoryBack();
         }
         ImGuiExt.CursorPointer();
     }

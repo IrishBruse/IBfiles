@@ -4,6 +4,7 @@ using System.Numerics;
 
 using IBfiles.ApplicationBackend;
 using IBfiles.Logic;
+using IBfiles.Utilities;
 
 using ImGuiNET;
 
@@ -13,6 +14,8 @@ public class HomeView
 
     public void Gui()
     {
+        float middleColumnWidth = ImGui.GetWindowWidth() - (32 + Settings.I.EdgeBorderWidth) - 96;
+
         ImGuiTableFlags flags = ImGuiTableFlags.PreciseWidths;
 
         flags |= ImGuiTableFlags.PadOuterX;
@@ -29,7 +32,7 @@ public class HomeView
         if (ImGui.BeginTable("Home", 3, flags))
         {
             ImGui.TableSetupColumn("Icon", ImGuiTableColumnFlags.WidthFixed, 32 + (Settings.I.EdgeBorderWidth * 2));
-            ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthFixed, ImGui.GetWindowWidth() - (32 + Settings.I.EdgeBorderWidth) - 96);
+            ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthFixed, middleColumnWidth);
             ImGui.TableSetupColumn("Details", ImGuiTableColumnFlags.WidthFixed, 96);
 
             ImGui.TableNextRow(ImGuiTableRowFlags.None, Settings.I.HeaderGap);
@@ -102,15 +105,18 @@ public class HomeView
 
                 ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 20);
 
-                ImGui.PushStyleColor(ImGuiCol.Text, Colors.AccentDarker);
+                ImGui.PushStyleColor(ImGuiCol.Text, Colors.AccentLight);
                 {
-                    ImGui.ProgressBar(1f, new(0, 14), "50/100");
+                    string overlay = "  " + Formatter.GetDataSize(drive.TotalSize - drive.TotalFreeSpace) + " / " + Formatter.GetDataSize(drive.TotalSize);
+                    ImGui.ProgressBar((drive.TotalSize - drive.TotalFreeSpace) / (float)drive.TotalSize, new(middleColumnWidth, 14), overlay);
                 }
                 ImGui.PopStyleColor(1);
 
                 _ = ImGui.TableNextColumn();
-                ImGui.Text("test");
-
+                ImGui.Indent();
+                ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 12);
+                ImGui.Text(drive.DriveFormat);
+                ImGui.Unindent();
 
                 if (pop)
                 {

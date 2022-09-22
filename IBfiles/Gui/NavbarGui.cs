@@ -52,7 +52,7 @@ public class NavbarGui
 
             NavbarButton(CodiconUnicode.Refresh, FileManager.Refresh, true);
             NavbarButton(CodiconUnicode.Search, () => Console.WriteLine("Search"), true);
-            NavbarButton(CodiconUnicode.Menu, () => FileManager.Open("Settings", true), true);
+            NavbarButton(CodiconUnicode.Menu, () => FileManager.Open(Page.Settings), true);
         }
         ImGui.PopFont();
     }
@@ -136,7 +136,7 @@ public class NavbarGui
             {
                 if (ImGui.Button($"{(char)CodiconUnicode.Home}"))
                 {
-                    FileManager.Open("Home", true);
+                    FileManager.Open(Page.Home);
                 }
                 ImGuiExt.CursorPointer();
             }
