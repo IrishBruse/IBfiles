@@ -33,18 +33,19 @@ public class IconManager
         fileToIcon = JsonSerializer.Deserialize<Dictionary<string, string>>(ResourceLoader.GetEmbeddedResourceText("Assets/FileAssociation.json"));
     }
 
-    public static IntPtr GetFileIcon(string filename)
+    public static IntPtr GetFileIcon(string filePath)
     {
-        filename = filename.ToLower();
-        string ext = Path.GetExtension(filename).Replace(".", string.Empty);
+        filePath = filePath.ToLower();
+        string ext = Path.GetExtension(filePath).Replace(".", string.Empty);
+        string filename = Path.GetFileName(filePath);
 
-        if (extensionToIcon.TryGetValue(ext, out string icon))
-        {
-            return GetIconExtensionPtrDirectly(icon);
-        }
-        else if (fileToIcon.TryGetValue(Path.GetFileName(filename), out string fileIcon))
+        if (fileToIcon.TryGetValue(filename, out string fileIcon))
         {
             return GetIconExtensionPtrDirectly(fileIcon);
+        }
+        else if (extensionToIcon.TryGetValue(ext, out string icon))
+        {
+            return GetIconExtensionPtrDirectly(icon);
         }
         else
         {

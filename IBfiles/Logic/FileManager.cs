@@ -39,6 +39,8 @@ public static class FileManager
 
     public static void UpdateDirectoryContents()
     {
+        Console.WriteLine("Reloading Directory Contents");
+
         DirectoryContents.Clear();
 
         foreach (string path in Directory.EnumerateFiles(CurrentDirectory, "*", enumerationOptions))

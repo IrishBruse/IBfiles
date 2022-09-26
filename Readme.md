@@ -10,8 +10,8 @@ inspired by windows explorer and linux's dolphin
 ![IBfiles](Screenshots/IBfiles.png)
 
 ## Screenshots
-| ![IBfiles](Screenshots/Settings.png) | ![IBfiles](Screenshots/IBfiles.png) |
-| ------------------------------------ | ----------------------------------- |
+| ![IBfiles](Screenshots/Settings.png) | ![IBfiles](Screenshots/Home.png) |
+| ------------------------------------ | -------------------------------- |
 
 
 

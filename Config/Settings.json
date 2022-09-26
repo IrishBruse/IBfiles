@@ -6,5 +6,5 @@
   "FoldersFirst": true,
   "AlternateRowColors": false,
   "StartDirectory": "A:\\",
-  "HideOpticalDrives": false
+  "HideOpticalDrives": true
 }

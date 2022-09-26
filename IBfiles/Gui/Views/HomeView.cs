@@ -10,11 +10,11 @@ using ImGuiNET;
 
 public class HomeView
 {
-    private string selection;
-
     public void Gui()
     {
-        float middleColumnWidth = ImGui.GetWindowWidth() - (32 + Settings.I.EdgeBorderWidth) - 96;
+        const float iconColumnSize = 32;
+        const float detailsColumnSize = 128;
+        float nameColumnWidth = ImGui.GetWindowWidth() - (iconColumnSize + Settings.I.EdgeBorderWidth) - detailsColumnSize;
 
         ImGuiTableFlags flags = ImGuiTableFlags.PreciseWidths;
 
@@ -31,9 +31,9 @@ public class HomeView
 
         if (ImGui.BeginTable("Home", 3, flags))
         {
-            ImGui.TableSetupColumn("Icon", ImGuiTableColumnFlags.WidthFixed, 32 + (Settings.I.EdgeBorderWidth * 2));
-            ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthFixed, middleColumnWidth);
-            ImGui.TableSetupColumn("Details", ImGuiTableColumnFlags.WidthFixed, 96);
+            ImGui.TableSetupColumn("Icon", ImGuiTableColumnFlags.WidthFixed, iconColumnSize + (Settings.I.EdgeBorderWidth * 2));
+            ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthFixed, nameColumnWidth);
+            ImGui.TableSetupColumn("Details", ImGuiTableColumnFlags.WidthFixed, detailsColumnSize);
 
             ImGui.TableNextRow(ImGuiTableRowFlags.None, Settings.I.HeaderGap);
 
@@ -44,6 +44,8 @@ public class HomeView
                     continue;
                 }
 
+                bool selected = FileManager.Selections.Contains(drive.Name);
+
                 ImGui.TableNextRow();
 
                 bool pop = false;
@@ -51,7 +53,7 @@ public class HomeView
                 _ = ImGui.TableNextColumn();
                 {
                     ImGui.Indent(Settings.I.EdgeBorderWidth);
-                    if (selection == drive.Name)
+                    if (selected)
                     {
                         pop = true;
                         ImGui.PushStyleColor(ImGuiCol.Text, Colors.AccentLight);
@@ -91,9 +93,10 @@ public class HomeView
                     name = "Local Disk ";
                 }
 
-                if (ImGui.Selectable(name + "(" + drive.Name[..^1] + ")", selection == drive.Name, ImGuiSelectableFlags.SpanAllColumns | ImGuiSelectableFlags.AllowDoubleClick, new Vector2(ImGui.GetWindowWidth(), 32)))
+                if (ImGui.Selectable(name + "(" + drive.Name[..^1] + ")", selected, ImGuiSelectableFlags.SpanAllColumns | ImGuiSelectableFlags.AllowDoubleClick, new Vector2(ImGui.GetWindowWidth(), 32)))
                 {
-                    selection = drive.Name;
+                    FileManager.Selections.Clear();
+                    FileManager.Selections.Add(drive.Name);
                 }
 
                 ImGuiExt.CursorPointer();
@@ -105,18 +108,25 @@ public class HomeView
 
                 ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 20);
 
-                ImGui.PushStyleColor(ImGuiCol.Text, Colors.AccentLight);
+                if (drive.IsReady)
                 {
-                    string overlay = "  " + Formatter.GetDataSize(drive.TotalSize - drive.TotalFreeSpace) + " / " + Formatter.GetDataSize(drive.TotalSize);
-                    ImGui.ProgressBar((drive.TotalSize - drive.TotalFreeSpace) / (float)drive.TotalSize, new(middleColumnWidth, 14), overlay);
+                    string overlay = " " + Formatter.GetDataSize(drive.TotalSize - drive.TotalFreeSpace) + " Used";
+                    ImGui.ProgressBar((drive.TotalSize - drive.TotalFreeSpace) / (float)drive.TotalSize, new(nameColumnWidth, 14), overlay);
                 }
-                ImGui.PopStyleColor(1);
 
                 _ = ImGui.TableNextColumn();
+                ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 6);
+
                 ImGui.Indent();
-                ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 12);
-                ImGui.Text(drive.DriveFormat);
+                if (drive.IsReady)
+                {
+                    ImGui.Text(drive.DriveFormat);
+
+                    string overlay = Formatter.GetDataSize(drive.TotalSize);
+                    ImGui.Text(overlay);
+                }
                 ImGui.Unindent();
+
 
                 if (pop)
                 {
@@ -124,8 +134,12 @@ public class HomeView
                 }
 
             }
-
             ImGui.EndTable();
+
+            if (ImGui.IsKeyPressed(ImGuiKey.Escape) || (!ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left) && ImGui.IsMouseClicked(ImGuiMouseButton.Left) && !ImGui.GetIO().KeyCtrl))
+            {
+                FileManager.Selections.Clear();
+            }
         }
     }
 }

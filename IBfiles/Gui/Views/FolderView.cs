@@ -45,7 +45,12 @@ public class FolderView
             }
 
             Content();
-            ImGui.EndTable();
+        }
+        ImGui.EndTable();
+
+        if (ImGui.IsKeyPressed(ImGuiKey.Escape) || (!ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left) && ImGui.IsMouseClicked(ImGuiMouseButton.Left) && !ImGui.GetIO().KeyCtrl))
+        {
+            FileManager.Selections.Clear();
         }
     }
 
