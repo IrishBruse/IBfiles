@@ -135,6 +135,10 @@ public static class FileManager
             queueReloadFolder = false;
             ReloadFolder();
         }
+        if (ImGui.IsKeyDown(ImGuiKey.LeftAlt) && ImGui.IsKeyPressed(ImGuiKey.UpArrow, false))
+        {
+            UpDirectoryLevel();
+        }
     }
 
     public static void UpdateTitle()

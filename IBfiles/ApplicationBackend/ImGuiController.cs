@@ -323,6 +323,7 @@ public class ImGuiController : IDisposable
         io.KeyMap[(int)ImGuiKey.X] = (int)Key.X;
         io.KeyMap[(int)ImGuiKey.Y] = (int)Key.Y;
         io.KeyMap[(int)ImGuiKey.Z] = (int)Key.Z;
+        io.KeyMap[(int)ImGuiKey.LeftAlt] = (int)Key.AltLeft;
     }
 
     private void RenderImDrawData(ImDrawDataPtr drawdata, GraphicsDevice gd, CommandList cl)

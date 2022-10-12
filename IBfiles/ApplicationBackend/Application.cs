@@ -62,6 +62,8 @@ public class Application : IDisposable
         ImGuiIOPtr io = ImGui.GetIO();
         io.Fonts.Clear();
 
+        io.ConfigFlags |= ImGuiConfigFlags.NavEnableKeyboard;
+
         ushort[] codiconRange = new ushort[] { 60000, 60429, 0 };
 
         CascadiaFont = NewFont("Assets/Fonts/CascadiaCode.ttf", 15);
