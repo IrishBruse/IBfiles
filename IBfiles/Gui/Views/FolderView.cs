@@ -12,6 +12,7 @@ using ImGuiNET;
 public class FolderView
 {
     private const int ColumnsCount = 3;
+    private static bool selectAll = true;
 
     public void Gui()
     {
@@ -22,6 +23,7 @@ public class FolderView
 
         flags |= ImGuiTableFlags.PadOuterX;
         flags |= ImGuiTableFlags.NoPadInnerX;
+        flags |= ImGuiTableFlags.NoKeepColumnsVisible;
 
         flags |= ImGuiTableFlags.NoBordersInBodyUntilResize;
         flags |= ImGuiTableFlags.BordersInnerV;
@@ -45,10 +47,12 @@ public class FolderView
             }
 
             Content();
-        }
-        ImGui.EndTable();
 
-        if (ImGui.IsKeyPressed(ImGuiKey.Escape) || (!ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left) && ImGui.IsMouseClicked(ImGuiMouseButton.Left) && !ImGui.GetIO().KeyCtrl))
+            ImGui.EndTable();
+        }
+        ImGui.PopStyleColor();
+
+        if (ImGui.IsKeyPressed(ImGuiKey.Escape) || (!ImGui.IsItemHovered() && ImGui.IsMouseClicked(ImGuiMouseButton.Left)))
         {
             FileManager.Selections.Clear();
         }
@@ -56,6 +60,8 @@ public class FolderView
 
     private static void Content()
     {
+        selectAll = ImGui.GetIO().KeyCtrl && ImGui.IsKeyDown(ImGuiKey.A);
+
         ImGui.PushStyleVar(ImGuiStyleVar.CellPadding, Vector2.Zero);
         DisplayHeader();
 
@@ -101,86 +107,122 @@ public class FolderView
         _ = ImGui.TableNextColumn();
         {
             ImGui.PushStyleVar(ImGuiStyleVar.CellPadding, new Vector2(Settings.I.EdgeBorderWidth, 0));
+
+            if (FileManager.Selections.Contains(entry))
             {
-                if (FileManager.Selections.Contains(entry.Path))
+                pop = true;
+                ImGui.PushStyleColor(ImGuiCol.Text, Colors.AccentLight);
+                ImGui.PushStyleColor(ImGuiCol.HeaderHovered, Colors.AccentDarker);
+                ImGui.PushStyleColor(ImGuiCol.HeaderActive, Colors.AccentDarker);
+            }
+
+            if (selectAll)
+            {
+                FileManager.Selections.Add(entry);
+            }
+
+            ImGui.Indent(Settings.I.EdgeBorderWidth);
+
+            IntPtr iconPtr;
+            if (entry.IsFile)
+            {
+                iconPtr = IconManager.GetFileIcon(entry.Path);
+            }
+            else
+            {
+                iconPtr = IconManager.GetFolderIcon(entry.Path);
+            }
+
+            Vector4 tint_col = new(1, 1, 1, entry.IsHidden ? 0.6f : 1f);
+
+            ImGui.Image(iconPtr, new Vector2(16), Vector2.Zero, Vector2.One, tint_col);
+            ImGui.SameLine();
+
+            ImGui.SetCursorPosX(ImGui.GetCursorPosX() + 4);
+
+            if (entry.IsHidden)
+            {
+                ImGui.PushStyleColor(ImGuiCol.Text, Colors.TextDisabled);
+            }
+
+            if (entry.Editing)
+            {
+                unsafe
                 {
-                    pop = true;
-                    ImGui.PushStyleColor(ImGuiCol.Text, Colors.AccentLight);
-                    ImGui.PushStyleColor(ImGuiCol.HeaderHovered, Colors.AccentDarker);
-                    ImGui.PushStyleColor(ImGuiCol.HeaderActive, Colors.AccentDarker);
-                }
+                    ImGui.SetKeyboardFocusHere();
 
-                ImGui.Indent(Settings.I.EdgeBorderWidth);
+                    // TODO find a good max len
+                    string name = entry.Name;
+                    const ImGuiInputTextFlags flags = ImGuiInputTextFlags.EnterReturnsTrue | ImGuiInputTextFlags.CallbackCharFilter;
+                    bool done = ImGui.InputText(string.Empty, ref name, 100, flags, ValidateFileNameInput);
+                    entry.Name = name;
 
-                IntPtr iconPtr;
-                if (entry.IsFile)
-                {
-                    iconPtr = IconManager.GetFileIcon(entry.Path);
-                }
-                else
-                {
-                    iconPtr = IconManager.GetFolderIcon(entry.Path);
-                }
-
-                Vector4 tint_col = new(1, 1, 1, entry.IsHidden ? 0.6f : 1f);
-
-                ImGui.Image(iconPtr, new Vector2(16), Vector2.Zero, Vector2.One, tint_col);
-                ImGui.SameLine();
-
-                ImGui.SetCursorPosX(ImGui.GetCursorPosX() + 4);
-
-                if (entry.IsHidden)
-                {
-                    ImGui.PushStyleColor(ImGuiCol.Text, Colors.TextDisabled);
-                }
-
-                if (ImGui.Selectable(entry.Name, FileManager.Selections.Contains(entry.Path), ImGuiSelectableFlags.SpanAllColumns | ImGuiSelectableFlags.AllowDoubleClick))
-                {
-                    if (ImGui.GetIO().KeyCtrl)
+                    if (done)
                     {
-                        if (FileManager.Selections.Contains(entry.Path))
+                        entry.Editing = false;
+                        File.WriteAllBytes(entry.Path, Array.Empty<byte>());
+                    }
+                }
+            }
+            else
+            {
+                if (ImGui.Selectable(entry.Name, FileManager.Selections.Contains(entry), ImGuiSelectableFlags.SpanAllColumns))
+                {
+                    if (!selectAll)
+                    {
+
+                        if (ImGui.GetIO().KeyCtrl)
                         {
-                            _ = FileManager.Selections.Remove(entry.Path);
+                            if (FileManager.Selections.Contains(entry))
+                            {
+                                _ = FileManager.Selections.Remove(entry);
+                            }
+                            else
+                            {
+                                FileManager.Selections.Add(entry);
+                            }
                         }
                         else
                         {
-                            FileManager.Selections.Add(entry.Path);
+                            FileManager.Selections.Clear();
+                            FileManager.Selections.Add(entry);
                         }
                     }
-                    else
-                    {
-                        FileManager.Selections.Clear();
-                        FileManager.Selections.Add(entry.Path);
-                    }
-
-                    if (ImGui.IsItemHovered() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
-                    {
-                        EntryHandler.Open(entry);
-                    }
                 }
-
-                if (entry.IsHidden)
-                {
-                    ImGui.PopStyleColor();
-                }
-
                 ImGuiExt.CursorPointer();
+            }
 
-                ImGui.Unindent(Settings.I.EdgeBorderWidth);
-
-                if (pop)
+            if (ImGui.IsItemHovered())
+            {
+                if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
                 {
-                    ImGui.PopStyleColor(2);
+                    EntryHandler.Open(entry);
                 }
+            }
+
+            if (entry.IsHidden)
+            {
+                ImGui.PopStyleColor();
+            }
+
+
+            ImGui.Unindent(Settings.I.EdgeBorderWidth);
+
+            if (pop)
+            {
+                ImGui.PopStyleColor(2);
             }
             ImGui.PopStyleVar();
         }
         _ = ImGui.TableNextColumn();
         {
+            ImGui.Indent();
             DisplayModifiedTime(entry.LastWriteTime);
+            ImGui.Unindent();
         }
         _ = ImGui.TableNextColumn();
         {
+            ImGui.Indent();
             if (entry.IsFile)
             {
                 ImGui.Text(Formatter.GetDataSize(entry.Size));
@@ -190,11 +232,18 @@ public class FolderView
                 string label = entry.Size == 1 ? "Item" : "Items";
                 ImGui.Text($"{entry.Size} {label}");
             }
+            ImGui.Unindent();
         }
         if (pop)
         {
             ImGui.PopStyleColor();
         }
+    }
+
+    private static unsafe int ValidateFileNameInput(ImGuiInputTextCallbackData* t)
+    {
+        char c = (char)t->EventChar;
+        return Path.GetInvalidFileNameChars().Contains(c) ? 1 : 0;
     }
 
     private static void DisplayModifiedTime(DateTime lastWritten)

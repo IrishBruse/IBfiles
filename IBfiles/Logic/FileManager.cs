@@ -19,7 +19,7 @@ public static class FileManager
     public static List<DirectoryEntry> DirectoryContents { get; private set; } = new();
     public static bool SortDirty { get; internal set; }
 
-    public static List<string> Selections { get; private set; } = new();
+    public static List<DirectoryEntry> Selections { get; private set; } = new();
     private static EnumerationOptions enumerationOptions = new() { AttributesToSkip = FileAttributes.System, ReturnSpecialDirectories = false };
 
     public static void Load()
@@ -39,8 +39,6 @@ public static class FileManager
 
     public static void UpdateDirectoryContents()
     {
-        Console.WriteLine("Reloading Directory Contents");
-
         DirectoryContents.Clear();
 
         foreach (string path in Directory.EnumerateFiles(CurrentDirectory, "*", enumerationOptions))
@@ -135,6 +133,31 @@ public static class FileManager
             queueReloadFolder = false;
             ReloadFolder();
         }
+
+        if (Selections.Count > 0)
+        {
+            if (ImGui.IsKeyPressed(ImGuiKey.Delete, false))
+            {
+                foreach (DirectoryEntry selection in Selections)
+                {
+                    EntryHandler.Delete(selection);
+                }
+
+                ReloadFolder();
+            }
+
+            if (ImGui.IsKeyPressed(ImGuiKey.Enter, false))
+            {
+                foreach (DirectoryEntry selection in Selections)
+                {
+                    EntryHandler.Open(selection);
+                }
+
+                ReloadFolder();
+            }
+
+        }
+
         if (ImGui.IsKeyDown(ImGuiKey.LeftAlt) && ImGui.IsKeyPressed(ImGuiKey.UpArrow, false))
         {
             UpDirectoryLevel();
@@ -209,6 +232,11 @@ public static class FileManager
 
     public static void Refresh()
     {
+        if (CurrentPageType != Page.Directory)
+        {
+            return;
+        }
+
         ReloadFolder();
     }
 
@@ -216,6 +244,13 @@ public static class FileManager
     {
         UpdateTitle();
         UpdateDirectoryContents();
+    }
+
+    public static void NewFile()
+    {
+        DirectoryEntry item = new(currentDirectory + "/", true, false, DateTime.Now, 0);
+        item.Editing = true;
+        DirectoryContents.Add(item);
     }
 }
 

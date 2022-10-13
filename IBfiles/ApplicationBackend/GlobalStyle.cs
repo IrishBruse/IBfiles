@@ -16,8 +16,8 @@ public static class GlobalStyle
         style.ScrollbarRounding = 0;
         style.FramePadding = new(4f, 4f);
 
-        style.PopupBorderSize = 1f;
-        style.PopupRounding = 0f;
+        style.PopupBorderSize = 0f;
+        style.PopupRounding = 6f;
 
         style.CellPadding = new(2, 2);
 
@@ -28,7 +28,7 @@ public static class GlobalStyle
         style.Colors[(int)ImGuiCol.TextDisabled] = Colors.TextDisabled;
         style.Colors[(int)ImGuiCol.WindowBg] = Colors.BackgroundDark;
         style.Colors[(int)ImGuiCol.ChildBg] = Colors.BackgroundDark;
-        style.Colors[(int)ImGuiCol.PopupBg] = Colors.BackgroundNormal;
+        style.Colors[(int)ImGuiCol.PopupBg] = Colors.BackgroundLight;
         style.Colors[(int)ImGuiCol.Border] = Colors.BackgroundInput;
         style.Colors[(int)ImGuiCol.BorderShadow] = Colors.BackgroundDark;
         style.Colors[(int)ImGuiCol.FrameBg] = Colors.BackgroundNormal;
@@ -75,7 +75,7 @@ public static class GlobalStyle
         style.Colors[(int)ImGuiCol.TableRowBgAlt] = Colors.BackgroundNormal;
         style.Colors[(int)ImGuiCol.TextSelectedBg] = Colors.AccentDark;
         style.Colors[(int)ImGuiCol.DragDropTarget] = Colors.AccentDark;
-        style.Colors[(int)ImGuiCol.NavHighlight] = error;
+        style.Colors[(int)ImGuiCol.NavHighlight] = Colors.AccentDark;
         style.Colors[(int)ImGuiCol.NavWindowingHighlight] = error;
         style.Colors[(int)ImGuiCol.NavWindowingDimBg] = error;
         style.Colors[(int)ImGuiCol.ModalWindowDimBg] = Colors.BackgroundDim;

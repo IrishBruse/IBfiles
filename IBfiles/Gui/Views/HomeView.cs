@@ -44,36 +44,37 @@ public class HomeView
                     continue;
                 }
 
-                bool selected = FileManager.Selections.Contains(drive.Name);
+                var driveEntry = new DirectoryEntry(drive.RootDirectory.FullName, false, false, DateTime.MinValue, drive.TotalSize);
+
+                bool selected = FileManager.Selections.Contains(driveEntry);
 
                 ImGui.TableNextRow();
 
                 bool pop = false;
 
                 _ = ImGui.TableNextColumn();
+
+                ImGui.Indent(Settings.I.EdgeBorderWidth);
+                if (selected)
                 {
-                    ImGui.Indent(Settings.I.EdgeBorderWidth);
-                    if (selected)
-                    {
-                        pop = true;
-                        ImGui.PushStyleColor(ImGuiCol.Text, Colors.AccentLight);
-                        ImGui.PushStyleColor(ImGuiCol.HeaderHovered, Colors.AccentDarker);
-                        ImGui.PushStyleColor(ImGuiCol.HeaderActive, Colors.AccentDarker);
-                    }
-
-                    IntPtr iconPtr;
-
-                    if (drive.DriveType == DriveType.CDRom)
-                    {
-                        iconPtr = IconManager.GetIconExtensionPtrDirectly("disc");
-                    }
-                    else
-                    {
-                        iconPtr = IconManager.GetIconExtensionPtrDirectly("drive");
-                    }
-                    ImGui.Image(iconPtr, new Vector2(32), Vector2.Zero, Vector2.One, Colors.White);
-                    ImGui.Unindent(Settings.I.EdgeBorderWidth);
+                    pop = true;
+                    ImGui.PushStyleColor(ImGuiCol.Text, Colors.AccentLight);
+                    ImGui.PushStyleColor(ImGuiCol.HeaderHovered, Colors.AccentDarker);
+                    ImGui.PushStyleColor(ImGuiCol.HeaderActive, Colors.AccentDarker);
                 }
+
+                IntPtr iconPtr;
+
+                if (drive.DriveType == DriveType.CDRom)
+                {
+                    iconPtr = IconManager.GetIconExtensionPtrDirectly("disc");
+                }
+                else
+                {
+                    iconPtr = IconManager.GetIconExtensionPtrDirectly("drive");
+                }
+                ImGui.Image(iconPtr, new Vector2(32), Vector2.Zero, Vector2.One, Colors.White);
+                ImGui.Unindent(Settings.I.EdgeBorderWidth);
 
                 _ = ImGui.TableNextColumn();
 
@@ -96,7 +97,7 @@ public class HomeView
                 if (ImGui.Selectable(name + "(" + drive.Name[..^1] + ")", selected, ImGuiSelectableFlags.SpanAllColumns | ImGuiSelectableFlags.AllowDoubleClick, new Vector2(ImGui.GetWindowWidth(), 32)))
                 {
                     FileManager.Selections.Clear();
-                    FileManager.Selections.Add(drive.Name);
+                    FileManager.Selections.Add(driveEntry);
                 }
 
                 ImGuiExt.CursorPointer();

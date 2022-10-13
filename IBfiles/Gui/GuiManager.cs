@@ -41,7 +41,7 @@ public class GuiManager
         ImGuiIOPtr io = ImGui.GetIO();
 
         ImGui.PushStyleColor(ImGuiCol.ChildBg, Colors.BackgroundDark);
-        float height = ImGui.GetWindowHeight() - 46;
+        float height = ImGui.GetWindowHeight() - ImGui.GetCursorPosY();
         float width = io.DisplaySize.X;
 
         _ = ImGui.BeginChild("View", new(width, height));
@@ -49,12 +49,14 @@ public class GuiManager
             switch (FileManager.CurrentPageType)
             {
                 case Page.Directory: folderView.Gui(); break;
-
                 case Page.Home: homeView.Gui(); break;
                 case Page.Settings: settingsView.Gui(); break;
             }
+
+            // Right click menu
+            ContextMenu.Gui();
+
         }
         ImGui.EndChild();
-        ImGui.PopStyleColor();
     }
 }
