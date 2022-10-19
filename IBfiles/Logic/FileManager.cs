@@ -248,7 +248,14 @@ public static class FileManager
 
     public static void NewFile()
     {
-        DirectoryEntry item = new(currentDirectory + "/", true, false, DateTime.Now, 0);
+        DirectoryEntry item = new(string.Empty, true, false, DateTime.Now, 0);
+        item.Editing = true;
+        DirectoryContents.Add(item);
+    }
+
+    public static void NewFolder()
+    {
+        DirectoryEntry item = new(string.Empty, false, false, DateTime.Now, 0);
         item.Editing = true;
         DirectoryContents.Add(item);
     }

@@ -56,7 +56,7 @@ public class ContextMenu
 
         if (ImGui.Selectable("New Folder"))
         {
-
+            FileManager.NewFolder();
         }
         ImGuiExt.CursorPointer();
     }

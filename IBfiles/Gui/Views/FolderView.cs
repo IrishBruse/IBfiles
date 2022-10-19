@@ -152,15 +152,23 @@ public class FolderView
                     ImGui.SetKeyboardFocusHere();
 
                     // TODO find a good max len
-                    string name = entry.Name;
                     const ImGuiInputTextFlags flags = ImGuiInputTextFlags.EnterReturnsTrue | ImGuiInputTextFlags.CallbackCharFilter;
+                    string name = entry.Path;
                     bool done = ImGui.InputText(string.Empty, ref name, 100, flags, ValidateFileNameInput);
-                    entry.Name = name;
+                    entry.Path = name;
 
                     if (done)
                     {
+                        entry.Path = Path.Join(FileManager.CurrentDirectory, entry.Path);
                         entry.Editing = false;
-                        File.WriteAllBytes(entry.Path, Array.Empty<byte>());
+                        if (entry.IsFile)
+                        {
+                            File.WriteAllBytes(entry.Path, Array.Empty<byte>());
+                        }
+                        else
+                        {
+                            Directory.CreateDirectory(entry.Path);
+                        }
                     }
                 }
             }
