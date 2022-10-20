@@ -74,6 +74,43 @@ public class FolderView
             DisplayRow(entry);
         }
         ImGui.PopStyleVar();
+
+        ContextMenu();
+    }
+
+    private static void ContextMenu()
+    {
+        ImGui.PushStyleColor(ImGuiCol.HeaderHovered, Colors.AccentDarker);
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(2, 6));
+        if (ImGui.BeginPopupContextItem("EntryContextMenu"))
+        {
+            ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, new Vector2(6, 3));
+
+            if (ImGui.Selectable("Delete"))
+            {
+                foreach (DirectoryEntry selection in FileManager.Selections)
+                {
+                    EntryHandler.Delete(selection);
+                }
+            }
+            ImGuiExt.CursorPointer();
+
+            if (ImGui.Selectable("Properties"))
+            {
+                Console.WriteLine("test");
+                foreach (DirectoryEntry selection in FileManager.Selections)
+                {
+                    // FileProperties.ShowFileProperties(selection.Path);
+                }
+            }
+            ImGuiExt.CursorPointer();
+
+            ImGui.PopStyleVar();
+
+            ImGui.EndPopup();
+        }
+        ImGui.PopStyleColor();
+        ImGui.PopStyleVar();
     }
 
     private static void DisplayHeader()
@@ -198,6 +235,8 @@ public class FolderView
                     }
                 }
                 ImGuiExt.CursorPointer();
+
+                ImGui.OpenPopupOnItemClick("EntryContextMenu", ImGuiPopupFlags.MouseButtonRight);
             }
 
             if (ImGui.IsItemHovered())

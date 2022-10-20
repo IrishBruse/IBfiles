@@ -11,20 +11,36 @@ public class ContextMenu
 {
     public static void Gui()
     {
+        // EntryContextGui();
+        // DirectoryContextGui();
+    }
+
+    private static void EntryContextGui()
+    {
         ImGui.PushStyleColor(ImGuiCol.HeaderHovered, Colors.AccentDarker);
-        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 6));
-        if (ImGui.BeginPopupContextWindow("ContextMenu", ImGuiPopupFlags.MouseButtonRight))
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(2, 6));
+        if (ImGui.BeginPopupContextItem("EntryContextMenu"))
         {
             ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, new Vector2(6, 3));
 
-            if (FileManager.Selections.Count != 0)
+            if (ImGui.Selectable("Delete"))
             {
-                FileContext();
+                foreach (DirectoryEntry selection in FileManager.Selections)
+                {
+                    EntryHandler.Delete(selection);
+                }
             }
-            else
+            ImGuiExt.CursorPointer();
+
+            if (ImGui.Selectable("Properties"))
             {
-                FolderContext();
+                Console.WriteLine("test");
+                foreach (DirectoryEntry selection in FileManager.Selections)
+                {
+                    // FileProperties.ShowFileProperties(selection.Path);
+                }
             }
+            ImGuiExt.CursorPointer();
 
             ImGui.PopStyleVar();
 
@@ -34,30 +50,32 @@ public class ContextMenu
         ImGui.PopStyleVar();
     }
 
-    private static void FileContext()
+
+    private static void DirectoryContextGui()
     {
-        if (ImGui.Selectable("Delete"))
+        ImGui.PushStyleColor(ImGuiCol.HeaderHovered, Colors.AccentDarker);
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 6));
+        if (ImGui.BeginPopupContextItem("DirectoryContextMenu"))
         {
-            foreach (DirectoryEntry selection in FileManager.Selections)
+            ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, new Vector2(6, 3));
+
+            if (ImGui.Selectable("New File"))
             {
-                EntryHandler.Delete(selection);
+                FileManager.NewFile();
             }
-        }
-        ImGuiExt.CursorPointer();
-    }
+            ImGuiExt.CursorPointer();
 
-    private static void FolderContext()
-    {
-        if (ImGui.Selectable("New File"))
-        {
-            FileManager.NewFile();
-        }
-        ImGuiExt.CursorPointer();
+            if (ImGui.Selectable("New Folder"))
+            {
+                FileManager.NewFolder();
+            }
+            ImGuiExt.CursorPointer();
 
-        if (ImGui.Selectable("New Folder"))
-        {
-            FileManager.NewFolder();
+            ImGui.PopStyleVar();
+
+            ImGui.EndPopup();
         }
-        ImGuiExt.CursorPointer();
+        ImGui.PopStyleColor();
+        ImGui.PopStyleVar();
     }
 }
