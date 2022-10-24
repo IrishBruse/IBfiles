@@ -19,10 +19,9 @@ public static class GlobalStyle
         style.PopupBorderSize = 0f;
         style.PopupRounding = 6f;
 
-        style.CellPadding = new(2, 2);
+        style.CellPadding = new(8, 2);
 
         style.FrameRounding = 6f;
-        System.Numerics.Vector4 error = Colors.Error;
 
         style.Colors[(int)ImGuiCol.Text] = Colors.Text;
         style.Colors[(int)ImGuiCol.TextDisabled] = Colors.TextDisabled;
@@ -51,9 +50,9 @@ public static class GlobalStyle
         style.Colors[(int)ImGuiCol.Header] = Colors.AccentDarker;
         style.Colors[(int)ImGuiCol.HeaderHovered] = Colors.BackgroundLight;
         style.Colors[(int)ImGuiCol.HeaderActive] = Colors.BackgroundLight;
-        style.Colors[(int)ImGuiCol.Separator] = Colors.BackgroundLight;
-        style.Colors[(int)ImGuiCol.SeparatorHovered] = Colors.BackgroundInput;
-        style.Colors[(int)ImGuiCol.SeparatorActive] = Colors.BackgroundInput;
+        style.Colors[(int)ImGuiCol.Separator] = Colors.BackgroundInput;
+        style.Colors[(int)ImGuiCol.SeparatorHovered] = Colors.BackgroundLight;
+        style.Colors[(int)ImGuiCol.SeparatorActive] = Colors.BackgroundLight;
         style.Colors[(int)ImGuiCol.ResizeGrip] = Colors.AccentDark;
         style.Colors[(int)ImGuiCol.ResizeGripHovered] = Colors.AccentLight;
         style.Colors[(int)ImGuiCol.ResizeGripActive] = Colors.AccentDark;
@@ -65,9 +64,9 @@ public static class GlobalStyle
         style.Colors[(int)ImGuiCol.DockingPreview] = Colors.AccentDark;
         style.Colors[(int)ImGuiCol.DockingEmptyBg] = Colors.BackgroundNormal;
         style.Colors[(int)ImGuiCol.PlotLines] = Colors.AccentLight;
-        style.Colors[(int)ImGuiCol.PlotLinesHovered] = error;
+        style.Colors[(int)ImGuiCol.PlotLinesHovered] = Colors.AccentLight;
         style.Colors[(int)ImGuiCol.PlotHistogram] = Colors.AccentLight;
-        style.Colors[(int)ImGuiCol.PlotHistogramHovered] = error;
+        style.Colors[(int)ImGuiCol.PlotHistogramHovered] = Colors.AccentLight;
         style.Colors[(int)ImGuiCol.TableHeaderBg] = Colors.BackgroundDark;
         style.Colors[(int)ImGuiCol.TableBorderStrong] = Colors.BackgroundInput;
         style.Colors[(int)ImGuiCol.TableBorderLight] = Colors.AccentDark;
@@ -76,8 +75,8 @@ public static class GlobalStyle
         style.Colors[(int)ImGuiCol.TextSelectedBg] = Colors.AccentDark;
         style.Colors[(int)ImGuiCol.DragDropTarget] = Colors.AccentDark;
         style.Colors[(int)ImGuiCol.NavHighlight] = Colors.AccentDark;
-        style.Colors[(int)ImGuiCol.NavWindowingHighlight] = error;
-        style.Colors[(int)ImGuiCol.NavWindowingDimBg] = error;
+        style.Colors[(int)ImGuiCol.NavWindowingHighlight] = Colors.AccentLight;
+        style.Colors[(int)ImGuiCol.NavWindowingDimBg] = Colors.AccentLight;
         style.Colors[(int)ImGuiCol.ModalWindowDimBg] = Colors.BackgroundDim;
     }
 }

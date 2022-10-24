@@ -38,4 +38,15 @@ public class DirectoryEntry
     {
         return Path + " - " + IsFile + " - " + IsHidden + " - " + LastWriteTime + " - " + Size;
     }
+
+    public override int GetHashCode()
+    {
+        return Path.GetHashCode();
+    }
+
+    public override bool Equals(object obj)
+    {
+        string path = ((DirectoryEntry)obj).Path;
+        return Path.Equals(path, StringComparison.Ordinal);
+    }
 }

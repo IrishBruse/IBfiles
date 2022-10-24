@@ -564,6 +564,7 @@
     "fhtml": "velocity",
     "vtl": "velocity",
     "gd": "godot",
+    "import": "godot-import",
     "godot": "godot-assets",
     "tres": "godot-assets",
     "tscn": "godot-assets",

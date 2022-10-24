@@ -13,13 +13,12 @@ public class HomeView
     public void Gui()
     {
         const float iconColumnSize = 32;
-        const float detailsColumnSize = 128;
-        float nameColumnWidth = ImGui.GetWindowWidth() - (iconColumnSize + Settings.I.EdgeBorderWidth) - detailsColumnSize;
+        const float detailsColumnSize = 128 + 16;
+        float nameColumnWidth = ImGui.GetWindowWidth() - detailsColumnSize;
 
         ImGuiTableFlags flags = ImGuiTableFlags.PreciseWidths;
 
         flags |= ImGuiTableFlags.PadOuterX;
-        flags |= ImGuiTableFlags.NoPadInnerX;
 
         flags |= ImGuiTableFlags.NoBordersInBodyUntilResize;
         flags |= ImGuiTableFlags.BordersInnerV;
@@ -31,7 +30,7 @@ public class HomeView
 
         if (ImGui.BeginTable("Home", 3, flags))
         {
-            ImGui.TableSetupColumn("Icon", ImGuiTableColumnFlags.WidthFixed, iconColumnSize + (Settings.I.EdgeBorderWidth * 2));
+            ImGui.TableSetupColumn("Icon", ImGuiTableColumnFlags.WidthFixed, iconColumnSize);
             ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.WidthFixed, nameColumnWidth);
             ImGui.TableSetupColumn("Details", ImGuiTableColumnFlags.WidthFixed, detailsColumnSize);
 
@@ -44,7 +43,9 @@ public class HomeView
                     continue;
                 }
 
-                var driveEntry = new DirectoryEntry(drive.RootDirectory.FullName, false, false, DateTime.MinValue, drive.TotalSize);
+                long size = drive.IsReady ? drive.TotalSize : -1;
+
+                DirectoryEntry driveEntry = new(drive.Name, false, false, DateTime.MinValue, size);
 
                 bool selected = FileManager.Selections.Contains(driveEntry);
 
@@ -54,7 +55,6 @@ public class HomeView
 
                 _ = ImGui.TableNextColumn();
 
-                ImGui.Indent(Settings.I.EdgeBorderWidth);
                 if (selected)
                 {
                     pop = true;
@@ -74,7 +74,6 @@ public class HomeView
                     iconPtr = IconManager.GetIconExtensionPtrDirectly("drive");
                 }
                 ImGui.Image(iconPtr, new Vector2(32), Vector2.Zero, Vector2.One, Colors.White);
-                ImGui.Unindent(Settings.I.EdgeBorderWidth);
 
                 _ = ImGui.TableNextColumn();
 
@@ -118,7 +117,6 @@ public class HomeView
                 _ = ImGui.TableNextColumn();
                 ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 6);
 
-                ImGui.Indent();
                 if (drive.IsReady)
                 {
                     ImGui.Text(drive.DriveFormat);
@@ -126,7 +124,6 @@ public class HomeView
                     string overlay = Formatter.GetDataSize(drive.TotalSize);
                     ImGui.Text(overlay);
                 }
-                ImGui.Unindent();
 
 
                 if (pop)

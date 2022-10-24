@@ -52,10 +52,6 @@ public class GuiManager
                 case Page.Home: homeView.Gui(); break;
                 case Page.Settings: settingsView.Gui(); break;
             }
-
-            // Right click menu
-            ContextMenu.Gui();
-
         }
         ImGui.EndChild();
     }

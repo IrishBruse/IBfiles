@@ -101,7 +101,6 @@ public class Application : IDisposable
         }
     }
 
-
     public void Update(double delta)
     {
         MouseInput();

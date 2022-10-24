@@ -77,7 +77,8 @@ public class IconManager
         }
         else
         {
-            ImageSharpTexture texture = new(ResourceLoader.GetEmbeddedResourceStream(path));
+            Stream stream = ResourceLoader.GetEmbeddedResourceStream(path);
+            ImageSharpTexture texture = new(stream);
             Texture dTexture = texture.CreateDeviceTexture(GraphicsDevice, GraphicsDevice.ResourceFactory);
             IntPtr ptr = Controller.GetOrCreateImGuiBinding(GraphicsDevice.ResourceFactory, dTexture);
             ptrCache.Add(path, ptr);

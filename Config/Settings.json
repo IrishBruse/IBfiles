@@ -1,10 +1,10 @@
 {
   "TitleUsesFullPath": true,
   "UseBackslashSeperator": false,
-  "EdgeBorderWidth": 14,
   "HeaderGap": 8,
   "FoldersFirst": true,
   "AlternateRowColors": false,
   "StartDirectory": "A:\\",
-  "HideOpticalDrives": true
+  "HideOpticalDrives": true,
+  "DecimalFileSize": true
 }

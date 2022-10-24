@@ -11,12 +11,12 @@ public class Settings
 {
     public bool TitleUsesFullPath;
     public bool UseBackslashSeperator;
-    public int EdgeBorderWidth = 10;
     public int HeaderGap = 8;
     public bool FoldersFirst = true;
     public bool AlternateRowColors;
     public FsPath StartDirectory;
     public bool HideOpticalDrives;
+    public bool DecimalFileSize;
 
     public static void Load()
     {
@@ -49,4 +49,3 @@ public class Settings
     };
 }
 #pragma warning restore CA1051
-

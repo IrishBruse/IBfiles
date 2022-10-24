@@ -2,12 +2,15 @@ namespace IBfiles.Gui.Views;
 
 using System.Globalization;
 using System.Numerics;
+using System.Runtime.InteropServices;
 
 using IBfiles.ApplicationBackend;
 using IBfiles.Logic;
 using IBfiles.Utilities;
 
 using ImGuiNET;
+
+using Vanara.PInvoke;
 
 public class FolderView
 {
@@ -22,7 +25,6 @@ public class FolderView
         flags |= ImGuiTableFlags.Reorderable;
 
         flags |= ImGuiTableFlags.PadOuterX;
-        flags |= ImGuiTableFlags.NoPadInnerX;
         flags |= ImGuiTableFlags.NoKeepColumnsVisible;
 
         flags |= ImGuiTableFlags.NoBordersInBodyUntilResize;
@@ -52,7 +54,7 @@ public class FolderView
         }
         ImGui.PopStyleColor();
 
-        if (ImGui.IsKeyPressed(ImGuiKey.Escape) || (!ImGui.IsItemHovered() && ImGui.IsMouseClicked(ImGuiMouseButton.Left)))
+        if (ImGui.IsKeyPressed(ImGuiKey.Escape))
         {
             FileManager.Selections.Clear();
         }
@@ -81,10 +83,9 @@ public class FolderView
     private static void ContextMenu()
     {
         ImGui.PushStyleColor(ImGuiCol.HeaderHovered, Colors.AccentDarker);
-        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(2, 6));
         if (ImGui.BeginPopupContextItem("EntryContextMenu"))
         {
-            ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, new Vector2(6, 3));
+            ImGui.Dummy(new(0, 2));
 
             if (ImGui.Selectable("Delete"))
             {
@@ -95,22 +96,34 @@ public class FolderView
             }
             ImGuiExt.CursorPointer();
 
+            ImGui.Separator();
+
             if (ImGui.Selectable("Properties"))
             {
-                Console.WriteLine("test");
                 foreach (DirectoryEntry selection in FileManager.Selections)
                 {
-                    // FileProperties.ShowFileProperties(selection.Path);
+                    ShowProperties(selection.Path);
                 }
             }
             ImGuiExt.CursorPointer();
 
-            ImGui.PopStyleVar();
-
+            ImGui.Dummy(new(0, 2));
             ImGui.EndPopup();
         }
         ImGui.PopStyleColor();
-        ImGui.PopStyleVar();
+    }
+
+    private static void ShowProperties(string filepath)
+    {
+        Shell32.SHELLEXECUTEINFO info = new();
+
+        info.cbSize = Marshal.SizeOf(info);
+        info.lpVerb = "properties";
+        info.lpFile = filepath;
+        info.nShellExecuteShow = ShowWindowCommand.SW_SHOW;
+        info.fMask = Shell32.ShellExecuteMaskFlags.SEE_MASK_INVOKEIDLIST;
+
+        _ = Shell32.ShellExecuteEx(ref info);
     }
 
     private static void DisplayHeader()
@@ -143,8 +156,6 @@ public class FolderView
         bool pop = false;
         _ = ImGui.TableNextColumn();
         {
-            ImGui.PushStyleVar(ImGuiStyleVar.CellPadding, new Vector2(Settings.I.EdgeBorderWidth, 0));
-
             if (FileManager.Selections.Contains(entry))
             {
                 pop = true;
@@ -157,8 +168,6 @@ public class FolderView
             {
                 FileManager.Selections.Add(entry);
             }
-
-            ImGui.Indent(Settings.I.EdgeBorderWidth);
 
             IntPtr iconPtr;
             if (entry.IsFile)
@@ -252,24 +261,17 @@ public class FolderView
                 ImGui.PopStyleColor();
             }
 
-
-            ImGui.Unindent(Settings.I.EdgeBorderWidth);
-
             if (pop)
             {
                 ImGui.PopStyleColor(2);
             }
-            ImGui.PopStyleVar();
         }
         _ = ImGui.TableNextColumn();
         {
-            ImGui.Indent();
             DisplayModifiedTime(entry.LastWriteTime);
-            ImGui.Unindent();
         }
         _ = ImGui.TableNextColumn();
         {
-            ImGui.Indent();
             if (entry.IsFile)
             {
                 ImGui.Text(Formatter.GetDataSize(entry.Size));
@@ -279,7 +281,6 @@ public class FolderView
                 string label = entry.Size == 1 ? "Item" : "Items";
                 ImGui.Text($"{entry.Size} {label}");
             }
-            ImGui.Unindent();
         }
         if (pop)
         {
