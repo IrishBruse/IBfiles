@@ -30,6 +30,7 @@ public class Application : IDisposable
     private ImGuiController controller;
     private IInputContext input;
     private GraphicsBackend preferredBackend;
+    private bool focused = true;
 
     public Application(GraphicsBackend preferredBackend)
     {
@@ -51,6 +52,8 @@ public class Application : IDisposable
         ImGui.LoadIniSettingsFromDisk(Paths.ImGuiIni);
 
         GlobalStyle.Style();
+
+        Window.FocusChanged += (focus) => focused = focus;
 
         input = Window.CreateInput();
 
@@ -203,7 +206,14 @@ public class Application : IDisposable
         io.MouseDown[0] = mouse.IsButtonPressed(MouseButton.Left);
         io.MouseDown[1] = mouse.IsButtonPressed(MouseButton.Right);
         io.MouseDown[2] = mouse.IsButtonPressed(MouseButton.Middle);
-        io.MousePos = mouse.Position;
+        if (focused)
+        {
+            io.MousePos = mouse.Position;
+        }
+        else
+        {
+            io.MousePos = new System.Numerics.Vector2(0);
+        }
         io.MouseWheel = mouse.ScrollWheels[0].Y;
 
         mouse.Cursor.CursorMode = CursorMode.Normal;
