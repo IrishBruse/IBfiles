@@ -24,6 +24,8 @@ public class FolderView
         flags |= ImGuiTableFlags.Sortable;
         flags |= ImGuiTableFlags.Reorderable;
 
+        flags |= ImGuiTableFlags.ScrollY;
+
         flags |= ImGuiTableFlags.PadOuterX;
         flags |= ImGuiTableFlags.NoKeepColumnsVisible;
 
@@ -37,6 +39,7 @@ public class FolderView
 
         if (ImGui.BeginTable("Details", ColumnsCount, flags))
         {
+            ImGui.TableSetupScrollFreeze(0, 1);
             ImGui.TableSetupColumn("Name");
             ImGui.TableSetupColumn("Modified");
             ImGui.TableSetupColumn("Size");
@@ -65,15 +68,17 @@ public class FolderView
         selectAll = ImGui.GetIO().KeyCtrl && ImGui.IsKeyDown(ImGuiKey.A);
 
         ImGui.PushStyleVar(ImGuiStyleVar.CellPadding, Vector2.Zero);
-        DisplayHeader();
-
-        // Table Header Seperator
-        ImGui.TableNextRow(ImGuiTableRowFlags.None, Settings.I.HeaderGap);
-
-        foreach (DirectoryEntry entry in FileManager.DirectoryContents)
         {
-            ImGui.TableNextRow(ImGuiTableRowFlags.None);
-            DisplayRow(entry);
+            DisplayHeader();
+
+            // Table Header Seperator
+            ImGui.TableNextRow(ImGuiTableRowFlags.None, Settings.I.HeaderGap);
+
+            foreach (DirectoryEntry entry in FileManager.DirectoryContents)
+            {
+                ImGui.TableNextRow(ImGuiTableRowFlags.None);
+                DisplayRow(entry);
+            }
         }
         ImGui.PopStyleVar();
 
@@ -134,17 +139,15 @@ public class FolderView
         for (int column = 0; column < ColumnsCount; column++)
         {
             _ = ImGui.TableSetColumnIndex(column);
-            string columnName = ImGui.TableGetColumnName(column); // Retrieve name passed to TableSetupColumn()
+            string columnName = ImGui.TableGetColumnName(column);
             Vector2 size = ImGui.CalcTextSize(columnName);
             float width = ImGui.GetColumnWidth();
 
             ImGui.PushID(column);
             {
-                ImGui.SetCursorPosY((rowHeight - size.Y) / 2f);
+                ImGui.SetCursorPosY(ImGui.GetCursorPosY() + ((rowHeight - size.Y) / 2f));
                 ImGui.SetCursorPosX(ImGui.GetCursorPosX() + ((width - size.X) / 2f));
-                ImGui.Text(columnName);
-                ImGui.SameLine();
-                ImGui.TableHeader("");
+                ImGui.TableHeader(columnName);
                 ImGuiExt.CursorPointer();
             }
             ImGui.PopID();
@@ -213,7 +216,7 @@ public class FolderView
                         }
                         else
                         {
-                            Directory.CreateDirectory(entry.Path);
+                            _ = Directory.CreateDirectory(entry.Path);
                         }
                     }
                 }
@@ -224,7 +227,6 @@ public class FolderView
                 {
                     if (!selectAll)
                     {
-
                         if (ImGui.GetIO().KeyCtrl)
                         {
                             if (FileManager.Selections.Contains(entry))
