@@ -55,7 +55,6 @@ public class FolderView
 
             ImGui.EndTable();
         }
-        ImGui.PopStyleColor();
 
         if (ImGui.IsKeyPressed(ImGuiKey.Escape))
         {
@@ -250,12 +249,10 @@ public class FolderView
                 ImGui.OpenPopupOnItemClick("EntryContextMenu", ImGuiPopupFlags.MouseButtonRight);
             }
 
-            if (ImGui.IsItemHovered())
+            // Interact with entry
+            if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left) && ImGui.IsItemHovered())
             {
-                if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
-                {
-                    EntryHandler.Open(entry);
-                }
+                EntryHandler.Open(entry);
             }
 
             if (entry.IsHidden)
@@ -265,7 +262,7 @@ public class FolderView
 
             if (pop)
             {
-                ImGui.PopStyleColor(2);
+                ImGui.PopStyleColor(3);
             }
         }
         _ = ImGui.TableNextColumn();

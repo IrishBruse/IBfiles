@@ -27,6 +27,8 @@ public static class Formatter
             decimalBytes = bytes / size;
         }
 
+        decimalBytes = Math.Floor(decimalBytes);
+
         return $"{decimalBytes:0.##} {suffixes[i]}";
     }
 }
