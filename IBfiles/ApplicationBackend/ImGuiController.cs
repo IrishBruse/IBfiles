@@ -415,12 +415,7 @@ public class ImGuiController : IDisposable
                         }
                     }
 
-                    cl.SetScissorRect(
-                        0,
-                        (uint)pcmd.ClipRect.X,
-                        (uint)pcmd.ClipRect.Y,
-                        (uint)(pcmd.ClipRect.Z - pcmd.ClipRect.X),
-                        (uint)(pcmd.ClipRect.W - pcmd.ClipRect.Y));
+                    cl.SetScissorRect(0, (uint)pcmd.ClipRect.X, (uint)pcmd.ClipRect.Y, (uint)(pcmd.ClipRect.Z - pcmd.ClipRect.X), (uint)(pcmd.ClipRect.W - pcmd.ClipRect.Y));
 
                     cl.DrawIndexed(pcmd.ElemCount, 1, pcmd.IdxOffset + (uint)idxoffset, (int)pcmd.VtxOffset + vtxoffset, 0);
                 }

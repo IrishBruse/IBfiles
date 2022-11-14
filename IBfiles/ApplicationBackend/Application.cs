@@ -75,6 +75,7 @@ public class Application : IDisposable
 
         controller.CreateDeviceResources(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription);
 
+
         IconManager.Load(GraphicsDevice, controller);
         FileManager.Load();
     }
@@ -126,7 +127,7 @@ public class Application : IDisposable
 
         CommandList.Begin();
         CommandList.SetFramebuffer(GraphicsDevice.MainSwapchain.Framebuffer);
-        CommandList.ClearColorTarget(0, new RgbaFloat(1f, 0f, 1f, 1f));
+        CommandList.ClearColorTarget(0, new RgbaFloat(Colors.BackgroundDark));
         controller.Render(GraphicsDevice, CommandList);
         CommandList.End();
         GraphicsDevice.SubmitCommands(CommandList);

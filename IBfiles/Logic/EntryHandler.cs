@@ -1,6 +1,6 @@
 namespace IBfiles.Logic;
 
-using System;
+using System.Diagnostics;
 
 using Microsoft.VisualBasic.FileIO;
 
@@ -25,7 +25,11 @@ public class EntryHandler
 
     private static void OpenFile(DirectoryEntry entry)
     {
-        Console.WriteLine(entry);
+        using Process fileopener = new();
+
+        fileopener.StartInfo.FileName = "explorer";
+        fileopener.StartInfo.Arguments = "\"" + entry.Path + "\"";
+        _ = fileopener.Start();
     }
 
     public static void Delete(DirectoryEntry entry)
