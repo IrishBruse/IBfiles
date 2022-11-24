@@ -200,13 +200,6 @@ public class FolderView
                     }
                 }
                 ImGuiExt.CursorPointer();
-
-
-                // if (FileManager.Selections.Contains(entry) && ImGui.IsMouseClicked(ImGuiMouseButton.Right) && ImGui.IsItemHovered())
-                // {
-                //     Console.WriteLine("open");
-                //     ImGui.OpenPopup("EntryContextMenu");
-                // }
             }
 
             // Interact with entry
