@@ -155,10 +155,9 @@ public class FolderView
                 {
                     ImGui.SetKeyboardFocusHere();
 
-                    // TODO find a good max len
                     const ImGuiInputTextFlags flags = ImGuiInputTextFlags.EnterReturnsTrue | ImGuiInputTextFlags.CallbackCharFilter;
                     string name = entry.Path;
-                    bool done = ImGui.InputText(string.Empty, ref name, 100, flags, ValidateFileNameInput);
+                    bool done = ImGui.InputText(string.Empty, ref name, 244, flags, ValidateFileNameInput);
                     entry.Path = name;
 
                     if (done)
