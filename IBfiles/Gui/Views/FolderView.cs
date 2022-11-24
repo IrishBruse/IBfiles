@@ -2,15 +2,12 @@ namespace IBfiles.Gui.Views;
 
 using System.Globalization;
 using System.Numerics;
-using System.Runtime.InteropServices;
 
 using IBfiles.ApplicationBackend;
 using IBfiles.Logic;
 using IBfiles.Utilities;
 
 using ImGuiNET;
-
-using Vanara.PInvoke;
 
 public class FolderView
 {
@@ -56,9 +53,16 @@ public class FolderView
             ImGui.EndTable();
         }
 
-        if (ImGui.IsKeyPressed(ImGuiKey.Escape))
+        ContextMenu.FolderContextMenu();
+
+        if (ImGui.IsKeyPressed(ImGuiKey.Escape) || (ImGui.IsAnyMouseDown() && !ImGui.IsAnyItemHovered()))
         {
             FileManager.Selections.Clear();
+        }
+
+        if (ImGui.IsMouseClicked(ImGuiMouseButton.Right) && !ImGui.IsAnyItemHovered())
+        {
+            ImGui.OpenPopup("FolderContextMenu");
         }
     }
 
@@ -80,54 +84,6 @@ public class FolderView
             }
         }
         ImGui.PopStyleVar();
-
-        ContextMenu();
-    }
-
-    private static void ContextMenu()
-    {
-        ImGui.PushStyleColor(ImGuiCol.HeaderHovered, Colors.AccentDarker);
-        if (ImGui.BeginPopupContextItem("EntryContextMenu"))
-        {
-            ImGui.Dummy(new(0, 2));
-
-            if (ImGui.Selectable("Delete"))
-            {
-                foreach (DirectoryEntry selection in FileManager.Selections)
-                {
-                    EntryHandler.Delete(selection);
-                }
-            }
-            ImGuiExt.CursorPointer();
-
-            ImGui.Separator();
-
-            if (ImGui.Selectable("Properties"))
-            {
-                foreach (DirectoryEntry selection in FileManager.Selections)
-                {
-                    ShowProperties(selection.Path);
-                }
-            }
-            ImGuiExt.CursorPointer();
-
-            ImGui.Dummy(new(0, 2));
-            ImGui.EndPopup();
-        }
-        ImGui.PopStyleColor();
-    }
-
-    private static void ShowProperties(string filepath)
-    {
-        Shell32.SHELLEXECUTEINFO info = new();
-
-        info.cbSize = Marshal.SizeOf(info);
-        info.lpVerb = "properties";
-        info.lpFile = filepath;
-        info.nShellExecuteShow = ShowWindowCommand.SW_SHOW;
-        info.fMask = Shell32.ShellExecuteMaskFlags.SEE_MASK_INVOKEIDLIST;
-
-        _ = Shell32.ShellExecuteEx(ref info);
     }
 
     private static void DisplayHeader()
@@ -246,7 +202,12 @@ public class FolderView
                 }
                 ImGuiExt.CursorPointer();
 
-                ImGui.OpenPopupOnItemClick("EntryContextMenu", ImGuiPopupFlags.MouseButtonRight);
+
+                // if (FileManager.Selections.Contains(entry) && ImGui.IsMouseClicked(ImGuiMouseButton.Right) && ImGui.IsItemHovered())
+                // {
+                //     Console.WriteLine("open");
+                //     ImGui.OpenPopup("EntryContextMenu");
+                // }
             }
 
             // Interact with entry
@@ -264,6 +225,11 @@ public class FolderView
             {
                 ImGui.PopStyleColor(3);
             }
+
+            if (FileManager.Selections.Contains(entry))
+            {
+                ContextMenu.EntryContextMenu();
+            }
         }
         _ = ImGui.TableNextColumn();
         {
@@ -280,10 +246,6 @@ public class FolderView
                 string label = entry.Size == 1 ? "Item" : "Items";
                 ImGui.Text($"{entry.Size} {label}");
             }
-        }
-        if (pop)
-        {
-            ImGui.PopStyleColor();
         }
     }
 

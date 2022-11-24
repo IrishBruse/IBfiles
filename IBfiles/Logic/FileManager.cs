@@ -102,6 +102,11 @@ public static class FileManager
 
     private static int SortFileNames(DirectoryEntry a, DirectoryEntry b, int invertSort)
     {
+        if (a.Editing)
+        {
+            return 1;
+        }
+
         // If both same
         if (a.IsFile == b.IsFile)
         {

@@ -46,6 +46,8 @@ public class GuiManager
 
         _ = ImGui.BeginChild("View", new(width, height));
         {
+            ImGui.GetIO().WantCaptureMouseUnlessPopupClose = true;
+
             switch (FileManager.CurrentPageType)
             {
                 case Page.Directory: folderView.Gui(); break;
@@ -54,5 +56,6 @@ public class GuiManager
             }
         }
         ImGui.EndChild();
+        ImGui.PopStyleColor();
     }
 }
