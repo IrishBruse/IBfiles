@@ -166,7 +166,7 @@ public class FolderView
                         entry.Editing = false;
                         if (entry.IsFile)
                         {
-                            File.WriteAllBytes(entry.Path, Array.Empty<byte>());
+                            File.Create(entry.Path, 0, FileOptions.None).Dispose();
                         }
                         else
                         {
