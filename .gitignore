@@ -5,3 +5,5 @@
 *.pdb
 
 Config/
+
+ImGui.ini
