@@ -1,5 +1,6 @@
 namespace IBfiles.Gui;
 
+using System.Numerics;
 using System.Runtime.InteropServices;
 
 using IBfiles.ApplicationBackend;
@@ -11,21 +12,23 @@ using Vanara.PInvoke;
 
 public class ContextMenu
 {
+    private const string SpacePadding = "  ";
+
     public static void FolderContextMenu()
     {
         ImGui.PushStyleColor(ImGuiCol.HeaderHovered, Colors.AccentDarker);
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 6));
 
         if (ImGui.BeginPopupContextItem("FolderContextMenu", ImGuiPopupFlags.MouseButtonRight | ImGuiPopupFlags.NoOpenOverExistingPopup))
         {
-            ImGui.Dummy(new(0, 2));
 
-            if (ImGui.Selectable("New File..."))
+            if (ImGui.Selectable(SpacePadding + "New File..." + SpacePadding))
             {
                 FileManager.NewFile();
             }
             ImGuiExt.CursorPointer();
 
-            if (ImGui.Selectable("New Folder..."))
+            if (ImGui.Selectable(SpacePadding + "New Folder..." + SpacePadding))
             {
                 FileManager.NewFolder();
             }
@@ -33,21 +36,21 @@ public class ContextMenu
 
             ImGui.Separator();
 
-            ImGui.Dummy(new(0, 2));
             ImGui.EndPopup();
         }
 
+        ImGui.PopStyleVar();
         ImGui.PopStyleColor();
     }
 
     public static void EntryContextMenu()
     {
         ImGui.PushStyleColor(ImGuiCol.HeaderHovered, Colors.AccentDarker);
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 6));
 
         if (ImGui.BeginPopupContextItem("EntryContextMenu", ImGuiPopupFlags.MouseButtonRight))
         {
-            ImGui.Dummy(new(0, 2));
-            if (ImGui.Selectable("Delete"))
+            if (ImGui.Selectable(SpacePadding + "Delete" + SpacePadding))
             {
                 foreach (DirectoryEntry selection in FileManager.Selections)
                 {
@@ -58,7 +61,7 @@ public class ContextMenu
 
             ImGui.Separator();
 
-            if (ImGui.Selectable("Properties..."))
+            if (ImGui.Selectable(SpacePadding + "Properties..." + SpacePadding))
             {
                 foreach (DirectoryEntry selection in FileManager.Selections)
                 {
@@ -66,10 +69,10 @@ public class ContextMenu
                 }
             }
             ImGuiExt.CursorPointer();
-            ImGui.Dummy(new(0, 2));
             ImGui.EndPopup();
         }
 
+        ImGui.PopStyleVar();
         ImGui.PopStyleColor();
     }
 
