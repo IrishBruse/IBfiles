@@ -6,5 +6,11 @@
   "AlternateRowColors": false,
   "StartDirectory": "A:\\",
   "HideOpticalDrives": true,
-  "DecimalFileSize": true
+  "DecimalFileSize": true,
+  "FileCommands": {
+    "Open in Code(File)": "code %1"
+  },
+  "FolderCommands": {
+    "Open in Code(Folder)": "code %1"
+  }
 }

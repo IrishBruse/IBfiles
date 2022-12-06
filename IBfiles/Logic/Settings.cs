@@ -17,6 +17,8 @@ public class Settings
     public FsPath StartDirectory;
     public bool HideOpticalDrives;
     public bool DecimalFileSize;
+    public Dictionary<string, string> FileCommands = new();
+    public Dictionary<string, string> FolderCommands = new();
 
     public static void Load()
     {

@@ -1,9 +1,11 @@
 namespace IBfiles.Gui.Views;
 
 using System;
+using System.Numerics;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
+using IBfiles.ApplicationBackend;
 using IBfiles.Logic;
 using IBfiles.Utilities;
 
@@ -15,6 +17,7 @@ public class SettingsView
 {
     public void Gui()
     {
+        ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 2);
         FileManager.UpdateTitle();// For live settings changes
 
         ImGui.SetCursorPosX(ImGui.GetWindowWidth() * .25f);
@@ -32,29 +35,30 @@ public class SettingsView
         ImGui.EndTable();
 
         CloseSettings();
+
+        ImGui.PopStyleVar();
     }
 
     private static void DisplaySetting(FieldInfo field)
     {
+        AddSettingLabel(field.Name);
+        ImGui.PushID(field.Name);
+
         switch (field.FieldType.Name)
         {
             case nameof(Boolean):
-            AddSettingLabel(field.Name);
-            ImGui.PushID(field.Name);
             {
                 bool val = (bool)field.GetValue(Settings.I);
                 _ = ImGui.TableNextColumn(); _ = ImGui.Checkbox("", ref val);
                 field.SetValue(Settings.I, val);
+
+                ImGuiExt.CursorPointer();
             }
-            ImGui.PopID();
-            ImGuiExt.CursorPointer();
             break;
 
             case nameof(Int16):
             case nameof(Int32):
             case nameof(Int64):
-            AddSettingLabel(field.Name);
-            ImGui.PushID(field.Name);
             {
                 int val = (int)field.GetValue(Settings.I);
                 _ = ImGui.TableNextColumn();
@@ -62,14 +66,12 @@ public class SettingsView
                 _ = ImGui.InputInt("", ref val);
                 ImGui.PopItemWidth();
                 field.SetValue(Settings.I, val);
+
+                ImGuiExt.CursorPointer();
             }
-            ImGui.PopID();
-            ImGuiExt.CursorPointer();
             break;
 
             case nameof(String):
-            AddSettingLabel(field.Name);
-            ImGui.PushID(field.Name);
             {
                 string val = (string)field.GetValue(Settings.I) ?? "";
                 _ = ImGui.TableNextColumn();
@@ -78,14 +80,12 @@ public class SettingsView
                 _ = ImGui.InputText("", ref val, 256);
                 ImGui.PopItemWidth();
                 field.SetValue(Settings.I, val);
+
+                ImGuiExt.CursorPointer();
             }
-            ImGui.PopID();
-            ImGuiExt.CursorPointer();
             break;
 
             case nameof(FsPath):
-            AddSettingLabel(field.Name);
-            ImGui.PushID(field.Name);
             {
                 FsPath val = (FsPath)field.GetValue(Settings.I);
                 _ = ImGui.TableNextColumn();
@@ -99,13 +99,60 @@ public class SettingsView
                 }
                 ImGui.PopItemWidth();
                 field.SetValue(Settings.I, val);
+
+                ImGuiExt.CursorPointer();
             }
-            ImGui.PopID();
-            ImGuiExt.CursorPointer();
+            break;
+
+            case "Dictionary`2":
+            {
+
+                ImGui.PushStyleColor(ImGuiCol.FrameBg, Colors.BackgroundInput);
+
+                Dictionary<string, string> val = (Dictionary<string, string>)field.GetValue(Settings.I);
+
+                foreach ((string k, string v) in val)
+                {
+                    _ = ImGui.TableNextColumn();
+
+                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth());
+
+                    string inputk = k;
+                    ImGui.PushID(k);
+                    ImGui.InputText("", ref inputk, 256);
+                    ImGui.PopID();
+
+                    _ = ImGui.TableNextColumn();
+
+                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth());
+
+                    string inputv = v;
+                    ImGui.PushID(v);
+                    ImGui.InputText("", ref inputv, 256);
+                    ImGui.PopID();
+                }
+
+                _ = ImGui.TableNextColumn();
+
+                ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
+                ImGui.PushStyleColor(ImGuiCol.FrameBg, Colors.AccentDark);
+                if (ImGui.Selectable("Add", false))
+                {
+                    Console.WriteLine("add");
+                }
+                ImGuiExt.CursorPointer();
+
+                field.SetValue(Settings.I, val);
+                ImGui.PopStyleColor();
+                ImGui.PopStyleColor();
+                ImGui.PopStyleVar();
+
+            }
             break;
 
             default: throw new NotImplementedException();
         }
+        ImGui.PopID();
     }
 
     private static void AddSettingLabel(string name)
@@ -119,10 +166,9 @@ public class SettingsView
     private static unsafe void CloseSettings()
     {
         ImGui.SetCursorPosX(ImGui.GetContentRegionAvail().X * .25f);
-        if (ImGui.Button("Save and Close", new(ImGui.GetWindowWidth() * .5f, 0)))
+        if (ImGui.Button("Save", new(ImGui.GetWindowWidth() * .5f, 0)))
         {
             Settings.Save();
-            FileManager.HistoryBack();
         }
         ImGuiExt.CursorPointer();
     }
