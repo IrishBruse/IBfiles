@@ -1,5 +1,7 @@
 #pragma warning disable IDE0130
 namespace ImGuiNET;
+
+using System;
 #pragma warning restore IDE0130
 
 using System.Runtime.InteropServices;

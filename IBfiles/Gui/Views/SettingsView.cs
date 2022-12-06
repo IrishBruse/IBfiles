@@ -1,6 +1,7 @@
 namespace IBfiles.Gui.Views;
 
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Reflection;
 using System.Text.RegularExpressions;

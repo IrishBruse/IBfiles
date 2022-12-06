@@ -1,5 +1,7 @@
 namespace IBfiles.Logic;
 
+using System;
+
 public class DirectoryEntry
 {
     public string Path { get; set; }
