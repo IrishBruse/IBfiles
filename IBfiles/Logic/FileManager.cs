@@ -36,10 +36,14 @@ public static class FileManager
             if (Directory.Exists(Settings.I.StartDirectory))
             {
                 CurrentDirectory = Settings.I.StartDirectory;
+                ReloadFolder();
+            }
+            else if (Settings.I.StartDirectory == "Home")
+            {
+                Open(Page.Home);
             }
         }
 
-        ReloadFolder();
     }
 
     public static void UpdateDirectoryContents()
@@ -215,6 +219,8 @@ public static class FileManager
             Page.Settings => "Settings",
             _ => throw new NotImplementedException(),
         };
+
+        UpdateTitle();
     }
 
     public static void HistoryBack()

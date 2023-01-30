@@ -223,7 +223,7 @@ public class FolderView
 
             if (FileManager.Selections.Contains(entry))
             {
-                ContextMenu.EntryContextMenu();
+                ContextMenu.EntryContextMenu(entry);
             }
         }
         _ = ImGui.TableNextColumn();

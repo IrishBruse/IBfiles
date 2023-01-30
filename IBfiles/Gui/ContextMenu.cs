@@ -1,5 +1,7 @@
 namespace IBfiles.Gui;
 
+using System;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.InteropServices;
 
@@ -36,6 +38,16 @@ public class ContextMenu
 
             ImGui.Separator();
 
+            foreach (KeyValuePair<string, string> command in Settings.I.FolderCommands)
+            {
+                if (ImGui.Selectable(SpacePadding + command.Key + SpacePadding))
+                {
+                    // TODO: Implement running commands
+                    Console.WriteLine("Not Implemented " + command.Value);
+                }
+                ImGuiExt.CursorPointer();
+            }
+
             ImGui.EndPopup();
         }
 
@@ -43,7 +55,7 @@ public class ContextMenu
         ImGui.PopStyleColor();
     }
 
-    public static void EntryContextMenu()
+    public static void EntryContextMenu(DirectoryEntry entry)
     {
         ImGui.PushStyleColor(ImGuiCol.HeaderHovered, Colors.AccentDarker);
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 6));
@@ -58,6 +70,33 @@ public class ContextMenu
                 }
             }
             ImGuiExt.CursorPointer();
+
+            ImGui.Separator();
+
+            if (entry.IsFile)
+            {
+                foreach (KeyValuePair<string, string> command in Settings.I.FileCommands)
+                {
+                    if (ImGui.Selectable(SpacePadding + command.Key + SpacePadding))
+                    {
+                        // TODO: Implement running file commands
+                        Console.WriteLine("Not Implemented " + command.Value);
+                    }
+                    ImGuiExt.CursorPointer();
+                }
+            }
+            else
+            {
+                foreach (KeyValuePair<string, string> command in Settings.I.FolderCommands)
+                {
+                    if (ImGui.Selectable(SpacePadding + command.Key + SpacePadding))
+                    {
+                        // TODO: Implement running folder commands
+                        Console.WriteLine("Not Implemented " + command.Value);
+                    }
+                    ImGuiExt.CursorPointer();
+                }
+            }
 
             ImGui.Separator();
 
