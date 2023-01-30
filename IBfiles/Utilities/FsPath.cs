@@ -9,6 +9,11 @@ public struct FsPath
 {
     public string Path { get; set; }
 
+    public FsPath(string path) : this()
+    {
+        Path = path;
+    }
+
     public static implicit operator string(FsPath fsPath)
     {
         return fsPath.Path;

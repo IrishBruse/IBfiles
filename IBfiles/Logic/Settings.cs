@@ -16,7 +16,7 @@ public class Settings
     public int HeaderGap = 8;
     public bool FoldersFirst = true;
     public bool AlternateRowColors;
-    public FsPath StartDirectory;
+    public FsPath StartDirectory = new("Home");
     public bool HideOpticalDrives;
     public bool DecimalFileSize;
     public Dictionary<string, string> FileCommands = new();
