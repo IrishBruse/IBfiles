@@ -1,9 +1,7 @@
 namespace IBfiles.Gui.Views;
 
-using System;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Reflection;
 using System.Text.RegularExpressions;
 
 using IBfiles.ApplicationBackend;
@@ -26,12 +24,7 @@ public class SettingsView
 
         _ = ImGui.BeginTable("SettingsTable", 2, ImGuiTableFlags.None, new(ImGui.GetContentRegionAvail().X * .7f, 0));
         {
-            FieldInfo[] fields = Settings.I.GetType().GetFields();
-
-            foreach (FieldInfo field in fields)
-            {
-                DisplaySetting(field);
-            }
+            DisplaySettings(Settings.I);
         }
         ImGui.EndTable();
 
@@ -40,119 +33,114 @@ public class SettingsView
         ImGui.PopStyleVar();
     }
 
-    private static void DisplaySetting(FieldInfo field)
+    private void DisplaySettings(Settings settings)
     {
-        AddSettingLabel(field.Name);
-        ImGui.PushID(field.Name);
+        DisplayBoolean(ref settings.TitleUsesFullPath, nameof(settings.TitleUsesFullPath));
+        DisplayBoolean(ref settings.UseBackslashSeperator, nameof(settings.UseBackslashSeperator));
+        DisplayNumber(ref settings.HeaderGap, nameof(settings.HeaderGap));
+        DisplayBoolean(ref settings.FoldersFirst, nameof(settings.FoldersFirst));
+        DisplayBoolean(ref settings.AlternateRowColors, nameof(settings.AlternateRowColors));
+        DisplayPath(ref settings.StartDirectory, nameof(settings.StartDirectory));
+        DisplayBoolean(ref settings.HideOpticalDrives, nameof(settings.HideOpticalDrives));
+        DisplayBoolean(ref settings.DecimalFileSize, nameof(settings.DecimalFileSize));
+        DisplayKeyValue(ref settings.FileCommands, nameof(settings.FileCommands));
+        DisplayKeyValue(ref settings.FolderCommands, nameof(settings.FolderCommands));
+    }
 
-        switch (field.FieldType.Name)
+    private void DisplayKeyValue(ref Dictionary<string, string> value, string name)
+    {
+        AddSettingLabel(name + ":");
+        ImGui.PushID(name);
+
+        _ = ImGui.TableNextColumn();
+
+        ImGui.PushStyleColor(ImGuiCol.FrameBg, Colors.BackgroundInput);
+
+        foreach ((string k, string v) in value)
         {
-            case nameof(Boolean):
-            {
-                bool val = (bool)field.GetValue(Settings.I);
-                _ = ImGui.TableNextColumn(); _ = ImGui.Checkbox("", ref val);
-                field.SetValue(Settings.I, val);
+            _ = ImGui.TableNextColumn();
 
-                ImGuiExt.CursorPointer();
-            }
-            break;
+            ImGui.SetNextItemWidth(ImGui.GetColumnWidth());
 
-            case nameof(Int16):
-            case nameof(Int32):
-            case nameof(Int64):
-            {
-                int val = (int)field.GetValue(Settings.I);
-                _ = ImGui.TableNextColumn();
-                ImGui.PushItemWidth(90);
-                _ = ImGui.InputInt("", ref val);
-                ImGui.PopItemWidth();
-                field.SetValue(Settings.I, val);
+            string inputk = k;
+            ImGui.PushID(k);
+            _ = ImGui.InputText("", ref inputk, 256);
+            ImGui.PopID();
 
-                ImGuiExt.CursorPointer();
-            }
-            break;
+            _ = ImGui.TableNextColumn();
 
-            case nameof(String):
-            {
-                string val = (string)field.GetValue(Settings.I) ?? "";
-                _ = ImGui.TableNextColumn();
-                ImGui.PushItemWidth(90);
-                // https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=registry
-                _ = ImGui.InputText("", ref val, 256);
-                ImGui.PopItemWidth();
-                field.SetValue(Settings.I, val);
+            ImGui.SetNextItemWidth(ImGui.GetColumnWidth());
 
-                ImGuiExt.CursorPointer();
-            }
-            break;
-
-            case nameof(FsPath):
-            {
-                FsPath val = (FsPath)field.GetValue(Settings.I);
-                _ = ImGui.TableNextColumn();
-                if (ImGui.Button(val))
-                {
-                    DialogResult result = Dialog.FolderPicker(val);
-                    if (result.IsOk)
-                    {
-                        val.Path = result.Path;
-                    }
-                }
-                ImGui.PopItemWidth();
-                field.SetValue(Settings.I, val);
-
-                ImGuiExt.CursorPointer();
-            }
-            break;
-
-            case "Dictionary`2":
-            {
-
-                ImGui.PushStyleColor(ImGuiCol.FrameBg, Colors.BackgroundInput);
-
-                Dictionary<string, string> val = (Dictionary<string, string>)field.GetValue(Settings.I);
-
-                foreach ((string k, string v) in val)
-                {
-                    _ = ImGui.TableNextColumn();
-
-                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth());
-
-                    string inputk = k;
-                    ImGui.PushID(k);
-                    ImGui.InputText("", ref inputk, 256);
-                    ImGui.PopID();
-
-                    _ = ImGui.TableNextColumn();
-
-                    ImGui.SetNextItemWidth(ImGui.GetColumnWidth());
-
-                    string inputv = v;
-                    ImGui.PushID(v);
-                    ImGui.InputText("", ref inputv, 256);
-                    ImGui.PopID();
-                }
-
-                _ = ImGui.TableNextColumn();
-
-                ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
-                ImGui.PushStyleColor(ImGuiCol.FrameBg, Colors.AccentDark);
-                if (ImGui.Selectable("Add", false))
-                {
-                    Console.WriteLine("add");
-                }
-                ImGuiExt.CursorPointer();
-
-                field.SetValue(Settings.I, val);
-                ImGui.PopStyleColor();
-                ImGui.PopStyleColor();
-                ImGui.PopStyleVar();
-
-            }
-            break;
-
-            default: throw new NotImplementedException();
+            string inputv = v;
+            ImGui.PushID(v);
+            _ = ImGui.InputText("", ref inputv, 256);
+            ImGui.PopID();
         }
+
+        _ = ImGui.TableNextColumn();
+
+        ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
+        ImGui.PushStyleColor(ImGuiCol.FrameBg, Colors.AccentDark);
+        if (ImGui.Selectable("Add", false))
+        {
+            value.Add("", "");
+        }
+        ImGuiExt.CursorPointer();
+
+        _ = ImGui.TableNextColumn();
+
+        ImGui.PopStyleColor();
+        ImGui.PopStyleColor();
+        ImGui.PopStyleVar();
+    }
+
+    private void DisplayPath(ref FsPath value, string name)
+    {
+        AddSettingLabel(name);
+        ImGui.PushID(name);
+
+        _ = ImGui.TableNextColumn();
+
+        string input = value.Path;
+        _ = ImGui.InputText(string.Empty, ref input, 256);
+        value.Path = input;
+
+        ImGui.SameLine();
+
+        if (ImGui.Button("Pick"))
+        {
+            DialogResult result = Dialog.FolderPicker(value);
+            if (result.IsOk)
+            {
+                value.Path = result.Path;
+            }
+        }
+
+        ImGuiExt.CursorPointer();
+    }
+
+    private void DisplayNumber(ref int value, string name)
+    {
+        AddSettingLabel(name);
+        ImGui.PushID(name);
+
+        _ = ImGui.TableNextColumn();
+
+        _ = ImGui.InputInt(string.Empty, ref value);
+
+        ImGuiExt.CursorPointer();
+
+        ImGui.PopID();
+    }
+
+    private void DisplayBoolean(ref bool state, string name)
+    {
+        AddSettingLabel(name);
+        ImGui.PushID(name);
+
+        _ = ImGui.TableNextColumn(); _ = ImGui.Checkbox("", ref state);
+        ImGuiExt.CursorPointer();
+
         ImGui.PopID();
     }
 

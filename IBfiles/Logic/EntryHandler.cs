@@ -1,5 +1,6 @@
 namespace IBfiles.Logic;
 
+using System;
 using System.Diagnostics;
 
 using Microsoft.VisualBasic.FileIO;
@@ -40,7 +41,14 @@ public class EntryHandler
         }
         else
         {
-            FileSystem.DeleteDirectory(entry.Path, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+            try
+            {
+                FileSystem.DeleteDirectory(entry.Path, UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }
