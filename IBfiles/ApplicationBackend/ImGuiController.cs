@@ -451,7 +451,7 @@ public class ImGuiController : IDisposable
         }
     }
 
-    private struct ResourceSetInfo
+    private readonly struct ResourceSetInfo
     {
         public readonly IntPtr ImGuiBinding;
         public readonly ResourceSet ResourceSet;
