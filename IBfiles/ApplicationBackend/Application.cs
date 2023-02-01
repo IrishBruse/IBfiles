@@ -1,7 +1,9 @@
 namespace IBfiles.ApplicationBackend;
 
 using System;
+using System.Threading;
 
+using IBfiles.Gui;
 using IBfiles.Logic;
 using IBfiles.Utilities;
 
@@ -33,7 +35,7 @@ public class Application : IDisposable
     private IInputContext input;
     private GraphicsBackend preferredBackend;
     private bool focused = true;
-    private bool minimized;
+    private CancellationTokenSource sleepToken = new();
 
     public Application(GraphicsBackend preferredBackend)
     {
@@ -57,9 +59,7 @@ public class Application : IDisposable
         GlobalStyle.Style();
 
         Window.FocusChanged += (focus) => focused = focus;
-        Window.Closing += () => Console.WriteLine("Close");
-        Window.FramebufferResize += (fb) => minimized = fb.X == 0 && fb.Y == 0;
-
+        Window.StateChanged += (state) => focused = state != WindowState.Minimized;
         input = Window.CreateInput();
 
         IKeyboard keyboard = input.Keyboards[0];
@@ -125,10 +125,13 @@ public class Application : IDisposable
 
     public void Render(double delta)
     {
-        if (!minimized)
+        if (!focused)
         {
-            Gui.GuiManager.Submit();
+            sleepToken.Token.WaitHandle.WaitOne(33);
+            return;
         }
+
+        GuiManager.Submit();
 
         CommandList.Begin();
         CommandList.SetFramebuffer(GraphicsDevice.MainSwapchain.Framebuffer);
