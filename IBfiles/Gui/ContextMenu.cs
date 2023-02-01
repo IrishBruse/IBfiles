@@ -1,7 +1,5 @@
 namespace IBfiles.Gui;
 
-using System;
-using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.InteropServices;
 
@@ -38,12 +36,11 @@ public class ContextMenu
 
             ImGui.Separator();
 
-            foreach (KeyValuePair<string, string> command in Settings.I.FolderCommands)
+            foreach ((string displayText, Command command) in Settings.I.FolderCommands)
             {
-                if (ImGui.Selectable(SpacePadding + command.Key + SpacePadding))
+                if (ImGui.Selectable(SpacePadding + displayText + SpacePadding))
                 {
-                    // TODO: Implement running commands
-                    Console.WriteLine("Not Implemented " + command.Value);
+                    CommandHandler.Run(command.File, command.Args, FileManager.CurrentDirectory);
                 }
                 ImGuiExt.CursorPointer();
             }
@@ -75,24 +72,22 @@ public class ContextMenu
 
             if (entry.IsFile)
             {
-                foreach (KeyValuePair<string, string> command in Settings.I.FileCommands)
+                foreach ((string displayText, Command command) in Settings.I.FileCommands)
                 {
-                    if (ImGui.Selectable(SpacePadding + command.Key + SpacePadding))
+                    if (ImGui.Selectable(SpacePadding + displayText + SpacePadding))
                     {
-                        // TODO: Implement running file commands
-                        Console.WriteLine("Not Implemented " + command.Value);
+                        CommandHandler.Run(command.File, command.Args, entry.Path);
                     }
                     ImGuiExt.CursorPointer();
                 }
             }
             else
             {
-                foreach (KeyValuePair<string, string> command in Settings.I.FolderCommands)
+                foreach ((string displayText, Command command) in Settings.I.FolderCommands)
                 {
-                    if (ImGui.Selectable(SpacePadding + command.Key + SpacePadding))
+                    if (ImGui.Selectable(SpacePadding + displayText + SpacePadding))
                     {
-                        // TODO: Implement running folder commands
-                        Console.WriteLine("Not Implemented " + command.Value);
+                        CommandHandler.Run(command.File, command.Args, entry.Path);
                     }
                     ImGuiExt.CursorPointer();
                 }

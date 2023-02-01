@@ -8,9 +8,15 @@
   "HideOpticalDrives": true,
   "DecimalFileSize": true,
   "FileCommands": {
-    "Open in Code(File)": "code %1"
+    "Open in Code(File)": {
+      "file": "code",
+      "args": "%1"
+    }
   },
   "FolderCommands": {
-    "Open in Code(Folder)": "code %1"
+    "Open in Code(Folder)": {
+      "file": "code",
+      "args": "%1"
+    }
   }
 }
