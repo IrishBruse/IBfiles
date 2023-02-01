@@ -14,7 +14,7 @@ public static class ResourceLoader
         string name = assembly.FullName.Split(',')[0] + "." + fileLocation.Replace('/', '.');
         using Stream s = assembly.GetManifestResourceStream(name);
         byte[] ret = new byte[s.Length];
-        _ = s.Read(ret, 0, (int)s.Length);
+        s.Read(ret, 0, (int)s.Length);
         return ret;
     }
 

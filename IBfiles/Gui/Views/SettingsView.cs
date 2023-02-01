@@ -52,7 +52,7 @@ public class SettingsView
         AddSettingLabel(name + ":");
         ImGui.PushID(name);
 
-        _ = ImGui.TableNextColumn();
+        ImGui.TableNextColumn();
 
         ImGui.PushStyleColor(ImGuiCol.FrameBg, Colors.BackgroundInput);
 
@@ -60,19 +60,19 @@ public class SettingsView
         {
             Command command = value[i];
 
-            _ = ImGui.TableNextColumn();
+            ImGui.TableNextColumn();
             ImGui.SetNextItemWidth(ImGui.GetColumnWidth());
             ImGui.PushID(value.GetHashCode() + "-" + i);
-            _ = ImGui.InputText(string.Empty, ref command.DisplayName, 256);
+            ImGui.InputText(string.Empty, ref command.DisplayName, 256);
             ImGui.PopID();
 
-            _ = ImGui.TableNextColumn();
-            _ = ImGui.InputText(string.Empty, ref command.File, 256);
+            ImGui.TableNextColumn();
+            ImGui.InputText(string.Empty, ref command.File, 256);
             ImGui.SameLine();
-            _ = ImGui.InputText(string.Empty, ref command.Args, 256);
+            ImGui.InputText(string.Empty, ref command.Args, 256);
         }
 
-        _ = ImGui.TableNextColumn();
+        ImGui.TableNextColumn();
 
         ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
         ImGui.PushStyleColor(ImGuiCol.FrameBg, Colors.AccentDark);
@@ -82,7 +82,7 @@ public class SettingsView
         }
         ImGuiExt.CursorPointer();
 
-        _ = ImGui.TableNextColumn();
+        ImGui.TableNextColumn();
 
         ImGui.PopStyleColor();
         ImGui.PopStyleColor();
@@ -94,10 +94,10 @@ public class SettingsView
         AddSettingLabel(name);
         ImGui.PushID(name);
 
-        _ = ImGui.TableNextColumn();
+        ImGui.TableNextColumn();
 
         string input = value.Path;
-        _ = ImGui.InputText(string.Empty, ref input, 256);
+        ImGui.InputText(string.Empty, ref input, 256);
         value.Path = input;
 
         ImGui.SameLine();
@@ -119,9 +119,9 @@ public class SettingsView
         AddSettingLabel(name);
         ImGui.PushID(name);
 
-        _ = ImGui.TableNextColumn();
+        ImGui.TableNextColumn();
 
-        _ = ImGui.InputInt(string.Empty, ref value);
+        ImGui.InputInt(string.Empty, ref value);
 
         ImGuiExt.CursorPointer();
 
@@ -133,7 +133,7 @@ public class SettingsView
         AddSettingLabel(name);
         ImGui.PushID(name);
 
-        _ = ImGui.TableNextColumn(); _ = ImGui.Checkbox(string.Empty, ref state);
+        ImGui.TableNextColumn(); ImGui.Checkbox(string.Empty, ref state);
         ImGuiExt.CursorPointer();
 
         ImGui.PopID();
@@ -141,7 +141,7 @@ public class SettingsView
 
     private static void AddSettingLabel(string name)
     {
-        _ = ImGui.TableNextColumn();
+        ImGui.TableNextColumn();
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 4);
         string res = Regex.Replace(name, "([A-Z])", " $1").Trim();
         ImGui.Text(res);

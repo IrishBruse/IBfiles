@@ -34,7 +34,7 @@ public class NavbarGui
             ImGui.PushFont(Application.CascadiaFont);
             {
                 ImGui.SameLine();
-                _ = ImGui.BeginChild("test", new(width, ButtonSize));
+                ImGui.BeginChild("test", new(width, ButtonSize));
                 ImGui.SetCursorPosX((width - navbarWidth) / 2f);
                 if (editingNavbarLocation)
                 {
@@ -112,7 +112,7 @@ public class NavbarGui
             editingNavbarLocation = true;
         }
         ImGui.SetCursorPosY(5f + (13f / 2));
-        _ = ImGui.GetFontSize();
+        ImGui.GetFontSize();
 
         Debug.Assert(path != null);
 
@@ -193,7 +193,7 @@ public class NavbarGui
         ImGui.PushStyleColor(ImGuiCol.ChildBg, Colors.BackgroundNormal);
         ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0));
         {
-            _ = ImGui.BeginChild("Navbar", new(io.DisplaySize.X, 46));
+            ImGui.BeginChild("Navbar", new(io.DisplaySize.X, 46));
             {
                 Content();
             }

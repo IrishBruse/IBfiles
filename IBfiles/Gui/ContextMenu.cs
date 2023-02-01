@@ -119,6 +119,6 @@ public class ContextMenu
         info.nShellExecuteShow = ShowWindowCommand.SW_SHOW;
         info.fMask = Shell32.ShellExecuteMaskFlags.SEE_MASK_INVOKEIDLIST;
 
-        _ = Shell32.ShellExecuteEx(ref info);
+        Shell32.ShellExecuteEx(ref info);
     }
 }

@@ -30,7 +30,7 @@ public class EntryHandler
 
         fileopener.StartInfo.FileName = "explorer";
         fileopener.StartInfo.Arguments = "\"" + entry.Path + "\"";
-        _ = fileopener.Start();
+        fileopener.Start();
     }
 
     public static void Delete(DirectoryEntry entry)

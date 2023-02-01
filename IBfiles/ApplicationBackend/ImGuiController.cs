@@ -60,7 +60,7 @@ public class ImGuiController : IDisposable
         ImGui.SetCurrentContext(context);
 
         ImGuiIOPtr io = ImGui.GetIO();
-        _ = io.Fonts.AddFontDefault();
+        io.Fonts.AddFontDefault();
         io.BackendFlags |= ImGuiBackendFlags.RendererHasVtxOffset;
 
         unsafe

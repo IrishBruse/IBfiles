@@ -96,7 +96,7 @@ public class FolderView
 
         for (int column = 0; column < ColumnsCount; column++)
         {
-            _ = ImGui.TableSetColumnIndex(column);
+            ImGui.TableSetColumnIndex(column);
             string columnName = ImGui.TableGetColumnName(column);
             Vector2 size = ImGui.CalcTextSize(columnName);
             float width = ImGui.GetColumnWidth();
@@ -115,7 +115,7 @@ public class FolderView
     private static void DisplayRow(DirectoryEntry entry)
     {
         bool pop = false;
-        _ = ImGui.TableNextColumn();
+        ImGui.TableNextColumn();
         {
             if (FileManager.Selections.Contains(entry))
             {
@@ -173,7 +173,7 @@ public class FolderView
                         }
                         else
                         {
-                            _ = Directory.CreateDirectory(entry.Path);
+                            Directory.CreateDirectory(entry.Path);
                         }
                     }
                 }
@@ -188,7 +188,7 @@ public class FolderView
                         {
                             if (FileManager.Selections.Contains(entry))
                             {
-                                _ = FileManager.Selections.Remove(entry);
+                                FileManager.Selections.Remove(entry);
                             }
                             else
                             {
@@ -226,11 +226,11 @@ public class FolderView
                 ContextMenu.EntryContextMenu(entry);
             }
         }
-        _ = ImGui.TableNextColumn();
+        ImGui.TableNextColumn();
         {
             DisplayModifiedTime(entry.LastWriteTime);
         }
-        _ = ImGui.TableNextColumn();
+        ImGui.TableNextColumn();
         {
             if (entry.IsFile)
             {

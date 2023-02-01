@@ -37,10 +37,9 @@ public class Program
 
         window.Load += () =>
         {
-            window.Center();
-
             RawImage icon = new(32, 32, Icon.Data);
             window.SetWindowIcon(ref icon);
+            window.Center();
         };
 
         window.Load += application.Load;
@@ -57,10 +56,10 @@ public class Program
     {
         StringBuilder output = new();
 
-        _ = output.AppendLine("namespace IBfiles;");
-        _ = output.AppendLine("");
-        _ = output.AppendLine("public class Icon\n{");
-        _ = output.AppendLine("    public static readonly byte[] Data = new byte[]\n{");
+        output.AppendLine("namespace IBfiles;");
+        output.AppendLine("");
+        output.AppendLine("public class Icon\n{");
+        output.AppendLine("    public static readonly byte[] Data = new byte[]\n{");
 
         Image<Rgba32> img = Image.Load<Rgba32>(File.ReadAllBytes("Icon.png"));
         for (int y = 0; y < img.Height; y++)
@@ -68,13 +67,13 @@ public class Program
             for (int x = 0; x < img.Width; x++)
             {
                 string value = $"{img[x, y].R}, {img[x, y].G}, {img[x, y].B}, {img[x, y].A},";
-                _ = output.Append(value);
+                output.Append(value);
             }
-            _ = output.AppendLine("");
+            output.AppendLine("");
         }
 
-        _ = output.AppendLine("\n    };");
-        _ = output.AppendLine("}");
+        output.AppendLine("\n    };");
+        output.AppendLine("}");
 
 
         File.WriteAllText(Environment.CurrentDirectory + "/Icon.cs", output.ToString());

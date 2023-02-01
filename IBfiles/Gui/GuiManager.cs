@@ -26,7 +26,7 @@ public class GuiManager
         ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0);
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0));
         {
-            _ = ImGui.Begin("Viewport", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoInputs);
+            ImGui.Begin("Viewport", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoInputs);
             {
                 navbar.Gui();
                 Content();
@@ -44,7 +44,7 @@ public class GuiManager
         float height = ImGui.GetWindowHeight() - ImGui.GetCursorPosY();
         float width = io.DisplaySize.X;
 
-        _ = ImGui.BeginChild("View", new(width, height));
+        ImGui.BeginChild("View", new(width, height));
         {
             ImGui.GetIO().WantCaptureMouseUnlessPopupClose = true;
 

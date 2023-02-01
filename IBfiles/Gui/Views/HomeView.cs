@@ -68,7 +68,7 @@ public class HomeView
 
         bool pop = false;
 
-        _ = ImGui.TableNextColumn();
+        ImGui.TableNextColumn();
 
         if (selected)
         {
@@ -90,7 +90,7 @@ public class HomeView
         }
         ImGui.Image(iconPtr, new Vector2(32), Vector2.Zero, Vector2.One, Colors.White);
 
-        _ = ImGui.TableNextColumn();
+        ImGui.TableNextColumn();
 
         string name;
 
@@ -129,7 +129,7 @@ public class HomeView
             string overlay = " " + Formatter.GetDataSize(drive.TotalSize - drive.TotalFreeSpace) + " Used";
             ImGui.ProgressBar((drive.TotalSize - drive.TotalFreeSpace) / (float)drive.TotalSize, new(NameColumnWidth, 14), overlay);
 
-            _ = ImGui.TableNextColumn();
+            ImGui.TableNextColumn();
             ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 6);
 
             ImGui.Text(drive.DriveFormat);
