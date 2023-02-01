@@ -22,11 +22,11 @@ public class SettingsView
         ImGui.SetCursorPosX(ImGui.GetWindowWidth() * .25f);
         ImGui.SetCursorPosY(ImGui.GetWindowHeight() * .1f);
 
-        _ = ImGui.BeginTable("SettingsTable", 2, ImGuiTableFlags.None, new(ImGui.GetContentRegionAvail().X * .7f, 0));
+        if (ImGui.BeginTable("SettingsTable", 2, ImGuiTableFlags.None, new(ImGui.GetContentRegionAvail().X * .7f, 0)))
         {
             DisplaySettings(Settings.I);
+            ImGui.EndTable();
         }
-        ImGui.EndTable();
 
         CloseSettings();
 
