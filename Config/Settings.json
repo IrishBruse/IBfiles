@@ -7,16 +7,18 @@
   "StartDirectory": "Home",
   "HideOpticalDrives": true,
   "DecimalFileSize": true,
-  "FileCommands": {
-    "Open in Code(File)": {
+  "FileCommands": [
+    {
+      "display": "Open in Code(File)",
       "file": "code",
       "args": "%1"
     }
-  },
-  "FolderCommands": {
-    "Open in Code(Folder)": {
+  ],
+  "FolderCommands": [
+    {
+      "display": "Open in Code(Folder)",
       "file": "code",
       "args": "%1"
     }
-  }
+  ]
 }

@@ -33,6 +33,7 @@ public class Application : IDisposable
     private IInputContext input;
     private GraphicsBackend preferredBackend;
     private bool focused = true;
+    private bool minimized;
 
     public Application(GraphicsBackend preferredBackend)
     {
@@ -56,6 +57,8 @@ public class Application : IDisposable
         GlobalStyle.Style();
 
         Window.FocusChanged += (focus) => focused = focus;
+        Window.Closing += () => Console.WriteLine("Close");
+        Window.FramebufferResize += (fb) => minimized = fb.X == 0 && fb.Y == 0;
 
         input = Window.CreateInput();
 
@@ -76,7 +79,6 @@ public class Application : IDisposable
         IconsFont = NewFontWithRange("Assets/Fonts/Codicon.ttf", 15, codiconRange);
 
         controller.CreateDeviceResources(GraphicsDevice, GraphicsDevice.MainSwapchain.Framebuffer.OutputDescription);
-
 
         IconManager.Load(GraphicsDevice, controller);
         FileManager.Load();
@@ -123,9 +125,10 @@ public class Application : IDisposable
 
     public void Render(double delta)
     {
-        _ = delta;
-
-        Gui.GuiManager.Submit();
+        if (!minimized)
+        {
+            Gui.GuiManager.Submit();
+        }
 
         CommandList.Begin();
         CommandList.SetFramebuffer(GraphicsDevice.MainSwapchain.Framebuffer);

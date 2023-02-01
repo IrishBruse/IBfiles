@@ -43,11 +43,11 @@ public class SettingsView
         DisplayPath(ref settings.StartDirectory, nameof(settings.StartDirectory));
         DisplayBoolean(ref settings.HideOpticalDrives, nameof(settings.HideOpticalDrives));
         DisplayBoolean(ref settings.DecimalFileSize, nameof(settings.DecimalFileSize));
-        DisplayCommand(ref settings.FileCommands, nameof(settings.FileCommands));
-        DisplayCommand(ref settings.FolderCommands, nameof(settings.FolderCommands));
+        DisplayCommands(ref settings.FileCommands, nameof(settings.FileCommands));
+        DisplayCommands(ref settings.FolderCommands, nameof(settings.FolderCommands));
     }
 
-    private void DisplayKeyValue(ref Dictionary<string, string> value, string name)
+    private void DisplayCommands(ref List<Command> value, string name)
     {
         AddSettingLabel(name + ":");
         ImGui.PushID(name);
@@ -56,25 +56,20 @@ public class SettingsView
 
         ImGui.PushStyleColor(ImGuiCol.FrameBg, Colors.BackgroundInput);
 
-        foreach ((string k, string v) in value)
+        for (int i = 0; i < value.Count; i++)
         {
+            Command command = value[i];
+
             _ = ImGui.TableNextColumn();
-
             ImGui.SetNextItemWidth(ImGui.GetColumnWidth());
-
-            string inputk = k;
-            ImGui.PushID(k);
-            _ = ImGui.InputText("", ref inputk, 256);
+            ImGui.PushID(value.GetHashCode() + "-" + i);
+            _ = ImGui.InputText(string.Empty, ref command.DisplayName, 256);
             ImGui.PopID();
 
             _ = ImGui.TableNextColumn();
-
-            ImGui.SetNextItemWidth(ImGui.GetColumnWidth());
-
-            string inputv = v;
-            ImGui.PushID(v);
-            _ = ImGui.InputText("", ref inputv, 256);
-            ImGui.PopID();
+            _ = ImGui.InputText(string.Empty, ref command.File, 256);
+            ImGui.SameLine();
+            _ = ImGui.InputText(string.Empty, ref command.Args, 256);
         }
 
         _ = ImGui.TableNextColumn();
@@ -83,55 +78,7 @@ public class SettingsView
         ImGui.PushStyleColor(ImGuiCol.FrameBg, Colors.AccentDark);
         if (ImGui.Selectable("Add", false))
         {
-            value.Add("", "");
-        }
-        ImGuiExt.CursorPointer();
-
-        _ = ImGui.TableNextColumn();
-
-        ImGui.PopStyleColor();
-        ImGui.PopStyleColor();
-        ImGui.PopStyleVar();
-    }
-
-    private void DisplayCommand(ref Dictionary<string, Command> value, string name)
-    {
-        AddSettingLabel(name + ":");
-        ImGui.PushID(name);
-
-        _ = ImGui.TableNextColumn();
-
-        ImGui.PushStyleColor(ImGuiCol.FrameBg, Colors.BackgroundInput);
-
-        foreach ((string k, Command v) in value)
-        {
-            _ = ImGui.TableNextColumn();
-
-            ImGui.SetNextItemWidth(ImGui.GetColumnWidth());
-
-            string inputk = k;
-            ImGui.PushID(k);
-            _ = ImGui.InputText("", ref inputk, 256);
-            ImGui.PopID();
-
-            _ = ImGui.TableNextColumn();
-
-            ImGui.SetNextItemWidth(ImGui.GetColumnWidth());
-
-            string inputv = v.File;
-            ImGui.PushID(v.File);
-            _ = ImGui.InputText("", ref inputv, 256);
-            v.File = inputv;
-            ImGui.PopID();
-        }
-
-        _ = ImGui.TableNextColumn();
-
-        ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
-        ImGui.PushStyleColor(ImGuiCol.FrameBg, Colors.AccentDark);
-        if (ImGui.Selectable("Add", false))
-        {
-            value.Add("Display Text", new("File", "Args %1"));
+            value.Add(new("Display Text", "File", "Args %1"));
         }
         ImGuiExt.CursorPointer();
 
@@ -186,7 +133,7 @@ public class SettingsView
         AddSettingLabel(name);
         ImGui.PushID(name);
 
-        _ = ImGui.TableNextColumn(); _ = ImGui.Checkbox("", ref state);
+        _ = ImGui.TableNextColumn(); _ = ImGui.Checkbox(string.Empty, ref state);
         ImGuiExt.CursorPointer();
 
         ImGui.PopID();

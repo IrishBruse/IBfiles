@@ -21,7 +21,6 @@ public class ContextMenu
 
         if (ImGui.BeginPopupContextItem("FolderContextMenu", ImGuiPopupFlags.MouseButtonRight | ImGuiPopupFlags.NoOpenOverExistingPopup))
         {
-
             if (ImGui.Selectable(SpacePadding + "New File..." + SpacePadding))
             {
                 FileManager.NewFile();
@@ -36,9 +35,9 @@ public class ContextMenu
 
             ImGui.Separator();
 
-            foreach ((string displayText, Command command) in Settings.I.FolderCommands)
+            foreach (Command command in Settings.I.FolderCommands)
             {
-                if (ImGui.Selectable(SpacePadding + displayText + SpacePadding))
+                if (ImGui.Selectable(SpacePadding + command.DisplayName + SpacePadding))
                 {
                     CommandHandler.Run(command.File, command.Args, FileManager.CurrentDirectory);
                 }
@@ -72,9 +71,9 @@ public class ContextMenu
 
             if (entry.IsFile)
             {
-                foreach ((string displayText, Command command) in Settings.I.FileCommands)
+                foreach (Command command in Settings.I.FileCommands)
                 {
-                    if (ImGui.Selectable(SpacePadding + displayText + SpacePadding))
+                    if (ImGui.Selectable(SpacePadding + command.DisplayName + SpacePadding))
                     {
                         CommandHandler.Run(command.File, command.Args, entry.Path);
                     }
@@ -83,9 +82,9 @@ public class ContextMenu
             }
             else
             {
-                foreach ((string displayText, Command command) in Settings.I.FolderCommands)
+                foreach (Command command in Settings.I.FolderCommands)
                 {
-                    if (ImGui.Selectable(SpacePadding + displayText + SpacePadding))
+                    if (ImGui.Selectable(SpacePadding + command.DisplayName + SpacePadding))
                     {
                         CommandHandler.Run(command.File, command.Args, entry.Path);
                     }

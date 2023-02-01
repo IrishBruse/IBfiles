@@ -19,8 +19,8 @@ public class Settings
     public FsPath StartDirectory = new("Home");
     public bool HideOpticalDrives;
     public bool DecimalFileSize;
-    public Dictionary<string, Command> FileCommands = new();
-    public Dictionary<string, Command> FolderCommands = new();
+    public List<Command> FileCommands = new();
+    public List<Command> FolderCommands = new();
 
     public static void Load()
     {
@@ -52,18 +52,21 @@ public class Settings
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
 }
-#pragma warning restore CA1051
 
 public class Command
 {
+    [JsonPropertyName("display")]
+    public string DisplayName;
     [JsonPropertyName("file")]
-    public string File { get; set; }
+    public string File;
     [JsonPropertyName("args")]
-    public string Args { get; set; }
+    public string Args;
 
-    public Command(string file, string args)
+    public Command(string displayName, string file, string args)
     {
         File = file;
         Args = args;
+        DisplayName = displayName;
     }
 }
+#pragma warning restore CA1051
