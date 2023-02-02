@@ -14,23 +14,36 @@ using NativeFileDialogSharp;
 
 public class SettingsView
 {
+    private float width;
+    private float height;
+
     public void Gui()
     {
-        ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 2);
-        FileManager.UpdateTitle();// For live settings changes
-
-        ImGui.SetCursorPosX(ImGui.GetWindowWidth() * .25f);
-        ImGui.SetCursorPosY(ImGui.GetWindowHeight() * .1f);
-
-        if (ImGui.BeginTable("SettingsTable", 2, ImGuiTableFlags.None, new(ImGui.GetContentRegionAvail().X * .7f, 0)))
+        if (ImGui.BeginChild("Settings", new(ImGuiExt.ReactiveWidth(0.7f, 500, 800), height)))
         {
-            DisplaySettings(Settings.I);
-            ImGui.EndTable();
+            width = ImGui.GetContentRegionAvail().X;
+            height = ImGui.GetContentRegionAvail().Y;
+
+            ImGui.PushStyleColor(ImGuiCol.FrameBg, Colors.BackgroundInput);
+            ImGui.PushStyleColor(ImGuiCol.Button, Colors.AccentDark);
+            ImGui.PushStyleColor(ImGuiCol.ButtonHovered, Colors.BackgroundInput);
+
+            ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 2);
+
+            if (ImGui.BeginTable("SettingsTable", 2, ImGuiTableFlags.None, new(width, 0)))
+            {
+                DisplaySettings(Settings.I);
+                ImGui.EndTable();
+            }
+
+            CloseSettings();
+
+            ImGui.PopStyleVar();
+
+            ImGui.PopStyleColor(3);
+
+            ImGui.EndChild();
         }
-
-        CloseSettings();
-
-        ImGui.PopStyleVar();
     }
 
     private void DisplaySettings(Settings settings)
@@ -61,32 +74,39 @@ public class SettingsView
             Command command = value[i];
 
             ImGui.TableNextColumn();
-            ImGui.SetNextItemWidth(ImGui.GetColumnWidth());
-            ImGui.PushID(value.GetHashCode() + "-" + i);
+
+            ImGui.PushID("Command_DisplayName_" + i);
             ImGui.InputText(string.Empty, ref command.DisplayName, 256);
             ImGui.PopID();
 
             ImGui.TableNextColumn();
+
+            ImGui.PushID("Command_File_" + i);
             ImGui.InputText(string.Empty, ref command.File, 256);
+            ImGui.PopID();
+
             ImGui.SameLine();
+
+            ImGui.PushID("Command_Args_" + i);
             ImGui.InputText(string.Empty, ref command.Args, 256);
+            ImGui.PopID();
         }
 
         ImGui.TableNextColumn();
 
         ImGui.PushStyleVar(ImGuiStyleVar.SelectableTextAlign, new Vector2(0.5f, 0.5f));
         ImGui.PushStyleColor(ImGuiCol.FrameBg, Colors.AccentDark);
-        if (ImGui.Selectable("Add", false))
+        if (ImGuiExt.Button("Add Item"))
         {
-            value.Add(new("Display Text", "File", "Args %1"));
+            value.Add(new("New Item", "File", "Args %1"));
         }
-        ImGuiExt.CursorPointer();
 
         ImGui.TableNextColumn();
 
         ImGui.PopStyleColor();
-        ImGui.PopStyleColor();
         ImGui.PopStyleVar();
+
+        ImGui.PopStyleColor();
     }
 
     private void DisplayPath(ref FsPath value, string name)
@@ -121,9 +141,9 @@ public class SettingsView
 
         ImGui.TableNextColumn();
 
+        ImGui.PushStyleColor(ImGuiCol.Button, Colors.BackgroundDark);
         ImGui.InputInt(string.Empty, ref value);
-
-        ImGuiExt.CursorPointer();
+        ImGui.PopStyleColor();
 
         ImGui.PopID();
     }
@@ -149,8 +169,7 @@ public class SettingsView
 
     private static unsafe void CloseSettings()
     {
-        ImGui.SetCursorPosX(ImGui.GetContentRegionAvail().X * .25f);
-        if (ImGui.Button("Save", new(ImGui.GetWindowWidth() * .5f, 0)))
+        if (ImGuiExt.Button("Save", new(ImGui.GetContentRegionAvail().X, 0)))
         {
             Settings.Save();
         }

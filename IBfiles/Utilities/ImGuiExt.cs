@@ -2,10 +2,13 @@
 namespace ImGuiNET;
 
 using System;
+using System.Numerics;
 #pragma warning restore IDE0130
 
 using System.Runtime.InteropServices;
 using System.Text;
+
+using IBfiles.ApplicationBackend;
 
 public static class ImGuiExt
 {
@@ -17,6 +20,24 @@ public static class ImGuiExt
         {
             ImGui.SetMouseCursor(ImGuiMouseCursor.Hand);
         }
+    }
+
+    public static bool Button(string label, Vector2 size = default)
+    {
+        ImGui.PushStyleColor(ImGuiCol.Text, Colors.White);
+        bool clicked = ImGui.Button(label, size);
+        ImGui.PopStyleColor();
+        CursorPointer();
+        return clicked;
+    }
+
+    public static bool Selectable(string label)
+    {
+        ImGui.PushStyleColor(ImGuiCol.Text, Colors.White);
+        bool selected = ImGui.Selectable(label);
+        ImGui.PopStyleColor();
+        CursorPointer();
+        return selected;
     }
 
     public static unsafe bool BeginPopupModal(string name, ImGuiWindowFlags flags)
@@ -70,6 +91,33 @@ public static class ImGuiExt
         {
             char* chars = ptr;
             return Encoding.UTF8.GetBytes(chars, s.Length, utf8Bytes, utf8ByteCount);
+        }
+    }
+
+    public static float ReactiveWidth(float percentage, float min, float max)
+    {
+        if (percentage < 0f || percentage > 1f)
+        {
+            throw new ArgumentException("'percentage' must be in range 0f-1f");
+        }
+
+        float padding = (1f - percentage) * 0.5f;
+
+        float width = ImGui.GetContentRegionAvail().X;
+
+        if (width < min)
+        {
+            return 0;// Full width
+        }
+        else if (width * percentage > max)
+        {
+            ImGui.SetCursorPosX(((width * percentage) - max) / 2f);
+            return max;
+        }
+        else
+        {
+            ImGui.SetCursorPosX(width * padding);
+            return width * percentage;
         }
     }
 }

@@ -34,7 +34,7 @@ public class NavbarGui
             ImGui.PushFont(Application.CascadiaFont);
             {
                 ImGui.SameLine();
-                ImGui.BeginChild("test", new(width, ButtonSize));
+                ImGui.BeginChild("Navbar", new(width, ButtonSize));
                 ImGui.SetCursorPosX((width - navbarWidth) / 2f);
                 if (editingNavbarLocation)
                 {
@@ -70,7 +70,7 @@ public class NavbarGui
             ImGui.BeginDisabled();
         }
 
-        if (ImGui.Button($"{(char)icon}", new(ButtonSize)) && enabled)
+        if (ImGuiExt.Button($"{(char)icon}", new(ButtonSize)) && enabled)
         {
             callback.Invoke();
         }
@@ -79,8 +79,6 @@ public class NavbarGui
         {
             ImGui.EndDisabled();
         }
-
-        ImGuiExt.CursorPointer();
     }
 
     private static void EditingNavbar()
@@ -136,11 +134,10 @@ public class NavbarGui
         {
             ImGui.PushFont(Application.IconsFont);
             {
-                if (ImGui.Button($"{(char)CodiconUnicode.Home}"))
+                if (ImGuiExt.Button($"{(char)CodiconUnicode.Home}"))
                 {
                     FileManager.Open(Page.Home);
                 }
-                ImGuiExt.CursorPointer();
             }
             ImGui.PopFont();
 
@@ -159,7 +156,7 @@ public class NavbarGui
 
                 ImGui.PushID(p + i);
                 {
-                    if (ImGui.Button(p))
+                    if (ImGuiExt.Button(p))
                     {
                         int ups = paths.Length - 1 - i;
                         for (int j = 0; j < ups; j++)
@@ -167,7 +164,6 @@ public class NavbarGui
                             FileManager.UpDirectoryLevel();
                         }
                     }
-                    ImGuiExt.CursorPointer();
                 }
                 ImGui.PopID();
 

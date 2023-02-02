@@ -21,27 +21,24 @@ public class ContextMenu
 
         if (ImGui.BeginPopupContextItem("FolderContextMenu", ImGuiPopupFlags.MouseButtonRight | ImGuiPopupFlags.NoOpenOverExistingPopup))
         {
-            if (ImGui.Selectable(SpacePadding + "New File..." + SpacePadding))
+            if (ImGuiExt.Selectable(SpacePadding + "New File..." + SpacePadding))
             {
                 FileManager.NewFile();
             }
-            ImGuiExt.CursorPointer();
 
-            if (ImGui.Selectable(SpacePadding + "New Folder..." + SpacePadding))
+            if (ImGuiExt.Selectable(SpacePadding + "New Folder..." + SpacePadding))
             {
                 FileManager.NewFolder();
             }
-            ImGuiExt.CursorPointer();
 
             ImGui.Separator();
 
             foreach (Command command in Settings.I.FolderCommands)
             {
-                if (ImGui.Selectable(SpacePadding + command.DisplayName + SpacePadding))
+                if (ImGuiExt.Selectable(SpacePadding + command.DisplayName + SpacePadding))
                 {
                     CommandHandler.Run(command.File, command.Args, FileManager.CurrentDirectory);
                 }
-                ImGuiExt.CursorPointer();
             }
 
             ImGui.EndPopup();
@@ -58,14 +55,13 @@ public class ContextMenu
 
         if (ImGui.BeginPopupContextItem("EntryContextMenu", ImGuiPopupFlags.MouseButtonRight))
         {
-            if (ImGui.Selectable(SpacePadding + "Delete" + SpacePadding))
+            if (ImGuiExt.Selectable(SpacePadding + "Delete" + SpacePadding))
             {
                 foreach (DirectoryEntry selection in FileManager.Selections)
                 {
                     EntryHandler.Delete(selection);
                 }
             }
-            ImGuiExt.CursorPointer();
 
             ImGui.Separator();
 
@@ -73,35 +69,32 @@ public class ContextMenu
             {
                 foreach (Command command in Settings.I.FileCommands)
                 {
-                    if (ImGui.Selectable(SpacePadding + command.DisplayName + SpacePadding))
+                    if (ImGuiExt.Selectable(SpacePadding + command.DisplayName + SpacePadding))
                     {
                         CommandHandler.Run(command.File, command.Args, entry.Path);
                     }
-                    ImGuiExt.CursorPointer();
                 }
             }
             else
             {
                 foreach (Command command in Settings.I.FolderCommands)
                 {
-                    if (ImGui.Selectable(SpacePadding + command.DisplayName + SpacePadding))
+                    if (ImGuiExt.Selectable(SpacePadding + command.DisplayName + SpacePadding))
                     {
                         CommandHandler.Run(command.File, command.Args, entry.Path);
                     }
-                    ImGuiExt.CursorPointer();
                 }
             }
 
             ImGui.Separator();
 
-            if (ImGui.Selectable(SpacePadding + "Properties..." + SpacePadding))
+            if (ImGuiExt.Selectable(SpacePadding + "Properties..." + SpacePadding))
             {
                 foreach (DirectoryEntry selection in FileManager.Selections)
                 {
                     ShowProperties(selection.Path);
                 }
             }
-            ImGuiExt.CursorPointer();
             ImGui.EndPopup();
         }
 

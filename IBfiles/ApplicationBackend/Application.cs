@@ -9,7 +9,7 @@ using IBfiles.Utilities;
 
 using ImGuiNET;
 
-
+using Silk.NET.Core;
 using Silk.NET.Input;
 using Silk.NET.Maths;
 using Silk.NET.Windowing;
@@ -44,6 +44,10 @@ public class Application : IDisposable
 
     public void Load()
     {
+        RawImage icon = new(32, 32, Icon.Data);
+        Window.SetWindowIcon(ref icon);
+        Window.Center();
+
         GraphicsDeviceOptions graphicsOptions = new();
         graphicsOptions.PreferStandardClipSpaceYDirection = true;
         graphicsOptions.PreferDepthRangeZeroToOne = true;
@@ -123,7 +127,7 @@ public class Application : IDisposable
         FileManager.Update();
     }
 
-    public void Render(double delta)
+    public void Render(double _)
     {
         if (!focused)
         {

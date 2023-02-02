@@ -202,7 +202,6 @@ public class FolderView
                         }
                     }
                 }
-                ImGuiExt.CursorPointer();
             }
 
             // Interact with entry
