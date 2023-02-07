@@ -22,9 +22,11 @@ public static class FileManager
     public static List<string> History { get; set; } = new();
 
     public static List<DirectoryEntry> DirectoryContents { get; private set; } = new();
-    public static bool SortDirty { get; internal set; }
+    public static bool SortDirty { get; set; }
 
     public static List<DirectoryEntry> Selections { get; private set; } = new();
+    public static IWindow Window { get; set; }
+
     private static EnumerationOptions enumerationOptions = new() { AttributesToSkip = FileAttributes.System, ReturnSpecialDirectories = false };
 
     public static void Load()
@@ -180,23 +182,22 @@ public static class FileManager
 
     public static void UpdateTitle()
     {
-        IWindow window = Application.Window;
         if (Settings.I.TitleUsesFullPath)
         {
-            window.Title = CurrentDirectory;
+            Window.Title = CurrentDirectory;
         }
         else
         {
-            window.Title = new DirectoryInfo(CurrentDirectory).Name;
+            Window.Title = new DirectoryInfo(CurrentDirectory).Name;
         }
 
         if (Settings.I.UseBackslashSeperator)
         {
-            window.Title = window.Title.Replace('/', '\\');
+            Window.Title = Window.Title.Replace('/', '\\');
         }
         else
         {
-            window.Title = window.Title.Replace('\\', '/');
+            Window.Title = Window.Title.Replace('\\', '/');
         }
     }
 

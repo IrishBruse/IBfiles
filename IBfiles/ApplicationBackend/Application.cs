@@ -17,12 +17,9 @@ using Silk.NET.Windowing.Extensions.Veldrid;
 
 using Veldrid;
 
-using Key = Silk.NET.Input.Key;
-using MouseButton = Silk.NET.Input.MouseButton;
-
 public class Application : IDisposable
 {
-    public static IWindow Window { get; set; }
+    public IWindow Window { get; set; }
 
     public static ImFontPtr IconsFontBig { get; set; }
     public static ImFontPtr IconsFont { get; set; }
@@ -37,9 +34,18 @@ public class Application : IDisposable
     private bool focused = true;
     private CancellationTokenSource sleepToken = new();
 
-    public Application(GraphicsBackend preferredBackend)
+    public Application(GraphicsBackend preferredBackend, IWindow window)
     {
         this.preferredBackend = preferredBackend;
+        Window = window;
+
+        Window.Load += Load;
+        Window.Update += Update;
+        Window.Closing += Closing;
+        Window.Render += Render;
+        Window.FramebufferResize += FramebufferResize;
+
+        FileManager.Window = window;
     }
 
     public void Load()
@@ -140,8 +146,10 @@ public class Application : IDisposable
         CommandList.Begin();
         CommandList.SetFramebuffer(GraphicsDevice.MainSwapchain.Framebuffer);
         CommandList.ClearColorTarget(0, new RgbaFloat(Colors.BackgroundDark));
+
         controller.Render(GraphicsDevice, CommandList);
         CommandList.End();
+
         GraphicsDevice.SubmitCommands(CommandList);
         GraphicsDevice.SwapBuffers(GraphicsDevice.MainSwapchain);
     }

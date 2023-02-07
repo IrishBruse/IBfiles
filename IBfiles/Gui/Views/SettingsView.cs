@@ -19,7 +19,7 @@ public class SettingsView
 
     public void Gui()
     {
-        if (ImGui.BeginChild("Settings", new(ImGuiExt.ReactiveWidth(0.7f, 500, 800), height)))
+        if (ImGui.BeginChild("Settings", new(ImGuiExt.ReactiveSize(500, 800), height)))
         {
             width = ImGui.GetContentRegionAvail().X;
             height = ImGui.GetContentRegionAvail().Y;
@@ -75,11 +75,17 @@ public class SettingsView
 
             ImGui.TableNextColumn();
 
+            ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
+
             ImGui.PushID("Command_DisplayName_" + i);
             ImGui.InputText(string.Empty, ref command.DisplayName, 256);
             ImGui.PopID();
 
             ImGui.TableNextColumn();
+
+            float width = ImGui.GetContentRegionAvail().X;
+
+            ImGui.SetNextItemWidth(width * 0.4f);
 
             ImGui.PushID("Command_File_" + i);
             ImGui.InputText(string.Empty, ref command.File, 256);
@@ -87,8 +93,21 @@ public class SettingsView
 
             ImGui.SameLine();
 
+            ImGui.SetNextItemWidth(width * 0.5f);
+
             ImGui.PushID("Command_Args_" + i);
             ImGui.InputText(string.Empty, ref command.Args, 256);
+            ImGui.PopID();
+
+            ImGui.SameLine();
+
+            ImGui.SetNextItemWidth(width * 0.1f);
+
+            ImGui.PushID("Command_Delete_" + i);
+            if (ImGuiExt.Button("D"))
+            {
+                value.RemoveAt(i);
+            }
             ImGui.PopID();
         }
 

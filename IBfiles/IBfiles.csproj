@@ -7,20 +7,20 @@
         <ApplicationIcon>Icon.ico</ApplicationIcon>
 
         <!-- Single File -->
-        <!-- <PublishSingleFile>true</PublishSingleFile>
-        <SelfContained>false</SelfContained>
-        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-        <PublishReadyToRun>true</PublishReadyToRun> -->
+        <!-- <PublishSingleFile>true</PublishSingleFile> -->
+        <!-- <SelfContained>false</SelfContained> -->
+        <!-- <RuntimeIdentifier>win-x64</RuntimeIdentifier> -->
+        <!-- <PublishReadyToRun>true</PublishReadyToRun> -->
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ImGui.NET" Version="1.87.3" />
+        <PackageReference Include="ImGui.NET" Version="1.89.3" />
         <PackageReference Include="Silk.NET" Version="2.16.0" />
         <PackageReference Include="Silk.NET.Windowing.Extensions.Veldrid" Version="2.16.0" />
         <PackageReference Include="Vanara.Core" Version="3.4.9" />
         <PackageReference Include="Vanara.PInvoke.Shell32" Version="3.4.9" />
-        <PackageReference Include="Veldrid" Version="4.8.0" />
-        <PackageReference Include="Veldrid.ImageSharp" Version="4.8.0" />
+        <PackageReference Include="Veldrid" Version="4.9.0" />
+        <PackageReference Include="Veldrid.ImageSharp" Version="4.9.0" />
         <PackageReference Include="Veldrid.SPIRV" Version="1.0.15" />
         <PackageReference Include="Veldrid.Utilities" Version="4.8.0" />
         <!-- Old Due to Veldrid.ImageSharp error -->

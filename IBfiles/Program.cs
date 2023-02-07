@@ -1,8 +1,6 @@
-using IBfiles;
 using IBfiles.ApplicationBackend;
 using IBfiles.Utilities;
 
-using Silk.NET.Core;
 using Silk.NET.Windowing;
 using Silk.NET.Windowing.Extensions.Veldrid;
 
@@ -20,13 +18,9 @@ options.Title = "";
 options.VSync = false;
 
 IWindow window = Window.Create(options);
-Application.Window = window;
-Application application = new(preferedBackend);
-
-window.Load += application.Load;
-window.Update += application.Update;
-window.Closing += application.Closing;
-window.Render += application.Render;
-window.FramebufferResize += application.FramebufferResize;
+Application application = new(preferedBackend, window);
 
 window.Run();
+
+application.Dispose();
+window.Dispose();

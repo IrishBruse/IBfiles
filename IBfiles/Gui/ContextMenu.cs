@@ -1,5 +1,6 @@
 namespace IBfiles.Gui;
 
+using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.InteropServices;
 
@@ -55,34 +56,22 @@ public class ContextMenu
 
         if (ImGui.BeginPopupContextItem("EntryContextMenu", ImGuiPopupFlags.MouseButtonRight))
         {
-            if (ImGuiExt.Selectable(SpacePadding + "Delete" + SpacePadding))
+            List<Command> commands = entry.IsFile ? Settings.I.FileCommands : Settings.I.FolderCommands;
+            foreach (Command command in commands)
             {
-                foreach (DirectoryEntry selection in FileManager.Selections)
+                if (ImGuiExt.Selectable(SpacePadding + command.DisplayName + SpacePadding))
                 {
-                    EntryHandler.Delete(selection);
+                    CommandHandler.Run(command.File, command.Args, entry.Path);
                 }
             }
 
             ImGui.Separator();
 
-            if (entry.IsFile)
+            if (ImGuiExt.Selectable(SpacePadding + "Delete" + SpacePadding))
             {
-                foreach (Command command in Settings.I.FileCommands)
+                foreach (DirectoryEntry selection in FileManager.Selections)
                 {
-                    if (ImGuiExt.Selectable(SpacePadding + command.DisplayName + SpacePadding))
-                    {
-                        CommandHandler.Run(command.File, command.Args, entry.Path);
-                    }
-                }
-            }
-            else
-            {
-                foreach (Command command in Settings.I.FolderCommands)
-                {
-                    if (ImGuiExt.Selectable(SpacePadding + command.DisplayName + SpacePadding))
-                    {
-                        CommandHandler.Run(command.File, command.Args, entry.Path);
-                    }
+                    EntryHandler.Delete(selection);
                 }
             }
 

@@ -94,30 +94,33 @@ public static class ImGuiExt
         }
     }
 
-    public static float ReactiveWidth(float percentage, float min, float max)
+    public static float ReactiveSize(float min, float max)
     {
-        if (percentage < 0f || percentage > 1f)
-        {
-            throw new ArgumentException("'percentage' must be in range 0f-1f");
-        }
-
-        float padding = (1f - percentage) * 0.5f;
-
         float width = ImGui.GetContentRegionAvail().X;
 
         if (width < min)
         {
-            return 0;// Full width
-        }
-        else if (width * percentage > max)
-        {
-            ImGui.SetCursorPosX(((width * percentage) - max) / 2f);
-            return max;
+            ImGui.SetCursorPosX(10f);
+
+            return width - 20;// Full width
         }
         else
         {
-            ImGui.SetCursorPosX(width * padding);
-            return width * percentage;
+            float sizeDifference = max - min;
+            float percentage = (width - min) / sizeDifference;
+
+            percentage = Math.Clamp(percentage, 0, 1f);
+
+            float result = Lerp(min, max, percentage / 2f);
+
+            ImGui.SetCursorPosX((width - result + 20) * 0.5f);
+
+            return result;
         }
+    }
+
+    private static float Lerp(float a, float b, float t)
+    {
+        return (a * (1 - t)) + (b * t);
     }
 }
