@@ -165,7 +165,7 @@ public class Application : IDisposable
 
     public void Closing()
     {
-        Clear();
+        Console.WriteLine("Closing");
     }
 
     public void Dispose()
