@@ -111,9 +111,9 @@ public static class ImGuiExt
 
             percentage = Math.Clamp(percentage, 0, 1f);
 
-            float result = Lerp(min, max, percentage / 2f);
+            float result = Lerp(min - 20, max, percentage / 2f);
 
-            ImGui.SetCursorPosX((width - result + 20) * 0.5f);
+            ImGui.SetCursorPosX((width - result) * 0.5f);
 
             return result;
         }
