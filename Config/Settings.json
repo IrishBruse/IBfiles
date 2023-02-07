@@ -9,14 +9,14 @@
   "DecimalFileSize": true,
   "FileCommands": [
     {
-      "display": "Open in Code(File)",
+      "display": "Open in Code (File)",
       "file": "code",
       "args": "%1"
     }
   ],
   "FolderCommands": [
     {
-      "display": "Open in Code(Folder)",
+      "display": "Open in Code (Folder)",
       "file": "code",
       "args": "%1"
     },
