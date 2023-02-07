@@ -19,7 +19,7 @@ public class SettingsView
 
     public void Gui()
     {
-        if (ImGui.BeginChild("Settings", new(ImGuiExt.ReactiveSize(500, 800), height)))
+        if (ImGui.BeginChild("Settings", new(ImGuiExt.ReactiveSize(400, 650), height)))
         {
             width = ImGui.GetContentRegionAvail().X;
             height = ImGui.GetContentRegionAvail().Y;
