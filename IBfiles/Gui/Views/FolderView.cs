@@ -202,6 +202,13 @@ public class FolderView
                         }
                     }
                 }
+
+                if (ImGui.BeginDragDropSource(ImGuiDragDropFlags.SourceNoPreviewTooltip))
+                {
+                    DragDropHandler.Drag();
+
+                    ImGui.EndDragDropSource();
+                }
             }
 
             // Interact with entry

@@ -19,7 +19,7 @@ using Veldrid;
 
 public class Application : IDisposable
 {
-    public IWindow Window { get; set; }
+    public static IWindow Window { get; set; }
 
     public static ImFontPtr IconsFontBig { get; set; }
     public static ImFontPtr IconsFont { get; set; }
@@ -31,21 +31,29 @@ public class Application : IDisposable
     private ImGuiController controller;
     private IInputContext input;
     private GraphicsBackend preferredBackend;
-    private bool focused = true;
     private CancellationTokenSource sleepToken = new();
 
     public Application(GraphicsBackend preferredBackend, IWindow window)
     {
         this.preferredBackend = preferredBackend;
+
         Window = window;
-
-        Window.Load += Load;
-        Window.Update += Update;
-        Window.Closing += Closing;
-        Window.Render += Render;
-        Window.FramebufferResize += FramebufferResize;
-
         FileManager.Window = window;
+
+        window.Load += Load;
+        window.Update += Update;
+        window.Closing += Closing;
+        window.Render += Render;
+        window.FramebufferResize += FramebufferResize;
+        window.FileDrop += FileDrop;
+    }
+
+    private void FileDrop(string[] files)
+    {
+        for (int i = 0; i < files.Length; i++)
+        {
+            Console.WriteLine(files[i]);
+        }
     }
 
     public void Load()
@@ -68,8 +76,6 @@ public class Application : IDisposable
 
         GlobalStyle.Style();
 
-        Window.FocusChanged += (focus) => focused = focus;
-        Window.StateChanged += (state) => focused = state != WindowState.Minimized;
         input = Window.CreateInput();
 
         IKeyboard keyboard = input.Keyboards[0];
@@ -133,14 +139,8 @@ public class Application : IDisposable
         FileManager.Update();
     }
 
-    public void Render(double _)
+    public void Render(double dt)
     {
-        if (!focused)
-        {
-            sleepToken.Token.WaitHandle.WaitOne(33);
-            return;
-        }
-
         GuiManager.Submit();
 
         CommandList.Begin();
@@ -227,14 +227,7 @@ public class Application : IDisposable
         io.MouseDown[0] = mouse.IsButtonPressed(MouseButton.Left);
         io.MouseDown[1] = mouse.IsButtonPressed(MouseButton.Right);
         io.MouseDown[2] = mouse.IsButtonPressed(MouseButton.Middle);
-        if (focused)
-        {
-            io.MousePos = mouse.Position;
-        }
-        else
-        {
-            io.MousePos = new System.Numerics.Vector2(0);
-        }
+        io.MousePos = mouse.Position;
         io.MouseWheel = mouse.ScrollWheels[0].Y;
 
         mouse.Cursor.CursorMode = CursorMode.Normal;

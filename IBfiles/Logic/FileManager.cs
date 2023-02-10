@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using IBfiles.ApplicationBackend;
-
 using ImGuiNET;
 
 using Silk.NET.Windowing;
+
+using Vanara.PInvoke;
 
 public static class FileManager
 {
@@ -45,6 +45,10 @@ public static class FileManager
                 Open(Page.Home);
             }
         }
+
+        Ole32.OleInitialize();
+        Ole32.CoInitialize();
+
 
     }
 

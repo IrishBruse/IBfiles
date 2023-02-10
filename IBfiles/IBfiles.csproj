@@ -17,8 +17,6 @@
         <PackageReference Include="ImGui.NET" Version="1.89.3" />
         <PackageReference Include="Silk.NET" Version="2.16.0" />
         <PackageReference Include="Silk.NET.Windowing.Extensions.Veldrid" Version="2.16.0" />
-        <PackageReference Include="Vanara.Core" Version="3.4.9" />
-        <PackageReference Include="Vanara.PInvoke.Shell32" Version="3.4.9" />
         <PackageReference Include="Veldrid" Version="4.9.0" />
         <PackageReference Include="Veldrid.ImageSharp" Version="4.9.0" />
         <PackageReference Include="Veldrid.SPIRV" Version="1.0.15" />
@@ -26,6 +24,10 @@
         <!-- Old Due to Veldrid.ImageSharp error -->
         <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
         <PackageReference Include="NativeFileDialogSharp" Version="0.5.0" />
+        <!-- Vanarar Windows pinvoke -->
+        <PackageReference Include="Vanara.Core" Version="3.4.13" />
+        <PackageReference Include="Vanara.PInvoke.Shell32" Version="3.4.13" />
+        <PackageReference Include="Vanara.Windows.Shell" Version="3.4.13" />
     </ItemGroup>
 
     <ItemGroup>
