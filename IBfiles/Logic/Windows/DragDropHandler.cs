@@ -1,10 +1,15 @@
+#pragma warning disable IDE0130
 namespace IBfiles.Logic;
+#pragma warning restore IDE0130
 
 using System;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 
 using Vanara.PInvoke;
 using Vanara.Windows.Shell;
+
+using static Vanara.PInvoke.Shell32;
 
 public class DragDropHandler
 {
@@ -16,8 +21,36 @@ public class DragDropHandler
         ShellItem item = new(@"A:\IBfiles\IBfiles\Icon.png");
         IDataObject data = item.DataObject;
 
+        AddPreviewImage(data, @"A:\IBfiles\IBfiles\Icon.png");
+
+        // data.SetData()
+
         Ole32.DoDragDrop(data, src, Ole32.DROPEFFECT.DROPEFFECT_COPY, out Effect);
     }
+
+    public static void AddPreviewImage(IDataObject dataObject, string imgPath)
+    {
+        if (dataObject == null)
+        {
+            throw new ArgumentNullException(nameof(dataObject));
+        }
+
+        IDragSourceHelper ddh = (IDragSourceHelper)new DragDropHelper();
+        SHDRAGIMAGE dragImage = new();
+
+        // note you should use a thumbnail here, not a full-sized image
+        System.Drawing.Bitmap thumbnail = new(imgPath);
+        dragImage.sizeDragImage.cx = thumbnail.Width;
+        dragImage.sizeDragImage.cy = thumbnail.Height;
+        dragImage.crColorKey = new COLORREF(0xff, 0, 0xff);
+        dragImage.hbmpDragImage = thumbnail.GetHbitmap();
+        ddh.InitializeFromBitmap(dragImage, dataObject);
+    }
+}
+
+[ComImport, Guid("4657278a-411b-11d2-839a-00c04fd918d0")] // CLSID_DragDropHelper
+internal class DragDropHelper
+{
 }
 
 internal class DropSource : Ole32.IDropSource
@@ -25,7 +58,6 @@ internal class DropSource : Ole32.IDropSource
     public HRESULT QueryContinueDrag(bool fEscapePressed, uint grfKeyState)
     {
         Console.WriteLine(grfKeyState);
-        // return HRESULT.DRAGDROP_S_USEDEFAULTCURSORS;
 
         if (fEscapePressed)
         {

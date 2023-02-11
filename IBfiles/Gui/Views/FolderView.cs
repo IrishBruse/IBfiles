@@ -203,7 +203,7 @@ public class FolderView
                     }
                 }
 
-                if (ImGui.BeginDragDropSource(ImGuiDragDropFlags.SourceNoPreviewTooltip))
+                if (ImGui.BeginDragDropSource(ImGuiDragDropFlags.None))
                 {
                     DragDropHandler.Drag();
 
