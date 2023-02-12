@@ -11,6 +11,8 @@
         <!-- <SelfContained>false</SelfContained> -->
         <!-- <RuntimeIdentifier>win-x64</RuntimeIdentifier> -->
         <!-- <PublishReadyToRun>true</PublishReadyToRun> -->
+
+        <DefineConstants>WINDOWS</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>

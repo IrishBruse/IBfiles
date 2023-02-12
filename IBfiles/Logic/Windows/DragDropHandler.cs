@@ -1,3 +1,4 @@
+#if WINDOWS
 #pragma warning disable IDE0130
 namespace IBfiles.Logic;
 #pragma warning restore IDE0130
@@ -5,15 +6,16 @@ namespace IBfiles.Logic;
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Versioning;
 
 using Vanara.PInvoke;
 using Vanara.Windows.Shell;
 
 using static Vanara.PInvoke.Shell32;
 
+[SupportedOSPlatform("windows")]
 public class DragDropHandler
 {
-    public static Ole32.DROPEFFECT Effect = Ole32.DROPEFFECT.DROPEFFECT_MOVE;
     private static DropSource src = new();
 
     public static void Drag()
@@ -23,9 +25,8 @@ public class DragDropHandler
 
         AddPreviewImage(data, @"A:\IBfiles\IBfiles\Icon.png");
 
-        // data.SetData()
-
-        Ole32.DoDragDrop(data, src, Ole32.DROPEFFECT.DROPEFFECT_COPY, out Effect);
+        Ole32.DoDragDrop(data, src, Ole32.DROPEFFECT.DROPEFFECT_COPY, out Ole32.DROPEFFECT effect);
+        Console.WriteLine(effect);
     }
 
     public static void AddPreviewImage(IDataObject dataObject, string imgPath)
@@ -53,6 +54,7 @@ internal class DragDropHelper
 {
 }
 
+[SupportedOSPlatform("windows")]
 internal class DropSource : Ole32.IDropSource
 {
     public HRESULT QueryContinueDrag(bool fEscapePressed, uint grfKeyState)
@@ -84,7 +86,8 @@ internal class DropSource : Ole32.IDropSource
 
     public HRESULT GiveFeedback(Ole32.DROPEFFECT dwEffect)
     {
-        DragDropHandler.Effect = dwEffect;
         return HRESULT.S_OK;
     }
 }
+
+#endif
