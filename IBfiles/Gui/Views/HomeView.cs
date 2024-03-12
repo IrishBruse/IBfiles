@@ -103,7 +103,7 @@ public class HomeView
             name = drive.VolumeLabel + " ";
         }
 
-        if (drive.Name.StartsWith("C"))
+        if (drive.Name.StartsWith('C'))
         {
             name = "Local Disk ";
         }

@@ -118,7 +118,7 @@ public class NavbarGui
 
         if (string.IsNullOrEmpty(path))
         {
-            paths = Array.Empty<string>();
+            paths = [];
         }
         else if (path.Contains('/'))
         {

@@ -31,10 +31,7 @@ public class DragDropHandler
 
     public static void AddPreviewImage(IDataObject dataObject, string imgPath)
     {
-        if (dataObject == null)
-        {
-            throw new ArgumentNullException(nameof(dataObject));
-        }
+        ArgumentNullException.ThrowIfNull(dataObject);
 
         IDragSourceHelper ddh = (IDragSourceHelper)new DragDropHelper();
         SHDRAGIMAGE dragImage = new();
@@ -55,7 +52,7 @@ internal class DragDropHelper
 }
 
 [SupportedOSPlatform("windows")]
-internal class DropSource : Ole32.IDropSource
+internal sealed class DropSource : Ole32.IDropSource
 {
     public HRESULT QueryContinueDrag(bool fEscapePressed, uint grfKeyState)
     {

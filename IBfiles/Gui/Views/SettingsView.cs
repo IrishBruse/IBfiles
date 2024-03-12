@@ -12,7 +12,7 @@ using ImGuiNET;
 
 using NativeFileDialogSharp;
 
-public class SettingsView
+public partial class SettingsView
 {
     private float width;
     private float height;
@@ -182,7 +182,7 @@ public class SettingsView
     {
         ImGui.TableNextColumn();
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 4);
-        string res = Regex.Replace(name, "([A-Z])", " $1").Trim();
+        string res = MyRegex().Replace(name, " $1").Trim();
         ImGui.Text(res);
     }
 
@@ -194,4 +194,7 @@ public class SettingsView
         }
         ImGuiExt.CursorPointer();
     }
+
+    [GeneratedRegex("([A-Z])")]
+    private static partial Regex MyRegex();
 }

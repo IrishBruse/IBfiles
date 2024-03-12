@@ -19,12 +19,12 @@ public static class FileManager
 
     private static bool queueReloadFolder;
 
-    public static List<string> History { get; set; } = new();
+    public static List<string> History { get; set; } = [];
 
-    public static List<DirectoryEntry> DirectoryContents { get; private set; } = new();
+    public static List<DirectoryEntry> DirectoryContents { get; private set; } = [];
     public static bool SortDirty { get; set; }
 
-    public static List<DirectoryEntry> Selections { get; private set; } = new();
+    public static List<DirectoryEntry> Selections { get; private set; } = [];
     public static IWindow Window { get; set; }
 
     private static EnumerationOptions enumerationOptions = new() { AttributesToSkip = FileAttributes.System, ReturnSpecialDirectories = false };

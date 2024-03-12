@@ -186,11 +186,7 @@ public class FolderView
                     {
                         if (ImGui.GetIO().KeyCtrl)
                         {
-                            if (FileManager.Selections.Contains(entry))
-                            {
-                                FileManager.Selections.Remove(entry);
-                            }
-                            else
+                            if (!FileManager.Selections.Remove(entry))
                             {
                                 FileManager.Selections.Add(entry);
                             }
@@ -205,7 +201,10 @@ public class FolderView
 
                 if (ImGui.BeginDragDropSource(ImGuiDragDropFlags.None))
                 {
-                    DragDropHandler.Drag();
+                    if (OperatingSystem.IsWindows())
+                    {
+                        DragDropHandler.Drag();
+                    }
 
                     ImGui.EndDragDropSource();
                 }

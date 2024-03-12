@@ -2,13 +2,13 @@ namespace IBfiles.Logic;
 
 using System;
 
-public class DirectoryEntry
+public class DirectoryEntry(string path, bool isFile, bool isHidden, DateTime lastWriteTime, long size)
 {
-    public string Path { get; set; }
-    public bool IsFile { get; init; }
-    public bool IsHidden { get; init; }
-    public DateTime LastWriteTime { get; init; }
-    public long Size { get; init; }
+    public string Path { get; set; } = path;
+    public bool IsFile { get; init; } = isFile;
+    public bool IsHidden { get; init; } = isHidden;
+    public DateTime LastWriteTime { get; init; } = lastWriteTime;
+    public long Size { get; init; } = size;
 
     public bool Editing { get; set; }
 
@@ -25,15 +25,6 @@ public class DirectoryEntry
             }
             Path = System.IO.Path.Join(dir, value);
         }
-    }
-
-    public DirectoryEntry(string path, bool isFile, bool isHidden, DateTime lastWriteTime, long size)
-    {
-        Path = path;
-        IsFile = isFile;
-        IsHidden = isHidden;
-        LastWriteTime = lastWriteTime;
-        Size = size;
     }
 
     public override string ToString()

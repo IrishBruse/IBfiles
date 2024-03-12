@@ -19,8 +19,8 @@ public class Settings
     public FsPath StartDirectory = new("Home");
     public bool HideOpticalDrives;
     public bool DecimalFileSize;
-    public List<Command> FileCommands = new();
-    public List<Command> FolderCommands = new();
+    public List<Command> FileCommands = [];
+    public List<Command> FolderCommands = [];
 
     public static void Load()
     {
@@ -53,20 +53,13 @@ public class Settings
     };
 }
 
-public class Command
+public class Command(string displayName, string file, string args)
 {
     [JsonPropertyName("display")]
-    public string DisplayName;
+    public string DisplayName = displayName;
     [JsonPropertyName("file")]
-    public string File;
+    public string File = file;
     [JsonPropertyName("args")]
-    public string Args;
-
-    public Command(string displayName, string file, string args)
-    {
-        File = file;
-        Args = args;
-        DisplayName = displayName;
-    }
+    public string Args = args;
 }
 #pragma warning restore CA1051

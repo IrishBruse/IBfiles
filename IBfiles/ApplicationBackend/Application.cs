@@ -88,7 +88,7 @@ public class Application : IDisposable
 
         io.ConfigFlags |= ImGuiConfigFlags.NavEnableKeyboard;
 
-        ushort[] codiconRange = new ushort[] { 60000, 60429, 0 };
+        ushort[] codiconRange = [60000, 60429, 0];
 
         CascadiaFont = NewFont("Assets/Fonts/CascadiaCode.ttf", 15);
         IconsFontBig = NewFontWithRange("Assets/Fonts/Codicon.ttf", 26, codiconRange);

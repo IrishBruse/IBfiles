@@ -35,17 +35,17 @@ public class ImGuiController : IDisposable
     private ResourceSet mainResourceSet;
     private ResourceSet fontTextureResourceSet;
 
-    private IntPtr fontAtlasID = (IntPtr)1;
+    private IntPtr fontAtlasID = 1;
 
     private int windowWidth;
     private int windowHeight;
     private Vector2 scaleFactor = Vector2.One;
 
     // Image trackers
-    private readonly Dictionary<TextureView, ResourceSetInfo> setsByView = new();
-    private readonly Dictionary<Texture, TextureView> autoViewsByTexture = new();
-    private readonly Dictionary<IntPtr, ResourceSetInfo> viewsById = new();
-    private readonly List<IDisposable> ownedResources = new();
+    private readonly Dictionary<TextureView, ResourceSetInfo> setsByView = [];
+    private readonly Dictionary<Texture, TextureView> autoViewsByTexture = [];
+    private readonly Dictionary<IntPtr, ResourceSetInfo> viewsById = [];
+    private readonly List<IDisposable> ownedResources = [];
     private int lastAssignedID = 100;
 
     /// <summary>
@@ -105,13 +105,13 @@ public class ImGuiController : IDisposable
         vertexShader = factory.CreateShader(new ShaderDescription(ShaderStages.Vertex, vertexShaderBytes, gd.BackendType == GraphicsBackend.Metal ? "VS" : "main"));
         fragmentShader = factory.CreateShader(new ShaderDescription(ShaderStages.Fragment, fragmentShaderBytes, gd.BackendType == GraphicsBackend.Metal ? "FS" : "main"));
 
-        VertexLayoutDescription[] vertexLayouts = new VertexLayoutDescription[]
-        {
-            new VertexLayoutDescription(
+        VertexLayoutDescription[] vertexLayouts =
+        [
+            new(
                 new VertexElementDescription("inposition", VertexElementSemantic.Position, VertexElementFormat.Float2),
                 new VertexElementDescription("intexCoord", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2),
                 new VertexElementDescription("incolor", VertexElementSemantic.Color, VertexElementFormat.Byte4_Norm))
-        };
+        ];
 
         layout = factory.CreateResourceLayout(new ResourceLayoutDescription(
             new ResourceLayoutElementDescription("ProjectionMatrixBuffer", ResourceKind.UniformBuffer, ShaderStages.Vertex),
@@ -124,8 +124,8 @@ public class ImGuiController : IDisposable
             new DepthStencilStateDescription(false, false, ComparisonKind.Always),
             new RasterizerStateDescription(FaceCullMode.None, PolygonFillMode.Solid, FrontFace.Clockwise, false, true),
             PrimitiveTopology.TriangleList,
-            new ShaderSetDescription(vertexLayouts, new[] { vertexShader, fragmentShader }),
-            new ResourceLayout[] { layout, textureLayout },
+            new ShaderSetDescription(vertexLayouts, [vertexShader, fragmentShader]),
+            [layout, textureLayout],
             outputDescription,
             ResourceBindingModel.Default);
         pipeline = factory.CreateGraphicsPipeline(ref pd);
@@ -159,7 +159,7 @@ public class ImGuiController : IDisposable
     private IntPtr GetNextImGuiBindingID()
     {
         int newID = lastAssignedID++;
-        return (IntPtr)newID;
+        return newID;
     }
 
     /// <summary>
@@ -451,15 +451,9 @@ public class ImGuiController : IDisposable
         }
     }
 
-    private readonly struct ResourceSetInfo
+    private readonly struct ResourceSetInfo(IntPtr imGuiBinding, ResourceSet resourceSet)
     {
-        public readonly IntPtr ImGuiBinding;
-        public readonly ResourceSet ResourceSet;
-
-        public ResourceSetInfo(IntPtr imGuiBinding, ResourceSet resourceSet)
-        {
-            ImGuiBinding = imGuiBinding;
-            ResourceSet = resourceSet;
-        }
+        public readonly IntPtr ImGuiBinding = imGuiBinding;
+        public readonly ResourceSet ResourceSet = resourceSet;
     }
 }

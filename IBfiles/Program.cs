@@ -8,7 +8,7 @@ using Silk.NET.Windowing.Extensions.Veldrid;
 
 using Veldrid;
 
-internal class Program
+internal sealed class Program
 {
     [STAThread]
     private static void Main()

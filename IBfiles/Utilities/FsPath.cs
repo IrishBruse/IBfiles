@@ -19,13 +19,13 @@ public struct FsPath
         return fsPath.Path;
     }
 
-    public override string ToString()
+    public override readonly string ToString()
     {
         return Path;
     }
 }
 
-internal class FsPathConverter : JsonConverter<FsPath>
+internal sealed class FsPathConverter : JsonConverter<FsPath>
 {
     public override FsPath Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

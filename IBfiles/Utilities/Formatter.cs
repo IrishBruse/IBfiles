@@ -17,11 +17,11 @@ public static class Formatter
 
         if (Settings.I.DecimalFileSize)
         {
-            suffixes = new string[] { "B", "KB", "MB", "GB", "TB" };
+            suffixes = ["B", "KB", "MB", "GB", "TB"];
         }
         else
         {
-            suffixes = new string[] { "B", "KiB", "MiB", "GiB", "TiB" };
+            suffixes = ["B", "KiB", "MiB", "GiB", "TiB"];
         }
 
         for (i = 0; i < suffixes.Length && bytes >= size; i++, bytes /= (long)size)

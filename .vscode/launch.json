@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "Build IBfiles",
-            "program": "${workspaceFolder}/IBfiles/bin/Debug/net6.0/IBfiles.dll",
+            "program": "${workspaceFolder}/IBfiles/bin/Debug/net8.0/IBfiles.dll",
             "cwd": "${workspaceFolder}/IBfiles",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",

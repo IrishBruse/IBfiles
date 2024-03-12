@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 
+using IBfiles.ApplicationBackend.ImageSharp;
 using IBfiles.Utilities;
 
 using Veldrid;
-using Veldrid.ImageSharp;
 
 public class IconManager
 {
@@ -21,7 +21,7 @@ public class IconManager
     private static Dictionary<string, string> extensionToIcon;
     private static Dictionary<string, string> folderToIcon;
     private static Dictionary<string, string> fileToIcon;
-    private static Dictionary<string, IntPtr> ptrCache = new();
+    private static Dictionary<string, IntPtr> ptrCache = [];
 
     public static void Load(GraphicsDevice graphicsDevice, ImGuiController controller)
     {
@@ -38,7 +38,7 @@ public class IconManager
 
     public static IntPtr GetFileIcon(string filePath)
     {
-        filePath = filePath.ToLower();
+        filePath = filePath.ToLower(System.Globalization.CultureInfo.CurrentCulture);
         string ext = Path.GetExtension(filePath).Replace(".", string.Empty);
         string filename = Path.GetFileName(filePath);
 
@@ -58,7 +58,7 @@ public class IconManager
 
     public static IntPtr GetFolderIcon(string filename)
     {
-        filename = filename.ToLower();
+        filename = filename.ToLower(System.Globalization.CultureInfo.CurrentCulture);
         string folder = Path.GetFileName(filename);
 
         if (folderToIcon.TryGetValue(folder, out string icon))
